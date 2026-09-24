@@ -1,0 +1,14 @@
+# Cloudflare Pages redirects
+# Friendly shortlinks -> external destinations.
+/invite   https://discord.com/oauth2/authorize?client_id=1510215071559847946&permissions=8&integration_type=0&scope=bot   302
+/support  https://discord.gg/hbv97y5uxM   302
+/discord  https://discord.gg/hbv97y5uxM   302
+/terms    /tos   302
+/spotify/verify  /spotify  302
+
+# Dashboard lives on its own subdomain (VPS backend).
+/dashboard       https://dash.adore.rest         302
+/dashboard/*     https://dash.adore.rest/:splat  302
+
+# API Proxy to backend VPS (Cloudflare 200 proxy)
+/api/*  https://api.adore.rest/api/:splat  200
