@@ -224,7 +224,8 @@ interface RawSection {
 
 /**
  * Splits markdown into sections starting with `## ` or `### `,
- * ignoring `### Your redesign:` headings.
+ * or raw numbered commands (e.g. `1. Coinflip`) / helper signatures (e.g. `embeds.success`),
+ * ignoring `Your redesign:` headings.
  */
 function splitSections(markdown: string): RawSection[] {
   const lines = markdown.split(/\r?\n/);
@@ -232,15 +233,50 @@ function splitSections(markdown: string): RawSection[] {
   let currentSection: RawSection | null = null;
 
   for (const line of lines) {
-    const match = line.match(/^(#{2,3})\s+(.+)$/);
-    // Sections start with ## or ###, but NEVER "### Your redesign:" which is a fill-in blank
-    if (match && match[1] && match[2] && !/^your\s+redesign\b/i.test(match[2].trim())) {
+    const trimmed = line.trim();
+
+    // Ignore redesign fill-in blanks (with or without ###)
+    if (/^(?:#{2,3}\s+)?your\s+redesign\b/i.test(trimmed)) {
       if (currentSection) {
-        sections.push(currentSection);
+        currentSection.lines.push(line);
       }
+      continue;
+    }
+
+    // Skip section category banners that are purely navigation/dividers
+    if (
+      /^(?:GAMBLING|MONEY|BUSINESS|MARKET\s*\/\s*STOCKS\s*\/\s*STORE|Shared\s+helper\s+styles)$/i.test(
+        trimmed,
+      )
+    ) {
+      continue;
+    }
+
+    const mdMatch = trimmed.match(/^(#{2,3})\s+(.+)$/);
+    const numMatch = trimmed.match(/^(\d+\.\s+.+)$/);
+    const helperMatch = trimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i);
+
+    if (mdMatch) {
+      if (currentSection) sections.push(currentSection);
       currentSection = {
-        name: match[2].trim(),
-        level: match[1].length,
+        name: mdMatch[2]?.trim() || "",
+        level: mdMatch[1]?.length || 2,
+        headerLine: line,
+        lines: [],
+      };
+    } else if (numMatch) {
+      if (currentSection) sections.push(currentSection);
+      currentSection = {
+        name: numMatch[1]?.trim() || "",
+        level: 2,
+        headerLine: line,
+        lines: [],
+      };
+    } else if (helperMatch) {
+      if (currentSection) sections.push(currentSection);
+      currentSection = {
+        name: helperMatch[1]?.trim() || "",
+        level: 2,
         headerLine: line,
         lines: [],
       };
@@ -314,6 +350,11 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
             description = emoteMatch[1].replace(/`/g, "").trim();
           }
 
+          if (!description) {
+            const descPart = afterColon.replace(/^color\s+[^,;]+[,;]?\s*/i, "").trim();
+            description = cleanValue(descPart);
+          }
+
           // Leave title/fields/footer/author empty
         }
       }
@@ -321,74 +362,127 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
 
     if (!isSingleLineStyle) {
       let i = startIdx;
+      let inFields = false;
+
       while (i < sectionLines.length) {
-        const line = sectionLines[i] ?? "";
+        const rawLine = sectionLines[i] ?? "";
+        const line = rawLine.trim();
 
         // Stop current block if we hit a redesign header or next section heading or divider
-        if (/^#{2,3}\s+/i.test(line) || /^---+\s*$/.test(line)) {
+        if (
+          /^(?:#{2,3}\s+)?your\s+redesign\b/i.test(line) ||
+          /^---+\s*$/.test(line) ||
+          /^\d+\.\s+/i.test(line) ||
+          /^embeds\..*$/i.test(line)
+        ) {
           break;
         }
 
-        // Check key-value line: - Key: value
-        const keyValMatch = line.match(/^[-*•]\s+([A-Za-z0-9/ _-]+):\s*(.*)$/);
-        if (keyValMatch && keyValMatch[1]) {
-          const rawKey = keyValMatch[1].trim().toLowerCase();
-          const val = (keyValMatch[2] || "").trim();
-          foundEmbedKey = true;
+        // Split middot-separated key:value segments (e.g. Color: None · Footer: none)
+        const segments = line.includes(" · ") ? line.split(" · ") : [line];
 
-          if (rawKey === "title") {
-            title = cleanValue(val);
-          } else if (rawKey === "description") {
-            // Leniently capture multiline description
-            const descLines = [cleanValue(val)];
-            while (
-              i + 1 < sectionLines.length &&
-              /^\s{2,}/.test(sectionLines[i + 1] ?? "") &&
-              !/^[-*•]\s+[A-Za-z0-9/ _-]+:/.test((sectionLines[i + 1] ?? "").trim()) &&
-              !/^#{2,3}\s+/i.test(sectionLines[i + 1] ?? "")
-            ) {
-              i++;
-              descLines.push((sectionLines[i] ?? "").trim());
-            }
-            description = cleanValue(descLines.filter(Boolean).join("\n"));
-          } else if (rawKey === "color" || rawKey === "colour") {
-            color = parseColor(val);
-          } else if (rawKey === "author" || rawKey === "author name") {
-            authorName = cleanValue(val);
-          } else if (rawKey === "footer") {
-            footer = cleanValue(val);
-          } else if (rawKey === "thumbnail/image") {
-            const res = parseThumbnailAndImage(val);
-            thumbnail = res.thumbnail;
-            image = res.image;
-          } else if (rawKey === "thumbnail") {
-            thumbnail = cleanValue(val);
-          } else if (rawKey === "image") {
-            image = cleanValue(val);
-          } else if (
-            rawKey === "buttons/view" ||
-            rawKey === "buttons" ||
-            rawKey === "view" ||
-            rawKey === "button"
-          ) {
-            buttonsNote = cleanValue(val);
-          } else if (rawKey === "fields") {
-            // If value is provided on same line (e.g. - Fields: `A` -> `B`)
-            if (val && !/^none\.?$/i.test(val)) {
-              const field = parseFieldLine(val);
-              if (field) fields.push(field);
-            }
+        for (const seg of segments) {
+          const kv = seg.trim().match(/^(?:[-*•]\s+)?([^:=]+?)(?::|=)\s*(.*)$/);
+          if (kv && kv[1]) {
+            const rawKey = kv[1].trim().toLowerCase();
+            const val = (kv[2] || "").trim();
 
-            // Parse indented bullet lines under - Fields:
-            while (
-              i + 1 < sectionLines.length &&
-              (/^\s{2,}[-*•]/.test(sectionLines[i + 1] ?? "") ||
-                /^\s{2,}`/.test(sectionLines[i + 1] ?? ""))
+            if (rawKey === "title") {
+              title = cleanValue(val);
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey === "description") {
+              const descLines = [cleanValue(val)];
+              while (
+                i + 1 < sectionLines.length &&
+                /^\s{2,}/.test(sectionLines[i + 1] ?? "") &&
+                !/^(?:[-*•]\s+)?[A-Za-z0-9/ _-]+:/.test((sectionLines[i + 1] ?? "").trim()) &&
+                !/^#{2,3}\s+/i.test(sectionLines[i + 1] ?? "")
+              ) {
+                i++;
+                descLines.push((sectionLines[i] ?? "").trim());
+              }
+              description = cleanValue(descLines.filter(Boolean).join("\n"));
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey === "color" || rawKey === "colour" || rawKey === "accent") {
+              color = parseColor(val);
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey === "author" || rawKey === "author name") {
+              authorName = cleanValue(val);
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey === "footer") {
+              footer = cleanValue(val);
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey === "thumbnail/image") {
+              const res = parseThumbnailAndImage(val);
+              thumbnail = res.thumbnail;
+              image = res.image;
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey === "thumbnail") {
+              thumbnail = cleanValue(val);
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey === "image") {
+              image = cleanValue(val);
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (
+              rawKey === "buttons/view" ||
+              rawKey === "buttons" ||
+              rawKey === "view" ||
+              rawKey === "button"
             ) {
-              i++;
-              const field = parseFieldLine(sectionLines[i] ?? "");
-              if (field) fields.push(field);
+              buttonsNote = cleanValue(val);
+              foundEmbedKey = true;
+              inFields = false;
+            } else if (rawKey.startsWith("fields")) {
+              foundEmbedKey = true;
+              inFields = true;
+              if (val && !/^none\.?$/i.test(val)) {
+                const field = parseFieldLine(val);
+                if (field) fields.push(field);
+              }
+            } else if (
+              /^(win|loss|suspense|template|step|public|victim|disbursed|fully repaid|partial|active|defaulted|confirm|sold|empty|genuine|counterfeit|holdings|catalog|purchase|note)/i.test(
+                rawKey,
+              )
+            ) {
+              // Sub-state line e.g. "Win (~3334): no title; description ...; color 0x9DD2A8"
+              foundEmbedKey = true;
+              inFields = false;
+
+              const isShowcase = /^(win|successful|holdings|genuine|fully repaid|disbursed|catalog|active|step 1)/i.test(
+                rawKey,
+              );
+
+              const descMatch = val.match(/description\s+([^;]+(?:;(?!\s*color)[^;]+)*)/i);
+              if (descMatch && descMatch[1] && (!description || isShowcase)) {
+                description = cleanValue(descMatch[1]);
+              }
+
+              const titleMatch = val.match(/title\s+([^;]+)/i);
+              if (titleMatch && titleMatch[1] && (!title || isShowcase)) {
+                title = cleanValue(titleMatch[1]);
+              }
+
+              const colorMatch = val.match(/color\s+([^\s;]+)/i);
+              if (colorMatch && colorMatch[1] && (!color || isShowcase)) {
+                color = parseColor(colorMatch[1]);
+              }
+
+              const noteMatch = val.match(/note\s+([^;]+)/i);
+              if (noteMatch && noteMatch[1] && (!description || isShowcase)) {
+                description = cleanValue(noteMatch[1]);
+              }
             }
+          } else if (inFields) {
+            const field = parseFieldLine(seg);
+            if (field) fields.push(field);
           }
         }
 
@@ -500,16 +594,21 @@ export function updateEmbedMarkdown(
   let i = 0;
   while (i < lines.length) {
     const line = lines[i] ?? "";
-    const headingMatch = line.match(/^(#{2,3})\s+(.+)$/);
+    const trimmed = line.trim();
+    const mdHeading = trimmed.match(/^(#{2,3})\s+(.+)$/);
+    const numHeading = trimmed.match(/^(\d+\.\s+.+)$/);
+    const helperHeading = trimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i);
+    const isRedesign = /^(?:#{2,3}\s+)?your\s+redesign\b/i.test(trimmed);
 
-    if (
-      headingMatch &&
-      headingMatch[1] &&
-      headingMatch[2] &&
-      !/^your\s+redesign\b/i.test(headingMatch[2].trim())
-    ) {
+    let sectionName = "";
+    if (!isRedesign) {
+      if (mdHeading && mdHeading[2]) sectionName = mdHeading[2].trim();
+      else if (numHeading && numHeading[1]) sectionName = numHeading[1].trim();
+      else if (helperHeading && helperHeading[1]) sectionName = helperHeading[1].trim();
+    }
+
+    if (sectionName) {
       outputLines.push(line);
-      const sectionName = headingMatch[2].trim();
       const matchedEmbed = embedMap.get(sectionName.toLowerCase());
 
       if (matchedEmbed) {
@@ -521,8 +620,14 @@ export function updateEmbedMarkdown(
 
         while (j < lines.length) {
           const nextLine = lines[j] ?? "";
-          const nextHeading = nextLine.match(/^(#{2,3})\s+(.+)$/);
-          if (nextHeading && nextHeading[2] && !/^your\s+redesign\b/i.test(nextHeading[2].trim())) {
+          const nextTrimmed = nextLine.trim();
+          const nextMd = nextTrimmed.match(/^(#{2,3})\s+(.+)$/);
+          const nextNum = nextTrimmed.match(/^(\d+\.\s+.+)$/);
+          const nextHelper = nextTrimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i);
+          const nextIsRedesign = /^(?:#{2,3}\s+)?your\s+redesign\b/i.test(nextTrimmed);
+          const isNextSection = !nextIsRedesign && (Boolean(nextMd) || Boolean(nextNum) || Boolean(nextHelper));
+
+          if (isNextSection) {
             // Next section begins
             break;
           }
@@ -538,7 +643,14 @@ export function updateEmbedMarkdown(
             j++;
             while (j < lines.length) {
               const skipLine = lines[j] ?? "";
-              if (/^#{2,3}\s+/i.test(skipLine) || /^---+\s*$/.test(skipLine)) {
+              const skipTrimmed = skipLine.trim();
+              if (
+                /^(?:#{2,3}\s+)?your\s+redesign\b/i.test(skipTrimmed) ||
+                /^---+\s*$/.test(skipTrimmed) ||
+                /^#{2,3}\s+/i.test(skipTrimmed) ||
+                /^\d+\.\s+/i.test(skipTrimmed) ||
+                /^embeds\..*$/i.test(skipTrimmed)
+              ) {
                 break;
               }
               j++;
