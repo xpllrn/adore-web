@@ -60,9 +60,19 @@ export const markdownComponents: Components = {
   hr: () => <hr className="my-2 border-border" />,
 };
 
-export function DiscordMarkdown({ value, className = "" }: { value: string; className?: string }) {
+const inlineMarkdownComponents: Components = {
+  ...markdownComponents,
+  p: ({ children }) => (
+    <span className="min-w-0 whitespace-pre-wrap break-words leading-5 inline">
+      {children}
+    </span>
+  ),
+};
+
+export function DiscordMarkdown({ value, className = "" }: { value?: string | undefined; className?: string }) {
+  if (!value) return null;
   const rendered = renderVariables(value);
-  const parts = rendered.split(/<(a)?:([A-Za-z0-9_~-]+):(\d+)>/);
+  const parts = rendered.split(/`?(<(?:a)?:[A-Za-z0-9_~-]+:\d+>)`?/);
 
   if (parts.length === 1) {
     return (
@@ -75,38 +85,42 @@ export function DiscordMarkdown({ value, className = "" }: { value: string; clas
   }
 
   const nodes: ReactNode[] = [];
-  for (let i = 0; i < parts.length; i += 4) {
+  for (let i = 0; i < parts.length; i += 2) {
     const text = parts[i];
     if (text) {
       nodes.push(
         <ReactMarkdown
           key={`text-${i}`}
           remarkPlugins={[remarkGfm, remarkBreaks]}
-          components={markdownComponents}
+          components={inlineMarkdownComponents}
         >
           {text}
         </ReactMarkdown>,
       );
     }
-    if (i + 3 < parts.length) {
-      const isAnimated = parts[i + 1] === "a";
-      const name = parts[i + 2] ?? "";
-      const id = parts[i + 3] ?? "";
-      const ext = isAnimated ? "gif" : "png";
-      nodes.push(
-        <img
-          key={`emote-${i}`}
-          src={`https://cdn.discordapp.com/emojis/${id}.${ext}`}
-          alt={name}
-          className="inline-block size-[1.15em] align-[-0.2em] object-contain"
-          style={{ width: "1.15em", height: "1.15em", verticalAlign: "-0.2em" }}
-        />,
-      );
+    if (i + 1 < parts.length) {
+      const match = parts[i + 1]?.match(/^<(a)?:([A-Za-z0-9_~-]+):(\d+)>$/);
+      if (match) {
+        const isAnimated = match[1] === "a";
+        const name = match[2] ?? "";
+        const id = match[3] ?? "";
+        const ext = isAnimated ? "gif" : "png";
+        nodes.push(
+          <img
+            key={`emote-${i}`}
+            src={`https://cdn.discordapp.com/emojis/${id}.${ext}`}
+            alt={name}
+            title={`:${name}:`}
+            className="inline-block size-[1.25em] align-[-0.22em] object-contain mx-0.5"
+            style={{ width: "1.25em", height: "1.25em", verticalAlign: "-0.22em" }}
+          />,
+        );
+      }
     }
   }
 
   return (
-    <div className={`discord-markdown min-w-0 break-words [&>p]:inline ${className}`}>
+    <div className={`discord-markdown min-w-0 break-words ${className}`}>
       {nodes}
     </div>
   );
@@ -135,7 +149,7 @@ export function EmbedPreview({ embed }: { embed: EmbedState }) {
           {embed.authorIcon && (
             <img src={embed.authorIcon} alt="" className="size-5 rounded-full object-cover" />
           )}
-          <span className="text-[10px] font-bold">{renderVariables(embed.authorName)}</span>
+          <DiscordMarkdown value={embed.authorName} className="text-[10px] font-bold inline" />
         </div>
       )}
       {embed.thumbnail && (
@@ -175,7 +189,7 @@ export function EmbedPreview({ embed }: { embed: EmbedState }) {
             <img src={embed.footerIcon} alt="" className="size-4 rounded-full object-cover" />
           )}
           <span>
-            {renderVariables(embed.footer)}
+            {embed.footer && <DiscordMarkdown value={embed.footer} className="inline" />}
             {embed.footer && embed.timestamp ? " • " : ""}
             {embed.timestamp ? "Today at 10:53 AM" : ""}
           </span>
@@ -351,8 +365,8 @@ export function Preview({
                     rel="noreferrer"
                     className={`inline-flex h-8 items-center gap-1.5 rounded-sm border px-3 text-[10px] font-bold transition-colors ${styleClasses}`}
                   >
-                    {button.emoji && <span>{button.emoji}</span>}
-                    <span>{renderVariables(button.label || "Button")}</span>
+                    {button.emoji && <DiscordMarkdown value={button.emoji} className="inline" />}
+                    <DiscordMarkdown value={button.label || "Button"} className="inline" />
                     {button.url && <Link2 className="size-3 opacity-70" />}
                   </a>
                 );

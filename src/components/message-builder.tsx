@@ -207,15 +207,6 @@ export function MessageBuilder() {
           >
             <Copy className="size-3.5" /> Copy {mode === "embed" ? "Embed" : "Container"}
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            className="gap-1.5 shadow-panel"
-            onClick={() => copyToClipboard(`,createembed ${shownCode}`, "Command")}
-          >
-            <Clipboard className="size-3.5" /> Copy ,createembed
-          </Button>
         </div>
         <Button type="button" size="sm" variant="outline" onClick={clearAll}>
           <RotateCcw /> <span className="sr-only sm:not-sr-only">Clear builder</span>
@@ -363,15 +354,6 @@ export function MessageBuilder() {
                   }
                 >
                   <Copy className="size-3.5" /> Copy Embed
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="gap-1.5"
-                  onClick={() => copyToClipboard(`,createembed ${shownCode}`, "Command")}
-                >
-                  <Clipboard className="size-3.5" /> Copy ,createembed
                 </Button>
                 <Button
                   type="button"

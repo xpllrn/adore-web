@@ -39,12 +39,19 @@ export interface SerializeOptions {
  */
 export function cleanValue(val: string): string {
   let cleaned = val.trim();
-  if (
+  while (
     (cleaned.startsWith("`") && cleaned.endsWith("`") && cleaned.length >= 2) ||
     (cleaned.startsWith('"') && cleaned.endsWith('"') && cleaned.length >= 2) ||
     (cleaned.startsWith("'") && cleaned.endsWith("'") && cleaned.length >= 2)
   ) {
     cleaned = cleaned.slice(1, -1).trim();
+  }
+
+  if (cleaned.startsWith("`") && !cleaned.slice(1).includes("`")) {
+    cleaned = cleaned.slice(1).trim();
+  }
+  if (cleaned.endsWith("`") && !cleaned.slice(0, -1).includes("`")) {
+    cleaned = cleaned.slice(0, -1).trim();
   }
 
   if (/^none\.?$/i.test(cleaned) || /^n\/?a$/i.test(cleaned) || /^nil$/i.test(cleaned)) {

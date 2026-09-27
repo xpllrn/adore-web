@@ -702,19 +702,23 @@ function AdminEmbedBuilderPage() {
               {/* (3) Editor Panel */}
               <div className="grid min-w-0 gap-4">
                 <section className={`${panelClass} p-4 sm:p-5`}>
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
+                  <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0 flex-1">
-                      <span className="text-[10px] font-bold uppercase text-muted-foreground">
+                      <label
+                        htmlFor="section-heading-input"
+                        className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+                      >
                         Section Heading
-                      </span>
+                      </label>
                       <input
+                        id="section-heading-input"
                         value={activeEmbed.name}
                         onChange={(e) => updateActiveEmbed({ name: e.target.value })}
                         placeholder="Section Name (e.g. Welcome Embed)"
-                        className={`${inputClass} mt-1 h-9 font-display text-base font-bold`}
+                        className={`${inputClass} mt-1.5 h-9 w-full font-display text-sm font-bold`}
                       />
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex shrink-0 flex-wrap items-center gap-2.5 pt-1 sm:pt-4">
                       {/* Mode Switcher */}
                       <div className="flex items-center gap-1 rounded-md border border-border bg-background p-0.5 shadow-panel">
                         <button
@@ -746,10 +750,10 @@ function AdminEmbedBuilderPage() {
                       <Button
                         type="button"
                         size="sm"
-                        variant="ghost"
+                        variant="outline"
                         onClick={deleteCurrentEmbed}
                         title="Delete this embed"
-                        className="h-8 gap-1.5 text-xs text-destructive hover:bg-destructive/10"
+                        className="h-9 gap-1.5 border-destructive/40 bg-destructive/10 text-xs font-semibold text-destructive shadow-xs transition-colors hover:border-destructive hover:bg-destructive hover:text-destructive-foreground active:scale-[0.98]"
                       >
                         <Trash2 className="size-3.5" /> Delete
                       </Button>
@@ -939,12 +943,6 @@ function AdminEmbedBuilderPage() {
                   blocks={activeBlocks}
                   buttons={activeButtons}
                   color={activeEmbed.color || "#8b8d92"}
-                  onCopy={() =>
-                    copyToClipboard(
-                      activeAdoreCode,
-                      `"${activeEmbed.name}" ${activeMode === "container" ? "Container" : "Embed"} code`,
-                    )
-                  }
                 />
 
                 {/* (5) Per-embed Adore Code Export */}
@@ -971,11 +969,11 @@ function AdminEmbedBuilderPage() {
                         Active Item: {activeEmbed.name}
                       </p>
                     </div>
-                    <div className="flex flex-wrap shrink-0 gap-2">
+                    <div className="shrink-0">
                       <Button
                         type="button"
                         size="sm"
-                        className="gap-1.5 bg-foreground font-bold text-background hover:opacity-90"
+                        className="gap-1.5 bg-foreground font-bold text-background shadow-panel hover:opacity-90 active:scale-[0.98]"
                         onClick={() =>
                           copyToClipboard(
                             activeAdoreCode,
@@ -984,20 +982,6 @@ function AdminEmbedBuilderPage() {
                         }
                       >
                         <Copy className="size-3.5" /> Copy Code
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        className="gap-1.5"
-                        onClick={() =>
-                          copyToClipboard(
-                            `,createembed ${activeAdoreCode}`,
-                            `"${activeEmbed.name}" Command`,
-                          )
-                        }
-                      >
-                        <Clipboard className="size-3.5" /> Copy ,createembed
                       </Button>
                     </div>
                   </div>
