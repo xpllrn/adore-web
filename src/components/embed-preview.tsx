@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Copy, Link2 } from "lucide-react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
@@ -60,11 +61,53 @@ export const markdownComponents: Components = {
 };
 
 export function DiscordMarkdown({ value, className = "" }: { value: string; className?: string }) {
+  const rendered = renderVariables(value);
+  const parts = rendered.split(/<(a)?:([A-Za-z0-9_~-]+):(\d+)>/);
+
+  if (parts.length === 1) {
+    return (
+      <div className={`discord-markdown min-w-0 break-words ${className}`}>
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={markdownComponents}>
+          {rendered}
+        </ReactMarkdown>
+      </div>
+    );
+  }
+
+  const nodes: ReactNode[] = [];
+  for (let i = 0; i < parts.length; i += 4) {
+    const text = parts[i];
+    if (text) {
+      nodes.push(
+        <ReactMarkdown
+          key={`text-${i}`}
+          remarkPlugins={[remarkGfm, remarkBreaks]}
+          components={markdownComponents}
+        >
+          {text}
+        </ReactMarkdown>,
+      );
+    }
+    if (i + 3 < parts.length) {
+      const isAnimated = parts[i + 1] === "a";
+      const name = parts[i + 2] ?? "";
+      const id = parts[i + 3] ?? "";
+      const ext = isAnimated ? "gif" : "png";
+      nodes.push(
+        <img
+          key={`emote-${i}`}
+          src={`https://cdn.discordapp.com/emojis/${id}.${ext}`}
+          alt={name}
+          className="inline-block size-[1.15em] align-[-0.2em] object-contain"
+          style={{ width: "1.15em", height: "1.15em", verticalAlign: "-0.2em" }}
+        />,
+      );
+    }
+  }
+
   return (
-    <div className={`discord-markdown min-w-0 break-words ${className}`}>
-      <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={markdownComponents}>
-        {renderVariables(value)}
-      </ReactMarkdown>
+    <div className={`discord-markdown min-w-0 break-words [&>p]:inline ${className}`}>
+      {nodes}
     </div>
   );
 }
