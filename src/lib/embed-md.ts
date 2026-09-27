@@ -287,79 +287,113 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
     const fields: ParsedEmbedField[] = [];
     let foundEmbedKey = false;
 
-    let i = startIdx;
-    while (i < sectionLines.length) {
-      const line = sectionLines[i] ?? "";
+    // Check if the Current marker line itself has content after the colon (single-line style)
+    let isSingleLineStyle = false;
+    if (currentBlockIdx !== -1) {
+      const currentLine = sectionLines[currentBlockIdx] ?? "";
+      const trimmedLine = currentLine.trim();
+      const currentMarkerMatch = trimmedLine.match(
+        /^(?:[-*•]\s*)?\*{0,2}current\*{0,2}\s*:\s*(.*)$/i,
+      );
+      if (currentMarkerMatch && currentMarkerMatch[1]) {
+        // Strip closing markdown asterisks and surrounding whitespace
+        const afterColon = currentMarkerMatch[1].replace(/^\*+|\*+$/g, "").trim();
+        if (afterColon.length > 0) {
+          isSingleLineStyle = true;
+          foundEmbedKey = true;
 
-      // Stop current block if we hit a redesign header or next section heading or divider
-      if (/^#{2,3}\s+/i.test(line) || /^---+\s*$/.test(line)) {
-        break;
-      }
-
-      // Check key-value line: - Key: value
-      const keyValMatch = line.match(/^[-*•]\s+([A-Za-z0-9/ _-]+):\s*(.*)$/);
-      if (keyValMatch && keyValMatch[1]) {
-        const rawKey = keyValMatch[1].trim().toLowerCase();
-        const val = (keyValMatch[2] || "").trim();
-        foundEmbedKey = true;
-
-        if (rawKey === "title") {
-          title = cleanValue(val);
-        } else if (rawKey === "description") {
-          // Leniently capture multiline description
-          const descLines = [cleanValue(val)];
-          while (
-            i + 1 < sectionLines.length &&
-            /^\s{2,}/.test(sectionLines[i + 1] ?? "") &&
-            !/^[-*•]\s+[A-Za-z0-9/ _-]+:/.test((sectionLines[i + 1] ?? "").trim()) &&
-            !/^#{2,3}\s+/i.test(sectionLines[i + 1] ?? "")
-          ) {
-            i++;
-            descLines.push((sectionLines[i] ?? "").trim());
-          }
-          description = cleanValue(descLines.filter(Boolean).join("\n"));
-        } else if (rawKey === "color" || rawKey === "colour") {
-          color = parseColor(val);
-        } else if (rawKey === "author" || rawKey === "author name") {
-          authorName = cleanValue(val);
-        } else if (rawKey === "footer") {
-          footer = cleanValue(val);
-        } else if (rawKey === "thumbnail/image") {
-          const res = parseThumbnailAndImage(val);
-          thumbnail = res.thumbnail;
-          image = res.image;
-        } else if (rawKey === "thumbnail") {
-          thumbnail = cleanValue(val);
-        } else if (rawKey === "image") {
-          image = cleanValue(val);
-        } else if (
-          rawKey === "buttons/view" ||
-          rawKey === "buttons" ||
-          rawKey === "view" ||
-          rawKey === "button"
-        ) {
-          buttonsNote = cleanValue(val);
-        } else if (rawKey === "fields") {
-          // If value is provided on same line (e.g. - Fields: `A` -> `B`)
-          if (val && !/^none\.?$/i.test(val)) {
-            const field = parseFieldLine(val);
-            if (field) fields.push(field);
+          // Extract color token (0xHEX or #HEX) with existing parseColor
+          const colorMatch = afterColon.match(/`?(0x[0-9a-fA-F]{3,8}|#[0-9a-fA-F]{3,8})`?/i);
+          if (colorMatch && colorMatch[1]) {
+            color = parseColor(colorMatch[1]);
           }
 
-          // Parse indented bullet lines under - Fields:
-          while (
-            i + 1 < sectionLines.length &&
-            (/^\s{2,}[-*•]/.test(sectionLines[i + 1] ?? "") ||
-              /^\s{2,}`/.test(sectionLines[i + 1] ?? ""))
-          ) {
-            i++;
-            const field = parseFieldLine(sectionLines[i] ?? "");
-            if (field) fields.push(field);
+          // Extract first Discord emote token (<:name:id> or <a:name:id>, strip backticks) and use as description
+          const emoteMatch = afterColon.match(/`?(<a?:[a-zA-Z0-9_~-]+:\d+>)`?/);
+          if (emoteMatch && emoteMatch[1]) {
+            description = emoteMatch[1].replace(/`/g, "").trim();
           }
+
+          // Leave title/fields/footer/author empty
         }
       }
+    }
 
-      i++;
+    if (!isSingleLineStyle) {
+      let i = startIdx;
+      while (i < sectionLines.length) {
+        const line = sectionLines[i] ?? "";
+
+        // Stop current block if we hit a redesign header or next section heading or divider
+        if (/^#{2,3}\s+/i.test(line) || /^---+\s*$/.test(line)) {
+          break;
+        }
+
+        // Check key-value line: - Key: value
+        const keyValMatch = line.match(/^[-*•]\s+([A-Za-z0-9/ _-]+):\s*(.*)$/);
+        if (keyValMatch && keyValMatch[1]) {
+          const rawKey = keyValMatch[1].trim().toLowerCase();
+          const val = (keyValMatch[2] || "").trim();
+          foundEmbedKey = true;
+
+          if (rawKey === "title") {
+            title = cleanValue(val);
+          } else if (rawKey === "description") {
+            // Leniently capture multiline description
+            const descLines = [cleanValue(val)];
+            while (
+              i + 1 < sectionLines.length &&
+              /^\s{2,}/.test(sectionLines[i + 1] ?? "") &&
+              !/^[-*•]\s+[A-Za-z0-9/ _-]+:/.test((sectionLines[i + 1] ?? "").trim()) &&
+              !/^#{2,3}\s+/i.test(sectionLines[i + 1] ?? "")
+            ) {
+              i++;
+              descLines.push((sectionLines[i] ?? "").trim());
+            }
+            description = cleanValue(descLines.filter(Boolean).join("\n"));
+          } else if (rawKey === "color" || rawKey === "colour") {
+            color = parseColor(val);
+          } else if (rawKey === "author" || rawKey === "author name") {
+            authorName = cleanValue(val);
+          } else if (rawKey === "footer") {
+            footer = cleanValue(val);
+          } else if (rawKey === "thumbnail/image") {
+            const res = parseThumbnailAndImage(val);
+            thumbnail = res.thumbnail;
+            image = res.image;
+          } else if (rawKey === "thumbnail") {
+            thumbnail = cleanValue(val);
+          } else if (rawKey === "image") {
+            image = cleanValue(val);
+          } else if (
+            rawKey === "buttons/view" ||
+            rawKey === "buttons" ||
+            rawKey === "view" ||
+            rawKey === "button"
+          ) {
+            buttonsNote = cleanValue(val);
+          } else if (rawKey === "fields") {
+            // If value is provided on same line (e.g. - Fields: `A` -> `B`)
+            if (val && !/^none\.?$/i.test(val)) {
+              const field = parseFieldLine(val);
+              if (field) fields.push(field);
+            }
+
+            // Parse indented bullet lines under - Fields:
+            while (
+              i + 1 < sectionLines.length &&
+              (/^\s{2,}[-*•]/.test(sectionLines[i + 1] ?? "") ||
+                /^\s{2,}`/.test(sectionLines[i + 1] ?? ""))
+            ) {
+              i++;
+              const field = parseFieldLine(sectionLines[i] ?? "");
+              if (field) fields.push(field);
+            }
+          }
+        }
+
+        i++;
+      }
     }
 
     // Has parseable embed data?
