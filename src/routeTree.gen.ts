@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminembedbuilderRouteImport } from './routes/adminembedbuilder'
 import { Route as CommandsRouteImport } from './routes/commands'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as EmbedRouteImport } from './routes/embed'
@@ -21,6 +22,11 @@ import { Route as StatusRouteImport } from './routes/status'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminembedbuilderRoute = AdminembedbuilderRouteImport.update({
+  id: '/adminembedbuilder',
+  path: '/adminembedbuilder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommandsRoute = CommandsRouteImport.update({
@@ -61,6 +67,7 @@ const StatusRoute = StatusRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/adminembedbuilder': typeof AdminembedbuilderRoute
   '/commands': typeof CommandsRoute
   '/docs': typeof DocsRoute
   '/embed': typeof EmbedRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/adminembedbuilder': typeof AdminembedbuilderRoute
   '/commands': typeof CommandsRoute
   '/docs': typeof DocsRoute
   '/embed': typeof EmbedRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/adminembedbuilder': typeof AdminembedbuilderRoute
   '/commands': typeof CommandsRoute
   '/docs': typeof DocsRoute
   '/embed': typeof EmbedRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/adminembedbuilder'
     | '/commands'
     | '/docs'
     | '/embed'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/adminembedbuilder'
     | '/commands'
     | '/docs'
     | '/embed'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/adminembedbuilder'
     | '/commands'
     | '/docs'
     | '/embed'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminembedbuilderRoute: typeof AdminembedbuilderRoute
   CommandsRoute: typeof CommandsRoute
   DocsRoute: typeof DocsRoute
   EmbedRoute: typeof EmbedRoute
@@ -141,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/adminembedbuilder': {
+      id: '/adminembedbuilder'
+      path: '/adminembedbuilder'
+      fullPath: '/adminembedbuilder'
+      preLoaderRoute: typeof AdminembedbuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/commands': {
@@ -197,6 +217,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminembedbuilderRoute: AdminembedbuilderRoute,
   CommandsRoute: CommandsRoute,
   DocsRoute: DocsRoute,
   EmbedRoute: EmbedRoute,

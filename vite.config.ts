@@ -1,4 +1,4 @@
-process.env.NITRO_PRESET = process.env.NITRO_PRESET || "cloudflare-pages";
+process.env["NITRO_PRESET"] = process.env["NITRO_PRESET"] || "cloudflare-pages";
 
 // @lovable.dev/vite-tanstack-config already includes the following - do NOT add them manually
 // or the app will break with duplicate plugins:
