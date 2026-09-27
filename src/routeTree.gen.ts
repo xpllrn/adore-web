@@ -14,6 +14,7 @@ import { Route as AdminembedbuilderRouteImport } from './routes/adminembedbuilde
 import { Route as CommandsRouteImport } from './routes/commands'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as EmbedRouteImport } from './routes/embed'
+import { Route as LastfmRouteImport } from './routes/lastfm'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProvablyFairRouteImport } from './routes/provably-fair'
@@ -44,6 +45,11 @@ const EmbedRoute = EmbedRouteImport.update({
   path: '/embed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LastfmRoute = LastfmRouteImport.update({
+  id: '/lastfm',
+  path: '/lastfm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PremiumRoute = PremiumRouteImport.update({
   id: '/premium',
   path: '/premium',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/commands': typeof CommandsRoute
   '/docs': typeof DocsRoute
   '/embed': typeof EmbedRoute
+  '/lastfm': typeof LastfmRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/provably-fair': typeof ProvablyFairRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/commands': typeof CommandsRoute
   '/docs': typeof DocsRoute
   '/embed': typeof EmbedRoute
+  '/lastfm': typeof LastfmRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/provably-fair': typeof ProvablyFairRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/commands': typeof CommandsRoute
   '/docs': typeof DocsRoute
   '/embed': typeof EmbedRoute
+  '/lastfm': typeof LastfmRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/provably-fair': typeof ProvablyFairRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/commands'
     | '/docs'
     | '/embed'
+    | '/lastfm'
     | '/premium'
     | '/privacy'
     | '/provably-fair'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/commands'
     | '/docs'
     | '/embed'
+    | '/lastfm'
     | '/premium'
     | '/privacy'
     | '/provably-fair'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/commands'
     | '/docs'
     | '/embed'
+    | '/lastfm'
     | '/premium'
     | '/privacy'
     | '/provably-fair'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   CommandsRoute: typeof CommandsRoute
   DocsRoute: typeof DocsRoute
   EmbedRoute: typeof EmbedRoute
+  LastfmRoute: typeof LastfmRoute
   PremiumRoute: typeof PremiumRoute
   PrivacyRoute: typeof PrivacyRoute
   ProvablyFairRoute: typeof ProvablyFairRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmbedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lastfm': {
+      id: '/lastfm'
+      path: '/lastfm'
+      fullPath: '/lastfm'
+      preLoaderRoute: typeof LastfmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/premium': {
       id: '/premium'
       path: '/premium'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommandsRoute: CommandsRoute,
   DocsRoute: DocsRoute,
   EmbedRoute: EmbedRoute,
+  LastfmRoute: LastfmRoute,
   PremiumRoute: PremiumRoute,
   PrivacyRoute: PrivacyRoute,
   ProvablyFairRoute: ProvablyFairRoute,
