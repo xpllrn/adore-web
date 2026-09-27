@@ -14,9 +14,11 @@ export interface ParsedEmbed {
   fields: ParsedEmbedField[];
   footer: string;
   authorName: string;
+  authorIcon?: string | undefined;
   thumbnail: string;
   image: string;
   buttonsNote: string;
+  isCv2?: boolean | undefined;
 }
 
 export interface ParseResult {
@@ -245,7 +247,7 @@ function splitSections(markdown: string): RawSection[] {
 
     // Skip section category banners that are purely navigation/dividers
     if (
-      /^(?:GAMBLING|MONEY|BUSINESS|MARKET\s*\/\s*STOCKS\s*\/\s*STORE|Shared\s+helper\s+styles)$/i.test(
+      /^(?:#{2}\s+)?(?:GAMBLING|MONEY|BUSINESS|MARKET\s*\/\s*STOCKS\s*\/\s*STORE|Shared\s+helper\s+styles|economy(?:\s+events|\s+interaction\s+replies|\s+ConfirmView\s+usages)?|Components\s+V2\s+screens|autoresponder|configuration|events|family|fun|handlers|help\.py|lastfm|moderation|music|profile|roleplay|server|services|tickets|utility|utils|voicemaster|interaction\s+replies\s+\(ephemeral\)|ConfirmView\s+usages)$/i.test(
         trimmed,
       )
     ) {
@@ -253,8 +255,10 @@ function splitSections(markdown: string): RawSection[] {
     }
 
     const mdMatch = trimmed.match(/^(#{2,3})\s+(.+)$/);
-    const numMatch = trimmed.match(/^(\d+\.\s+.+)$/);
-    const helperMatch = trimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i);
+    // Only consider numbered section if not indented and followed by command name (not a leaderboard list entry)
+    const isIndented = /^\s+/.test(line);
+    const numMatch = !isIndented && !/coins|entries|pts/i.test(trimmed) ? trimmed.match(/^(\d+\.\s+[A-Za-z].+)$/) : null;
+    const helperMatch = !isIndented ? trimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i) : null;
 
     if (mdMatch) {
       if (currentSection) sections.push(currentSection);
@@ -316,6 +320,7 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
     let description = "";
     let color = "";
     let authorName = "";
+    let authorIcon = "";
     let footer = "";
     let thumbnail = "";
     let image = "";
@@ -410,7 +415,25 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
               foundEmbedKey = true;
               inFields = false;
             } else if (rawKey === "author" || rawKey === "author name") {
-              authorName = cleanValue(val);
+              const authorCleaned = cleanValue(val);
+              const authorMatch = authorCleaned.match(/\{name=([^;]+?)(?:;\s*icon_url=([^}]+))?\}/i);
+              if (authorMatch) {
+                let nameVal = authorMatch[1]?.trim() || "stella";
+                if (/ctx\.author|user\.name|member\.name|author_name/i.test(nameVal)) {
+                  nameVal = "stella";
+                } else if (/guild\.name/i.test(nameVal)) {
+                  nameVal = "Adore Community";
+                }
+                authorName = nameVal;
+                if (authorMatch[2]) {
+                  const rawIcon = authorMatch[2].trim();
+                  if (!/none|nil/i.test(rawIcon)) {
+                    authorIcon = rawIcon.replace(/^[`"']+|[`"']+$/g, "").trim();
+                  }
+                }
+              } else {
+                authorName = authorCleaned;
+              }
               foundEmbedKey = true;
               inFields = false;
             } else if (rawKey === "footer") {
@@ -491,9 +514,52 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
     }
 
     // Has parseable embed data?
+    const isCv2 =
+      /components v2|cv2\.|discord\.ui\.container|minesgameview|balance_card|text_card|overview_card|layout_view|textdisplay/i.test(
+        `${section.name} ${description} ${section.lines.join(" ")}`,
+      );
+
+    if (
+      isCv2 &&
+      (!description || description.includes("discord.ui.") || description.includes("cv2."))
+    ) {
+      if (/balance/i.test(section.name)) {
+        if (!title) title = "Cupi Bank — Balance";
+        description =
+          "**Wallet:** 125,000 coins\n**Bank:** 450,000 / 500,000 coins (90%)\n**Total Net Worth:** 575,000 coins";
+        if (!color) color = "#9DD2A8";
+        if (!buttonsNote) buttonsNote = "Deposit (green) + Withdraw (blurple)";
+      } else if (/mines/i.test(section.name) || /742/.test(section.name)) {
+        if (!title) title = "💣 Mines Game";
+        description =
+          "**Mines:** 3 | **Multiplier:** 1.45x | **Profit:** +4,500 coins\n\n🟩 💎 🟩 🟩 🟩\n🟩 🟩 💎 🟩 🟩\n🟩 🟩 🟩 💣 🟩\n🟩 💎 🟩 🟩 🟩\n🟩 🟩 🟩 🟩 💎\n\n-# Click tiles to reveal gems. Click Cash Out to claim earnings.";
+        if (!buttonsNote) buttonsNote = "Cash Out (+4,500) (green)";
+      } else if (/mine/i.test(section.name)) {
+        if (!title) title = "⛏️ Deep Rock Mine";
+        description =
+          "**Pickaxe:** Diamond Pickaxe (92% durability)\n**Mined Ore:** 💎 Diamond x2, 🪙 Gold x5, 🪨 Stone x12\n\n-# Click Mine to strike the mineral vein!";
+        if (!buttonsNote) buttonsNote = "Strike Vein (blurple) + Upgrade Pickaxe (secondary)";
+      } else if (/inventory/i.test(section.name)) {
+        if (!title) title = "🎒 Inventory · stella";
+        description =
+          "• 🍀 **Lucky Clover** (x3) — *Increases gamble luck by 5%*\n• 📜 **Business License** — *Enterprise owner*\n• 🏦 **Banknotes** (x10) — *+500k bank capacity*\n• 🐾 **Uwufy Pass** (x2) — *Troll command*";
+        if (!footer) footer = "Page 1/1 (4 unique items) • Total value: 620,000 coins";
+      } else if (/callback.*503/i.test(section.name)) {
+        description =
+          "Are you sure you want to buy 🍀 **Lucky Clover** (ID 42) for **5,000** coins?\n-# Item will be placed into your inventory. Use `,use 42` to activate.";
+        if (!buttonsNote) buttonsNote = "Confirm (green) + Cancel (red)";
+      } else if (/confirm.*671|buy.*961/i.test(section.name)) {
+        description =
+          "<:approve:1545804705735647298> Successfully purchased 🍀 **Lucky Clover** (ID 42) for **5,000** coins!\n-# Placed into your inventory. Use `,use 42` to activate.";
+        if (!color) color = "#9DD2A8";
+      }
+    }
+
+    // Has parseable embed data?
     // Must have at least found an embed key or non-empty embed content
     const hasData =
       foundEmbedKey ||
+      isCv2 ||
       Boolean(
         title ||
         description ||
@@ -515,9 +581,11 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
         fields,
         footer,
         authorName,
+        authorIcon: authorIcon || undefined,
         thumbnail,
         image,
         buttonsNote,
+        isCv2,
       });
     } else {
       skippedSections.push(section.name);

@@ -10,7 +10,10 @@ export type EmbedField = {
 export type MessageButton = {
   id: number;
   label: string;
-  url: string;
+  url?: string;
+  style?: "primary" | "secondary" | "success" | "danger" | "link";
+  disabled?: boolean;
+  emoji?: string;
 };
 
 export type Block =

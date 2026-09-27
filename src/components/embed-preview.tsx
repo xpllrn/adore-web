@@ -331,18 +331,32 @@ export function Preview({
           )}
           {buttons.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
-              {buttons.map((button) => (
-                <a
-                  key={button.id}
-                  href={button.url || undefined}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-elevated px-3 text-[10px] font-bold hover:bg-secondary"
-                >
-                  {button.label || "Button"}
-                  <Link2 className="size-3" />
-                </a>
-              ))}
+              {buttons.map((button) => {
+                const styleClasses =
+                  button.style === "success"
+                    ? "bg-[#248046] hover:bg-[#1a6334] text-white border-transparent"
+                    : button.style === "danger"
+                      ? "bg-[#DA373C] hover:bg-[#a1282c] text-white border-transparent"
+                      : button.style === "primary"
+                        ? "bg-[#5865F2] hover:bg-[#4752C4] text-white border-transparent"
+                        : button.style === "secondary"
+                          ? "bg-[#4E5058] hover:bg-[#6D6F78] text-white border-transparent"
+                          : "border-border bg-elevated text-foreground hover:bg-secondary";
+
+                return (
+                  <a
+                    key={button.id}
+                    href={button.url || undefined}
+                    target={button.url ? "_blank" : undefined}
+                    rel="noreferrer"
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-sm border px-3 text-[10px] font-bold transition-colors ${styleClasses}`}
+                  >
+                    {button.emoji && <span>{button.emoji}</span>}
+                    <span>{renderVariables(button.label || "Button")}</span>
+                    {button.url && <Link2 className="size-3 opacity-70" />}
+                  </a>
+                );
+              })}
             </div>
           )}
         </div>
@@ -351,7 +365,115 @@ export function Preview({
   );
 }
 
+export function parseButtonsFromNote(note: string): MessageButton[] {
+  if (!note || /^none$/i.test(note.trim())) return [];
+
+  const linkMatches = [...note.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)];
+  if (linkMatches.length > 0) {
+    return linkMatches.map((m, idx) => ({
+      id: idx + 1,
+      label: m[1]?.trim() || "Button",
+      url: m[2]?.trim() || "",
+      style: "link",
+    }));
+  }
+
+  const parts = note.split(/\s*(?:\+|\band\b|,|\|)\s*/i).map((s) => s.trim()).filter(Boolean);
+  const buttons: MessageButton[] = [];
+
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i]!;
+    if (/(?:timeout|author-only|disabled|args:|buttons disable)/i.test(part)) continue;
+
+    let style: MessageButton["style"] = "secondary";
+    if (/green|confirm|success|accept|approve|win|yes|cash out|save|verified/i.test(part)) {
+      style = "success";
+    } else if (/red|cancel|danger|decline|deny|delete|no\b|reset/i.test(part)) {
+      style = "danger";
+    } else if (/blurple|blue|primary|view|info|verify|deposit|buy|join/i.test(part)) {
+      style = "primary";
+    }
+
+    const cleanedLabel = part
+      .replace(/\s*\([^)]*\)/g, "")
+      .replace(/^[`"']+|[`"']+$/g, "")
+      .trim();
+
+    if (cleanedLabel && cleanedLabel.length <= 40) {
+      buttons.push({
+        id: i + 1,
+        label: cleanedLabel,
+        style,
+      });
+    }
+  }
+
+  return buttons;
+}
+
+export function embedToCv2Blocks(embed: Partial<EmbedState>, buttonsNote?: string): Block[] {
+  const blocks: Block[] = [];
+  let blockId = 1;
+
+  if (embed.title) {
+    blocks.push({
+      id: blockId++,
+      type: "text",
+      text: `### ${embed.title}`,
+    });
+  }
+
+  if (embed.description) {
+    blocks.push({
+      id: blockId++,
+      type: "text",
+      text: embed.description,
+    });
+  }
+
+  if (embed.fields && embed.fields.length > 0) {
+    blocks.push({ id: blockId++, type: "separator" });
+    for (const field of embed.fields) {
+      blocks.push({
+        id: blockId++,
+        type: "text",
+        text: `**${field.name}**\n${field.value}`,
+      });
+    }
+  }
+
+  if (embed.image) {
+    blocks.push({
+      id: blockId++,
+      type: "image",
+      url: embed.image,
+      description: "Attachment",
+    });
+  } else if (embed.thumbnail) {
+    blocks.push({
+      id: blockId++,
+      type: "section",
+      text: `**Asset View**`,
+      accessory: "thumbnail",
+      url: embed.thumbnail,
+      label: "Preview",
+    });
+  }
+
+  if (embed.footer) {
+    blocks.push({ id: blockId++, type: "separator" });
+    blocks.push({
+      id: blockId++,
+      type: "text",
+      text: `-# ${embed.footer}`,
+    });
+  }
+
+  return blocks;
+}
+
 export const DiscordMessagePreview = Preview;
 
 export type { Block, EmbedField, EmbedState, MessageButton, Mode } from "@/types/embed";
 export { initialEmbed } from "@/types/embed";
+

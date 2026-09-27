@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  Box,
   Check,
   ChevronDown,
   ChevronRight,
@@ -19,7 +20,11 @@ import {
 import { useId, useMemo, useState, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { EmbedFieldsEditor } from "@/components/embed-fields-editor";
-import { Preview } from "@/components/embed-preview";
+import {
+  Preview,
+  embedToCv2Blocks,
+  parseButtonsFromNote,
+} from "@/components/embed-preview";
 import { buildAdoreCode } from "@/lib/adore-code";
 import {
   parseEmbedMarkdown,
@@ -27,7 +32,7 @@ import {
   type ParsedEmbed,
   type ParsedEmbedField,
 } from "@/lib/embed-md";
-import type { EmbedField, EmbedState } from "@/types/embed";
+import type { EmbedField, EmbedState, Mode } from "@/types/embed";
 
 export const Route = createFileRoute("/adminembedbuilder")({
   head: () => ({
@@ -58,10 +63,11 @@ const panelClass = "rounded-md border border-border bg-surface shadow-panel";
 
 export interface EditableEmbed extends ParsedEmbed {
   id: string;
-  authorIcon?: string;
-  authorUrl?: string;
-  footerIcon?: string;
-  timestamp?: boolean;
+  authorIcon?: string | undefined;
+  authorUrl?: string | undefined;
+  footerIcon?: string | undefined;
+  timestamp?: boolean | undefined;
+  mode?: Mode | undefined;
 }
 
 const SAMPLE_MARKDOWN = `# Server Embed Reference
@@ -105,6 +111,7 @@ function AdminEmbedBuilderPage() {
   const [importedFileName, setImportedFileName] = useState<string>("embeds.md");
   const [pasteInput, setPasteInput] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filterType, setFilterType] = useState<"all" | "embed" | "cv2">("all");
   const [importStats, setImportStats] = useState<{
     parsedCount: number;
     skippedCount: number;
@@ -138,10 +145,11 @@ function AdminEmbedBuilderPage() {
     const editableList: EditableEmbed[] = result.embeds.map((emb, idx) => ({
       ...emb,
       id: `embed-${idx}-${Date.now()}`,
-      authorIcon: "",
+      authorIcon: emb.authorIcon || "",
       authorUrl: "",
       footerIcon: "",
       timestamp: false,
+      mode: emb.isCv2 ? "container" : "embed",
     }));
 
     setEmbeds(editableList);
@@ -155,6 +163,17 @@ function AdminEmbedBuilderPage() {
     });
     setShowImportPanel(false);
     flash(`Imported ${result.parsedCount} embeds (${result.skippedCount} sections skipped)`);
+  }
+
+  async function loadCupiEconomyTemplate() {
+    try {
+      const response = await fetch("/cupi-economy-embeds.md");
+      if (!response.ok) throw new Error("File not found");
+      const text = await response.text();
+      handleImportText(text, "cupi-economy-embeds.md");
+    } catch {
+      flash("Failed to load Cupi economy template");
+    }
   }
 
   function handleFileUpload(event: ChangeEvent<HTMLInputElement>) {
@@ -299,21 +318,55 @@ function AdminEmbedBuilderPage() {
     };
   }, [activeEmbed]);
 
+  const activeMode: Mode =
+    activeEmbed?.mode || (activeEmbed?.isCv2 ? "container" : "embed");
+
+  const activeButtons = useMemo(() => {
+    return parseButtonsFromNote(activeEmbed?.buttonsNote || "");
+  }, [activeEmbed?.buttonsNote]);
+
+  const activeBlocks = useMemo(() => {
+    if (activeMode !== "container" || !activeEmbedState) return [];
+    return embedToCv2Blocks(activeEmbedState, activeEmbed?.buttonsNote);
+  }, [activeMode, activeEmbedState, activeEmbed?.buttonsNote]);
+
   const activeAdoreCode = useMemo(() => {
     if (!activeEmbedState) return "";
-    return buildAdoreCode("embed", "", activeEmbedState, "", [], []);
-  }, [activeEmbedState]);
+    if (activeMode === "container") {
+      return buildAdoreCode(
+        "container",
+        "",
+        activeEmbedState,
+        activeEmbed?.color || "#8b8d92",
+        activeBlocks,
+        activeButtons,
+      );
+    }
+    return buildAdoreCode("embed", "", activeEmbedState, "", [], activeButtons);
+  }, [activeMode, activeEmbedState, activeEmbed?.color, activeBlocks, activeButtons]);
+
+  const cv2Count = useMemo(
+    () => embeds.filter((e) => e.isCv2 || e.mode === "container").length,
+    [embeds],
+  );
+  const standardEmbedCount = embeds.length - cv2Count;
 
   const filteredEmbeds = useMemo(() => {
-    if (!searchQuery.trim()) return embeds;
+    let list = embeds;
+    if (filterType === "embed") {
+      list = list.filter((e) => !e.isCv2 && e.mode !== "container");
+    } else if (filterType === "cv2") {
+      list = list.filter((e) => e.isCv2 || e.mode === "container");
+    }
+    if (!searchQuery.trim()) return list;
     const query = searchQuery.toLowerCase();
-    return embeds.filter(
+    return list.filter(
       (e) =>
         e.name.toLowerCase().includes(query) ||
         e.title.toLowerCase().includes(query) ||
         e.description.toLowerCase().includes(query),
     );
-  }, [embeds, searchQuery]);
+  }, [embeds, searchQuery, filterType]);
 
   return (
     <div className="mx-auto max-w-[1700px] px-3 pb-24 pt-28 sm:px-6 sm:pb-32 sm:pt-36">
@@ -375,11 +428,20 @@ function AdminEmbedBuilderPage() {
               <Button
                 type="button"
                 size="sm"
+                variant="secondary"
+                onClick={loadCupiEconomyTemplate}
+                className="h-8 gap-1.5 text-xs font-bold text-foreground hover:bg-elevated"
+              >
+                <Sparkles className="size-3.5 text-amber-400" /> Load Cupi Economy
+              </Button>
+              <Button
+                type="button"
+                size="sm"
                 variant="ghost"
                 onClick={() => handleImportText(SAMPLE_MARKDOWN, "sample-embeds.md")}
                 className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
               >
-                <Sparkles className="size-3.5" /> Load Sample Reference
+                <Sparkles className="size-3.5" /> Sample
               </Button>
               <Button
                 type="button"
@@ -482,10 +544,18 @@ function AdminEmbedBuilderPage() {
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button
               type="button"
-              onClick={() => handleImportText(SAMPLE_MARKDOWN, "sample-embeds.md")}
+              onClick={loadCupiEconomyTemplate}
               className="gap-2 bg-foreground font-bold text-background hover:opacity-90 shadow-panel"
             >
-              <Sparkles className="size-4" /> Load Sample Reference
+              <Sparkles className="size-4 text-amber-400" /> Load Cupi Economy Reference
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleImportText(SAMPLE_MARKDOWN, "sample-embeds.md")}
+              className="gap-2"
+            >
+              Load Sample Template
             </Button>
             <Button type="button" variant="outline" onClick={addNewEmbed} className="gap-2">
               <Plus className="size-4" /> Create Blank Embed
@@ -515,8 +585,45 @@ function AdminEmbedBuilderPage() {
               </Button>
             </div>
 
+            {/* Filter Pills */}
+            <div className="mt-3 grid grid-cols-3 gap-1 rounded-md border border-border bg-background p-1 text-[11px] font-semibold">
+              <button
+                type="button"
+                onClick={() => setFilterType("all")}
+                className={`rounded px-1.5 py-1 text-center transition-colors ${
+                  filterType === "all"
+                    ? "bg-secondary text-foreground font-bold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                All ({embeds.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterType("embed")}
+                className={`rounded px-1.5 py-1 text-center transition-colors ${
+                  filterType === "embed"
+                    ? "bg-secondary text-foreground font-bold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Embeds ({standardEmbedCount})
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterType("cv2")}
+                className={`rounded px-1.5 py-1 text-center transition-colors ${
+                  filterType === "cv2"
+                    ? "bg-secondary text-foreground font-bold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                CV2 ({cv2Count})
+              </button>
+            </div>
+
             {/* Sidebar Search */}
-            <div className="relative mt-3">
+            <div className="relative mt-2">
               <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
               <input
                 value={searchQuery}
@@ -534,6 +641,7 @@ function AdminEmbedBuilderPage() {
               {filteredEmbeds.map((emb) => {
                 const originalIndex = embeds.findIndex((e) => e.id === emb.id);
                 const isSelected = originalIndex === selectedIndex;
+                const isItemCv2 = emb.isCv2 || emb.mode === "container";
                 return (
                   <button
                     key={emb.id}
@@ -556,11 +664,22 @@ function AdminEmbedBuilderPage() {
                       <p className="truncate text-[10px] text-muted-foreground">
                         {emb.title || emb.description || "Empty embed"}
                       </p>
-                      {emb.fields.length > 0 && (
-                        <span className="mt-1 inline-block rounded-xs bg-background/80 px-1 py-0.2 text-[9px] text-muted-foreground">
-                          {emb.fields.length} {emb.fields.length === 1 ? "field" : "fields"}
-                        </span>
-                      )}
+                      <div className="mt-1 flex items-center gap-1.5">
+                        {isItemCv2 ? (
+                          <span className="rounded bg-indigo-500/20 px-1 py-0.2 text-[9px] font-bold text-indigo-400">
+                            CV2
+                          </span>
+                        ) : (
+                          <span className="rounded bg-emerald-500/20 px-1 py-0.2 text-[9px] font-bold text-emerald-400">
+                            EMBED
+                          </span>
+                        )}
+                        {emb.fields.length > 0 && (
+                          <span className="rounded-xs bg-background/80 px-1 py-0.2 text-[9px] text-muted-foreground">
+                            {emb.fields.length} {emb.fields.length === 1 ? "field" : "fields"}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     {isSelected && (
                       <ChevronRight className="mt-1 size-3.5 shrink-0 text-foreground" />
@@ -583,8 +702,8 @@ function AdminEmbedBuilderPage() {
               {/* (3) Editor Panel */}
               <div className="grid min-w-0 gap-4">
                 <section className={`${panelClass} p-4 sm:p-5`}>
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
-                    <div className="min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
+                    <div className="min-w-0 flex-1">
                       <span className="text-[10px] font-bold uppercase text-muted-foreground">
                         Section Heading
                       </span>
@@ -595,7 +714,35 @@ function AdminEmbedBuilderPage() {
                         className={`${inputClass} mt-1 h-9 font-display text-base font-bold`}
                       />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {/* Mode Switcher */}
+                      <div className="flex items-center gap-1 rounded-md border border-border bg-background p-0.5 shadow-panel">
+                        <button
+                          type="button"
+                          onClick={() => updateActiveEmbed({ mode: "embed" })}
+                          className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-semibold transition-colors ${
+                            activeMode === "embed"
+                              ? "bg-secondary text-foreground shadow-xs font-bold"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <FileText className="size-3.5 text-emerald-500" />
+                          Embed
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => updateActiveEmbed({ mode: "container" })}
+                          className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-semibold transition-colors ${
+                            activeMode === "container"
+                              ? "bg-secondary text-foreground shadow-xs font-bold"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <Box className="size-3.5 text-indigo-400" />
+                          Components V2
+                        </button>
+                      </div>
+
                       <Button
                         type="button"
                         size="sm"
@@ -786,14 +933,17 @@ function AdminEmbedBuilderPage() {
               <aside className="grid min-w-0 gap-4 xl:sticky xl:top-28">
                 {/* Live Preview */}
                 <Preview
-                  mode="embed"
+                  mode={activeMode}
                   message=""
                   embed={activeEmbedState}
-                  blocks={[]}
-                  buttons={[]}
+                  blocks={activeBlocks}
+                  buttons={activeButtons}
                   color={activeEmbed.color || "#8b8d92"}
                   onCopy={() =>
-                    copyToClipboard(activeAdoreCode, `"${activeEmbed.name}" Embed code`)
+                    copyToClipboard(
+                      activeAdoreCode,
+                      `"${activeEmbed.name}" ${activeMode === "container" ? "Container" : "Embed"} code`,
+                    )
                   }
                 />
 
@@ -801,9 +951,24 @@ function AdminEmbedBuilderPage() {
                 <section className={`${panelClass} p-4 sm:p-5`}>
                   <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                     <div className="min-w-0">
-                      <h3 className="truncate font-display text-sm font-bold">Adore Code</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="truncate font-display text-sm font-bold">
+                          {activeMode === "container"
+                            ? "Components V2 Container Code"
+                            : "Adore Embed Code"}
+                        </h3>
+                        <span
+                          className={`rounded px-1.5 py-0.2 text-[9px] font-bold ${
+                            activeMode === "container"
+                              ? "bg-indigo-500/20 text-indigo-400"
+                              : "bg-emerald-500/20 text-emerald-400"
+                          }`}
+                        >
+                          {activeMode === "container" ? "CV2" : "EMBED"}
+                        </span>
+                      </div>
                       <p className="mt-0.5 text-[9px] uppercase text-muted-foreground">
-                        Active Embed: {activeEmbed.name}
+                        Active Item: {activeEmbed.name}
                       </p>
                     </div>
                     <div className="flex flex-wrap shrink-0 gap-2">
@@ -812,7 +977,10 @@ function AdminEmbedBuilderPage() {
                         size="sm"
                         className="gap-1.5 bg-foreground font-bold text-background hover:opacity-90"
                         onClick={() =>
-                          copyToClipboard(activeAdoreCode, `"${activeEmbed.name}" Embed code`)
+                          copyToClipboard(
+                            activeAdoreCode,
+                            `"${activeEmbed.name}" ${activeMode === "container" ? "Container" : "Embed"} code`,
+                          )
                         }
                       >
                         <Copy className="size-3.5" /> Copy Code
