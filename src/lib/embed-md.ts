@@ -264,8 +264,13 @@ function splitSections(markdown: string): RawSection[] {
     const mdMatch = trimmed.match(/^(#{2,3})\s+(.+)$/);
     // Only consider numbered section if not indented and followed by command name (not a leaderboard list entry)
     const isIndented = /^\s+/.test(line);
-    const numMatch = !isIndented && !/coins|entries|pts/i.test(trimmed) ? trimmed.match(/^(\d+\.\s+[A-Za-z].+)$/) : null;
-    const helperMatch = !isIndented ? trimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i) : null;
+    const numMatch =
+      !isIndented && !/coins|entries|pts/i.test(trimmed)
+        ? trimmed.match(/^(\d+\.\s+[A-Za-z].+)$/)
+        : null;
+    const helperMatch = !isIndented
+      ? trimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i)
+      : null;
 
     if (mdMatch) {
       if (currentSection) sections.push(currentSection);
@@ -423,7 +428,9 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
               inFields = false;
             } else if (rawKey === "author" || rawKey === "author name") {
               const authorCleaned = cleanValue(val);
-              const authorMatch = authorCleaned.match(/\{name=([^;]+?)(?:;\s*icon_url=([^}]+))?\}/i);
+              const authorMatch = authorCleaned.match(
+                /\{name=([^;]+?)(?:;\s*icon_url=([^}]+))?\}/i,
+              );
               if (authorMatch) {
                 let nameVal = authorMatch[1]?.trim() || "stella";
                 if (/ctx\.author|user\.name|member\.name|author_name/i.test(nameVal)) {
@@ -486,9 +493,10 @@ export function parseEmbedMarkdown(markdown: string): ParseResult {
               foundEmbedKey = true;
               inFields = false;
 
-              const isShowcase = /^(win|successful|holdings|genuine|fully repaid|disbursed|catalog|active|step 1)/i.test(
-                rawKey,
-              );
+              const isShowcase =
+                /^(win|successful|holdings|genuine|fully repaid|disbursed|catalog|active|step 1)/i.test(
+                  rawKey,
+                );
 
               const descMatch = val.match(/description\s+([^;]+(?:;(?!\s*color)[^;]+)*)/i);
               if (descMatch && descMatch[1] && (!description || isShowcase)) {
@@ -698,9 +706,12 @@ export function updateEmbedMarkdown(
           const nextTrimmed = nextLine.trim();
           const nextMd = nextTrimmed.match(/^(#{2,3})\s+(.+)$/);
           const nextNum = nextTrimmed.match(/^(\d+\.\s+.+)$/);
-          const nextHelper = nextTrimmed.match(/^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i);
+          const nextHelper = nextTrimmed.match(
+            /^(embeds\..*|interaction_embed\b.*|ConfirmView\b.*)$/i,
+          );
           const nextIsRedesign = /^(?:#{2,3}\s+)?your\s+redesign\b/i.test(nextTrimmed);
-          const isNextSection = !nextIsRedesign && (Boolean(nextMd) || Boolean(nextNum) || Boolean(nextHelper));
+          const isNextSection =
+            !nextIsRedesign && (Boolean(nextMd) || Boolean(nextNum) || Boolean(nextHelper));
 
           if (isNextSection) {
             // Next section begins

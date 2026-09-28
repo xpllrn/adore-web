@@ -71,7 +71,9 @@
   --color-preview: var(--preview);
   --shadow-nav: 0 16px 45px oklch(0 0 0 / 35%);
   --shadow-screen: 0 24px 70px oklch(0 0 0 / 32%);
-  --shadow-panel: inset 0 0 0 1px oklch(0.48 0 0 / 30%), inset 0 1px 0 oklch(1 0 0 / 7%), 0 2px 2px oklch(0 0 0 / 24%), 0 14px 30px oklch(0 0 0 / 18%);
+  --shadow-panel:
+    inset 0 0 0 1px oklch(0.48 0 0 / 30%), inset 0 1px 0 oklch(1 0 0 / 7%),
+    0 2px 2px oklch(0 0 0 / 24%), 0 14px 30px oklch(0 0 0 / 18%);
 }
 
 :root {
@@ -165,7 +167,10 @@
     min-width: 320px;
   }
 
-  button, a, input, textarea {
+  button,
+  a,
+  input,
+  textarea {
     outline-color: var(--color-ring);
   }
 
@@ -176,14 +181,22 @@
 }
 
 @utility hero-grid {
-  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, transparent, black 30%, transparent 90%);
 }
 
 @keyframes screen-in {
-  from { opacity: 0; transform: scale(0.99); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes page-in {
@@ -217,9 +230,18 @@
 }
 
 @keyframes island-pop {
-  0% { opacity: 0; transform: translateY(-16px) scale(0.55); }
-  65% { opacity: 1; transform: translateY(2px) scale(1.015); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.55);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @utility animate-island-pop {
@@ -228,9 +250,15 @@
 }
 
 @keyframes island-bounce {
-  0% { transform: scale(1) translateY(0); }
-  40% { transform: scale(1.035, 0.965) translateY(1px); }
-  100% { transform: scale(1) translateY(0); }
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  40% {
+    transform: scale(1.035, 0.965) translateY(1px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
 }
 
 .island-nav.animate-island-bounce {
@@ -260,13 +288,22 @@
   animation: screen-in 420ms ease-out both;
 }
 
-@keyframes scroll-reveal {
-  from { opacity: 0.35; transform: translateY(22px); }
-  to { opacity: 1; transform: translateY(0); }
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 @keyframes feature-marquee {
-  to { transform: translateX(-50%); }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .feature-marquee {
@@ -276,19 +313,22 @@
 
 @utility no-scrollbar {
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
-}
-
-@supports (animation-timeline: view()) {
-  .scroll-reveal {
-    animation: scroll-reveal linear both;
-    animation-timeline: view();
-    animation-range: entry 5% entry 32%;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
+
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 
   .page-transition,
   .page-transition-out {

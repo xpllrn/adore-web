@@ -36,18 +36,16 @@ export const inviteUrl =
   "https://discord.com/oauth2/authorize?client_id=1510215071559847946&permissions=8&integration_type=0&scope=bot";
 export const supportUrl = "https://discord.gg/hbv97y5uxM";
 
-
 export const DOCS_URL = "https://wiki.adore.rest";
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const navItems: Array<{
-    to?: "/" | "/commands" | "/premium" | "/embed" | "/status" | "/provably-fair";
+    to?: "/" | "/commands" | "/premium" | "/embed" | "/status";
     href?: string;
     label: string;
     mobile: boolean;
   }> = [
     { to: "/commands", label: "Commands", mobile: true },
-    { to: "/provably-fair", label: "Fairness", mobile: true },
     { to: "/premium", label: "Premium", mobile: false },
     { to: "/embed", label: "Embed", mobile: false },
     { href: DOCS_URL, label: "Docs", mobile: false },
@@ -56,10 +54,14 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
   const [tapped, setTapped] = useState(false);
   const [popped, setPopped] = useState(false);
-  const [pendingRoute, setPendingRoute] = useState<"/" | "/commands" | "/premium" | "/embed" | "/docs" | "/status" | "/provably-fair" | null>(null);
+  const [pendingRoute, setPendingRoute] = useState<
+    "/" | "/commands" | "/premium" | "/embed" | "/docs" | "/status" | null
+  >(null);
   const navigate = useNavigate();
 
-  function navigateKeepingScroll(to: "/" | "/commands" | "/premium" | "/embed" | "/docs" | "/status" | "/provably-fair") {
+  function navigateKeepingScroll(
+    to: "/" | "/commands" | "/premium" | "/embed" | "/docs" | "/status",
+  ) {
     setTapped(true);
     if (pathname !== to) setPendingRoute(to);
   }
@@ -91,7 +93,10 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="fixed inset-x-0 top-0 z-50 pointer-events-none">
-        <div data-scrolled={scrolled} className="island-shell mx-auto flex h-24 items-center justify-center px-3 sm:px-6">
+        <div
+          data-scrolled={scrolled}
+          className="island-shell mx-auto flex h-24 items-center justify-center px-3 sm:px-6"
+        >
           <nav
             aria-label="Main navigation"
             onAnimationEnd={(e) => {
@@ -135,7 +140,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 >
                   {item.label}
                 </button>
-              )
+              ),
             )}
             <button
               type="button"
@@ -189,24 +194,55 @@ function CookieNotice() {
 
   if (choice) return null;
   return (
-    <aside aria-label="Cookie preferences" className="fixed bottom-4 left-1/2 z-50 grid w-[min(92vw,42rem)] -translate-x-1/2 gap-4 rounded-md border border-border bg-nav/95 p-4 shadow-nav backdrop-blur-xl sm:grid-cols-[1fr_auto] sm:items-center">
+    <aside
+      aria-label="Cookie preferences"
+      className="fixed bottom-4 left-1/2 z-50 grid w-[min(92vw,42rem)] -translate-x-1/2 gap-4 rounded-md border border-border bg-nav/95 p-4 shadow-nav backdrop-blur-xl sm:grid-cols-[1fr_auto] sm:items-center"
+    >
       <p className="text-xs leading-5 text-muted-foreground">
-        We use cookies for analytics and ads. Read our <Link to="/privacy" className="text-foreground underline">privacy policy</Link>.
+        We use cookies for analytics and ads. Read our{" "}
+        <Link to="/privacy" className="text-foreground underline">
+          privacy policy
+        </Link>
+        .
       </p>
       <div className="flex gap-2">
-        <button type="button" onClick={() => choose("rejected")} className="h-8 rounded-sm border border-border px-3 text-xs hover:bg-secondary">Reject</button>
-        <button type="button" onClick={() => choose("accepted")} className="h-8 rounded-sm bg-foreground px-3 text-xs font-bold text-background hover:opacity-90">Accept all</button>
+        <button
+          type="button"
+          onClick={() => choose("rejected")}
+          className="h-8 rounded-sm border border-border px-3 text-xs hover:bg-secondary"
+        >
+          Reject
+        </button>
+        <button
+          type="button"
+          onClick={() => choose("accepted")}
+          className="h-8 rounded-sm bg-foreground px-3 text-xs font-bold text-background hover:opacity-90"
+        >
+          Accept all
+        </button>
       </div>
     </aside>
   );
 }
 
-export function PageIntro({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
+export function PageIntro({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+}) {
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-10 pt-32 sm:px-6 sm:pb-16 sm:pt-40 lg:pb-20 lg:pt-44">
+    <section className="mx-auto max-w-7xl px-4 pb-10 pt-32 sm:px-6 sm:pb-16 sm:pt-40 lg:pb-20 lg:pt-44">
       <p className="font-mono text-xs uppercase text-muted-foreground">{eyebrow}</p>
-      <h1 className="mt-4 max-w-4xl break-words font-display text-3xl font-black leading-tight sm:text-5xl lg:text-7xl">{title}</h1>
-      <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:mt-6 sm:leading-7 lg:text-base">{description}</p>
+      <h1 className="mt-4 max-w-4xl break-words font-display text-3xl font-black leading-tight sm:text-5xl lg:text-7xl">
+        {title}
+      </h1>
+      <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:mt-6 sm:leading-7 lg:text-base">
+        {description}
+      </p>
     </section>
   );
 }

@@ -17,7 +17,7 @@ import { Route as EmbedRouteImport } from './routes/embed'
 import { Route as LastfmRouteImport } from './routes/lastfm'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as ProvablyFairRouteImport } from './routes/provably-fair'
+import { Route as SpotifyRouteImport } from './routes/spotify'
 import { Route as StatusRouteImport } from './routes/status'
 
 const IndexRoute = IndexRouteImport.update({
@@ -60,9 +60,9 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProvablyFairRoute = ProvablyFairRouteImport.update({
-  id: '/provably-fair',
-  path: '/provably-fair',
+const SpotifyRoute = SpotifyRouteImport.update({
+  id: '/spotify',
+  path: '/spotify',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StatusRoute = StatusRouteImport.update({
@@ -80,7 +80,7 @@ export interface FileRoutesByFullPath {
   '/lastfm': typeof LastfmRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
-  '/provably-fair': typeof ProvablyFairRoute
+  '/spotify': typeof SpotifyRoute
   '/status': typeof StatusRoute
 }
 export interface FileRoutesByTo {
@@ -92,7 +92,7 @@ export interface FileRoutesByTo {
   '/lastfm': typeof LastfmRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
-  '/provably-fair': typeof ProvablyFairRoute
+  '/spotify': typeof SpotifyRoute
   '/status': typeof StatusRoute
 }
 export interface FileRoutesById {
@@ -105,7 +105,7 @@ export interface FileRoutesById {
   '/lastfm': typeof LastfmRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
-  '/provably-fair': typeof ProvablyFairRoute
+  '/spotify': typeof SpotifyRoute
   '/status': typeof StatusRoute
 }
 export interface FileRouteTypes {
@@ -119,7 +119,7 @@ export interface FileRouteTypes {
     | '/lastfm'
     | '/premium'
     | '/privacy'
-    | '/provably-fair'
+    | '/spotify'
     | '/status'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -131,7 +131,7 @@ export interface FileRouteTypes {
     | '/lastfm'
     | '/premium'
     | '/privacy'
-    | '/provably-fair'
+    | '/spotify'
     | '/status'
   id:
     | '__root__'
@@ -143,7 +143,7 @@ export interface FileRouteTypes {
     | '/lastfm'
     | '/premium'
     | '/privacy'
-    | '/provably-fair'
+    | '/spotify'
     | '/status'
   fileRoutesById: FileRoutesById
 }
@@ -156,7 +156,7 @@ export interface RootRouteChildren {
   LastfmRoute: typeof LastfmRoute
   PremiumRoute: typeof PremiumRoute
   PrivacyRoute: typeof PrivacyRoute
-  ProvablyFairRoute: typeof ProvablyFairRoute
+  SpotifyRoute: typeof SpotifyRoute
   StatusRoute: typeof StatusRoute
 }
 
@@ -218,11 +218,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/provably-fair': {
-      id: '/provably-fair'
-      path: '/provably-fair'
-      fullPath: '/provably-fair'
-      preLoaderRoute: typeof ProvablyFairRouteImport
+    '/spotify': {
+      id: '/spotify'
+      path: '/spotify'
+      fullPath: '/spotify'
+      preLoaderRoute: typeof SpotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/status': {
@@ -244,7 +244,7 @@ const rootRouteChildren: RootRouteChildren = {
   LastfmRoute: LastfmRoute,
   PremiumRoute: PremiumRoute,
   PrivacyRoute: PrivacyRoute,
-  ProvablyFairRoute: ProvablyFairRoute,
+  SpotifyRoute: SpotifyRoute,
   StatusRoute: StatusRoute,
 }
 export const routeTree = rootRouteImport

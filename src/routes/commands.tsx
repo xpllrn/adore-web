@@ -1,5 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Boxes, Check, Copy, Gamepad2, Gavel, LoaderCircle, Music2, Search, ShieldCheck, Star, UsersRound, Wrench } from "lucide-react";
+import {
+  Boxes,
+  Check,
+  Copy,
+  Gamepad2,
+  Gavel,
+  LoaderCircle,
+  Music2,
+  Search,
+  ShieldCheck,
+  Star,
+  UsersRound,
+  Wrench,
+} from "lucide-react";
 import { useEffect, useMemo, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
 import { PageIntro } from "@/components/site-chrome";
@@ -8,7 +21,11 @@ import { Button } from "@/components/ui/button";
 type CommandEntry = [name: string, text: string, args: string, perms: string, premium?: boolean];
 
 const tokenize = (value: string) =>
-  value.trim().split(/\s+/).filter(Boolean).map((token) => token.replace(/^[<[(\[]+|[>)\]]+$/g, ""));
+  value
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((token) => token.replace(/^[<[(\[]+|[>)\]]+$/g, ""));
 
 type CommandGroup = { name: string; commands: CommandEntry[] };
 
@@ -25,9 +42,16 @@ export const Route = createFileRoute("/commands")({
   head: () => ({
     meta: [
       { title: "Commands | Adore" },
-      { name: "description", content: "Search Adore's moderation, security, music, community, economy, and utility commands." },
+      {
+        name: "description",
+        content:
+          "Search Adore's moderation, security, music, community, economy, and utility commands.",
+      },
       { property: "og:title", content: "Commands | Adore" },
-      { property: "og:description", content: "Explore the command library for the Adore Discord app." },
+      {
+        property: "og:description",
+        content: "Explore the command library for the Adore Discord app.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/commands" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -71,7 +95,7 @@ function CommandsPage() {
 
   const totalAllCommands = useMemo(
     () => commandGroups.reduce((acc, group) => acc + group.commands.length, 0),
-    [commandGroups]
+    [commandGroups],
   );
 
   const categories = ["All", ...commandGroups.map((group) => group.name)];
@@ -91,16 +115,16 @@ function CommandsPage() {
         .map((group) => ({
           ...group,
           commands: group.commands.filter(([name, text]) =>
-            `${name} ${text}`.toLowerCase().includes(query.toLowerCase())
+            `${name} ${text}`.toLowerCase().includes(query.toLowerCase()),
           ),
         }))
         .filter((group) => group.commands.length),
-    [commandGroups, query, category]
+    [commandGroups, query, category],
   );
 
   const allFilteredCommands = useMemo(() => {
     return filtered.flatMap((group) =>
-      group.commands.map((command) => ({ group: group.name, command }))
+      group.commands.map((command) => ({ group: group.name, command })),
     );
   }, [filtered]);
 
@@ -137,7 +161,7 @@ function CommandsPage() {
         <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain pr-2">
           <div className="grid gap-1">
             {categories.map((name) => {
-              const Icon = name === "All" ? Boxes : groupIcons[name] ?? Boxes;
+              const Icon = name === "All" ? Boxes : (groupIcons[name] ?? Boxes);
               const active = category === name;
               const count = categoryCounts[name] ?? 0;
               return (
@@ -156,12 +180,16 @@ function CommandsPage() {
                       className="absolute left-[0.25rem] top-1/2 z-0 h-10 w-10 -translate-y-1/2 rounded-full bg-foreground transition-all duration-300 ease-out group-hover:left-2 group-hover:h-[calc(100%-0.5rem)] group-hover:w-[calc(100%-1rem)] group-hover:rounded-xl group-focus-within:left-2 group-focus-within:h-[calc(100%-0.5rem)] group-focus-within:w-[calc(100%-1rem)] group-focus-within:rounded-xl"
                     />
                   )}
-                  <Icon className={`relative z-10 mx-auto size-5 ${active ? "text-background" : ""}`} />
+                  <Icon
+                    className={`relative z-10 mx-auto size-5 ${active ? "text-background" : ""}`}
+                  />
                   <span
                     className={`relative z-10 flex items-center justify-between pr-3 text-xs opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 ${active ? "text-background" : ""}`}
                   >
                     <span className="truncate">{name}</span>
-                    <span className={`font-mono text-[10px] ${active ? "text-background/80" : "text-muted-foreground"}`}>
+                    <span
+                      className={`font-mono text-[10px] ${active ? "text-background/80" : "text-muted-foreground"}`}
+                    >
                       {count}
                     </span>
                   </span>
@@ -182,7 +210,7 @@ function CommandsPage() {
         title="Every command. One search."
         description="Find the tools your staff and members need, from anti-raid controls to music, analytics, and ranked games."
       />
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-28">
+      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         {/* Mobile categories & search bar */}
         <div className="sticky top-20 z-20 rounded-md border border-border bg-nav/95 p-1.5 shadow-nav backdrop-blur-xl lg:hidden">
           <div className="no-scrollbar flex min-w-0 items-center gap-1 overflow-x-auto">
@@ -198,7 +226,7 @@ function CommandsPage() {
             </label>
             <div className="h-6 w-px shrink-0 bg-border" />
             {categories.map((name) => {
-              const Icon = name === "All" ? Boxes : groupIcons[name] ?? Boxes;
+              const Icon = name === "All" ? Boxes : (groupIcons[name] ?? Boxes);
               const count = categoryCounts[name] ?? 0;
               return (
                 <Button
@@ -232,10 +260,20 @@ function CommandsPage() {
 
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {visibleCommands.map(({ group, command: [name, text, args, perms, premium] }) => (
-            <article key={`${group}-${name}`} className="flex flex-col rounded-md border border-border bg-surface p-6 shadow-panel">
+            <article
+              key={`${group}-${name}`}
+              className="flex flex-col rounded-md border border-border bg-surface p-6 shadow-panel"
+            >
               <div className="flex items-center gap-2">
-                {premium && <Star className="size-4 shrink-0 fill-foreground text-foreground" aria-label="Premium command" />}
-                <h2 className="break-all font-display text-base font-bold text-foreground">{name}</h2>
+                {premium && (
+                  <Star
+                    className="size-4 shrink-0 fill-foreground text-foreground"
+                    aria-label="Premium command"
+                  />
+                )}
+                <h2 className="break-all font-display text-base font-bold text-foreground">
+                  {name}
+                </h2>
                 <button
                   type="button"
                   onClick={() => copyCommand(name)}
@@ -257,7 +295,10 @@ function CommandsPage() {
                   {args && args !== "none" ? (
                     <div className="flex flex-wrap gap-1.5">
                       {tokenize(args).map((token) => (
-                        <code key={token} className="rounded-sm bg-elevated px-2.5 py-1 text-xs italic text-foreground">
+                        <code
+                          key={token}
+                          className="rounded-sm bg-elevated px-2.5 py-1 text-xs italic text-foreground"
+                        >
                           {token}
                         </code>
                       ))}
@@ -316,10 +357,14 @@ function CommandsPage() {
           </p>
         )}
         {loadError && (
-          <p className="py-24 text-center text-sm text-muted-foreground">Commands could not be loaded.</p>
+          <p className="py-24 text-center text-sm text-muted-foreground">
+            Commands could not be loaded.
+          </p>
         )}
         {!!commandGroups.length && !filtered.length && (
-          <p className="py-24 text-center text-sm text-muted-foreground">No commands match “{query}”.</p>
+          <p className="py-24 text-center text-sm text-muted-foreground">
+            No commands match “{query}”.
+          </p>
         )}
       </section>
     </>

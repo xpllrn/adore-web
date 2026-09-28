@@ -4,9 +4,10 @@
 /support  https://discord.gg/hbv97y5uxM   302
 /discord  https://discord.gg/hbv97y5uxM   302
 /terms    /tos   302
-/spotify/verify  /spotify  302
-/lastfm/verify   /lastfm   302
-/lastfm/callback /lastfm   302
+/spotify/verify   /spotify  302
+/spotify/callback /spotify  302
+/lastfm/verify    /lastfm   302
+/lastfm/callback  /lastfm   302
 
 # Dashboard lives on its own subdomain (VPS backend).
 /dashboard       https://dash.adore.rest         302

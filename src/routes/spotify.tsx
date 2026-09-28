@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  AlertCircle,
   Check,
   Copy,
   ExternalLink,
@@ -8,68 +9,77 @@ import {
   ListMusic,
   Music2,
   Radio,
-  ShieldCheck,
-  Sparkles,
   Trophy,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PageIntro, supportUrl } from "@/components/site-chrome";
 
-type LastfmSearch = {
-  token?: string | undefined;
+type SpotifySearch = {
+  code?: string | undefined;
+  state?: string | undefined;
+  error?: string | undefined;
 };
 
-export const Route = createFileRoute("/lastfm")({
-  validateSearch: (search: Record<string, unknown>): LastfmSearch => {
-    const rawToken = search["token"];
-    return {
-      token: typeof rawToken === "string" ? rawToken : undefined,
-    };
-  },
+export const Route = createFileRoute("/spotify")({
+  validateSearch: (search: Record<string, unknown>): SpotifySearch => ({
+    code: typeof search["code"] === "string" ? search["code"] : undefined,
+    state: typeof search["state"] === "string" ? search["state"] : undefined,
+    error: typeof search["error"] === "string" ? search["error"] : undefined,
+  }),
   head: () => ({
     meta: [
-      { title: "Last.fm Authorization | Adore" },
+      { title: "Spotify Authorization | Adore" },
       {
         name: "description",
-        content: "Authorize and connect your Last.fm account to the Adore Discord bot.",
+        content: "Authorize and connect your Spotify account to the Adore Discord bot.",
       },
-      { property: "og:title", content: "Last.fm Authorization | Adore" },
+      { property: "og:title", content: "Spotify Authorization | Adore" },
       {
         property: "og:description",
-        content: "Authorize and connect your Last.fm account to the Adore Discord bot.",
+        content: "Authorize and connect your Spotify account to the Adore Discord bot.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/lastfm" },
+      { property: "og:url", content: "/spotify" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/lastfm" }],
+    links: [{ rel: "canonical", href: "/spotify" }],
   }),
-  component: LastfmPage,
+  component: SpotifyPage,
 });
 
-function LastfmPage() {
+function SpotifyPage() {
   const search = Route.useSearch();
-  const [token, setToken] = useState<string>(() => search.token ?? "");
+  const [code, setCode] = useState<string>(() => search.code ?? "");
+  const [error, setError] = useState<string>(() => search.error ?? "");
   const [manualInput, setManualInput] = useState<string>("");
-  const [copiedToken, setCopiedToken] = useState(false);
-  const [copiedCommand, setCopiedCommand] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
 
   useEffect(() => {
-    if (search.token) {
-      setToken(search.token);
+    if (search.code) {
+      setCode(search.code);
     } else if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const urlToken = params.get("token");
-      if (urlToken) {
-        setToken(urlToken);
+      const urlCode = params.get("code");
+      if (urlCode) {
+        setCode(urlCode);
+      } else if (window.location.hash.includes("code=")) {
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, "?"));
+        const hashCode = hashParams.get("code");
+        if (hashCode) setCode(hashCode);
+      }
+
+      const urlError = params.get("error");
+      if (urlError) {
+        setError(urlError);
       }
     }
-  }, [search.token]);
+  }, [search.code]);
 
-  const activeToken = token.trim();
-  const botCommand = `,lastfm login ${activeToken}`;
+  const activeCode = code.trim();
+  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
-  const copyToClipboard = async (text: string, type: "token" | "command") => {
+  const copyToClipboard = async (text: string, type: "code" | "url") => {
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
@@ -86,12 +96,12 @@ function LastfmPage() {
         textarea.remove();
       }
 
-      if (type === "token") {
-        setCopiedToken(true);
-        setTimeout(() => setCopiedToken(false), 2000);
+      if (type === "code") {
+        setCopiedCode(true);
+        setTimeout(() => setCopiedCode(false), 2000);
       } else {
-        setCopiedCommand(true);
-        setTimeout(() => setCopiedCommand(false), 2000);
+        setCopiedUrl(true);
+        setTimeout(() => setCopiedUrl(false), 2000);
       }
     } catch (err) {
       console.error("Failed to copy:", err);
@@ -103,35 +113,35 @@ function LastfmPage() {
     if (!manualInput.trim()) return;
 
     try {
-      if (manualInput.includes("token=")) {
+      if (manualInput.includes("code=")) {
         const parsed = new URL(
           manualInput.startsWith("http") ? manualInput : `https://${manualInput}`,
         );
-        const extracted = parsed.searchParams.get("token");
+        const extracted = parsed.searchParams.get("code");
         if (extracted) {
-          setToken(extracted);
+          setCode(extracted);
           return;
         }
       }
     } catch {
-      // Treat as raw token if not a valid URL
+      // Treat as raw code if not a valid URL
     }
 
-    setToken(manualInput.trim());
+    setCode(manualInput.trim());
   };
 
   return (
     <>
       <PageIntro
-        eyebrow="Last.fm Integration"
-        title="Last.fm Authorization"
-        description="Connect your Last.fm profile to Adore to track scrobbles, showcase what you're playing, and compete for server crowns."
+        eyebrow="Spotify Integration"
+        title="Spotify Authorization"
+        description="Connect your Spotify account to Adore to control playback, track what you're listening to, and stream music in voice."
       />
 
       <section className="mx-auto max-w-3xl px-4 pb-12 sm:px-6 sm:pb-28">
-        {activeToken ? (
+        {activeCode ? (
           <div className="space-y-6">
-            {/* Main Token Box */}
+            {/* Main Code Box */}
             <div className="rounded-xl border border-border bg-surface p-5 shadow-panel sm:p-8">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                 <div className="flex items-center gap-2.5">
@@ -140,22 +150,22 @@ function LastfmPage() {
                     <span className="relative inline-flex size-2.5 rounded-full bg-success" />
                   </span>
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Authorization Token Ready
+                    Authorization Code Ready
                   </span>
                 </div>
                 <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-elevated px-3 py-1 text-xs text-muted-foreground">
                   <Music2 className="size-3.5 text-primary" />
-                  <span>Last.fm</span>
+                  <span>Spotify</span>
                 </div>
               </div>
 
               <div className="mt-6">
                 <div className="flex items-center justify-between">
                   <label
-                    htmlFor="token-box"
+                    htmlFor="code-box"
                     className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
-                    Your Authorization Token
+                    Your Authorization Code
                   </label>
                   <span className="hidden text-[11px] text-muted-foreground sm:inline">
                     Click to select all
@@ -163,30 +173,30 @@ function LastfmPage() {
                 </div>
                 <div className="relative mt-2">
                   <div
-                    id="token-box"
+                    id="code-box"
                     className="flex min-h-14 items-center break-all rounded-lg border border-border bg-background/90 p-4 font-mono text-sm font-semibold tracking-wide text-foreground select-all sm:pr-40 sm:text-base"
                   >
-                    {activeToken}
+                    {activeCode}
                   </div>
                   <div className="mt-3 sm:absolute sm:right-2 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2">
                     <button
                       type="button"
-                      onClick={() => copyToClipboard(activeToken, "token")}
+                      onClick={() => copyToClipboard(activeCode, "code")}
                       className={`inline-flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all sm:w-auto ${
-                        copiedToken
+                        copiedCode
                           ? "bg-success text-success-foreground shadow-md"
                           : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
                       }`}
                     >
-                      {copiedToken ? (
+                      {copiedCode ? (
                         <>
                           <Check className="size-4 stroke-[2.5]" />
-                          <span>Copied!</span>
+                          <span>Copied</span>
                         </>
                       ) : (
                         <>
                           <Copy className="size-4" />
-                          <span>Copy Token</span>
+                          <span>Copy Code</span>
                         </>
                       )}
                     </button>
@@ -194,102 +204,37 @@ function LastfmPage() {
                 </div>
               </div>
 
-              {/* Bot Command Box */}
-              <div className="mt-6 rounded-lg border border-border/80 bg-elevated/60 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    Quick Command (Run in Discord)
+              {/* Bot Instructions / Full Redirect URL Box */}
+              <div className="mt-6 rounded-lg border border-border bg-elevated/50 p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Next Step in Discord
                   </span>
                   <button
                     type="button"
-                    onClick={() => copyToClipboard(botCommand, "command")}
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground transition-colors hover:text-primary"
+                    onClick={() => copyToClipboard(currentUrl || activeCode, "url")}
+                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
                   >
-                    {copiedCommand ? (
-                      <>
-                        <Check className="size-3.5 text-success" />
-                        <span className="text-success">Command Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="size-3.5" />
-                        <span>Copy Command</span>
-                      </>
-                    )}
+                    {copiedUrl ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                    <span>{copiedUrl ? "Copied URL" : "Copy Full URL"}</span>
                   </button>
                 </div>
-                <pre className="mt-2 overflow-x-auto rounded border border-border/50 bg-background/60 p-2.5 font-mono text-xs text-foreground sm:text-sm">
-                  <code>{botCommand}</code>
-                </pre>
-              </div>
-
-              <div className="mt-6 hidden items-start gap-3 rounded-lg border border-border/60 bg-elevated/40 p-4 text-xs leading-5 text-muted-foreground sm:flex">
-                <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
-                <p>
-                  This token allows Adore to authenticate with your Last.fm account. Only share or
-                  send this token directly to Adore in Discord.
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  <span className="sm:hidden">
+                    In your Discord DM with <strong>Adore</strong>, tap{" "}
+                    <strong className="text-foreground">Paste Redirect URL</strong> and paste your
+                    code or URL.
+                  </span>
+                  <span className="hidden sm:inline">
+                    Go to your Direct Messages with <strong>Adore</strong>, click the green{" "}
+                    <strong className="text-foreground">Paste Redirect URL</strong> button, and
+                    paste your redirect URL or code into the modal to finish connecting!
+                  </span>
                 </p>
               </div>
 
-              {/* Mobile Support Link */}
-              <div className="mt-6 flex items-center justify-between border-t border-border pt-6 sm:hidden">
-                <p className="text-xs text-muted-foreground">Need help?</p>
-                <a
-                  href={supportUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-elevated px-3 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-                >
-                  <span>Adore Support</span>
-                  <ExternalLink className="size-3" />
-                </a>
-              </div>
-            </div>
-
-            {/* How to complete connection - hidden on phone to keep it clean and minimal */}
-            <div className="hidden rounded-xl border border-border bg-surface p-6 shadow-panel sm:block sm:p-8">
-              <h2 className="font-display text-base font-bold sm:text-lg">How to complete login</h2>
-              <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-lg border border-border bg-background/50 p-4">
-                  <div className="flex size-7 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
-                    1
-                  </div>
-                  <h3 className="mt-3 font-display text-xs font-bold sm:text-sm">
-                    Copy Your Token
-                  </h3>
-                  <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
-                    Click the "Copy Token" or "Copy Command" button above.
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-border bg-background/50 p-4">
-                  <div className="flex size-7 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
-                    2
-                  </div>
-                  <h3 className="mt-3 font-display text-xs font-bold sm:text-sm">Open Discord</h3>
-                  <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
-                    Go to any Discord server where Adore is active, or message Adore in direct
-                    messages.
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-border bg-background/50 p-4">
-                  <div className="flex size-7 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
-                    3
-                  </div>
-                  <h3 className="mt-3 font-display text-xs font-bold sm:text-sm">Paste & Send</h3>
-                  <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
-                    Send{" "}
-                    <code className="rounded bg-elevated px-1 py-0.5 font-mono text-[11px] text-foreground">
-                      {botCommand}
-                    </code>{" "}
-                    in chat to finalize the link.
-                  </p>
-                </div>
-              </div>
-
-              {/* Commands to try next */}
-              <div className="mt-8 border-t border-border pt-6">
+              {/* Feature Highlights / Commands to try - Clean desktop showcase, hidden on phone */}
+              <div className="mt-8 hidden border-t border-border pt-6 sm:block">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Commands to try once linked
                 </h3>
@@ -298,10 +243,10 @@ function LastfmPage() {
                     <Radio className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
-                        ,lastfm now
+                        ,spotify play
                       </code>
                       <p className="text-[11px] text-muted-foreground">
-                        Displays your currently playing track
+                        Play any track, album, or playlist on Spotify
                       </p>
                     </div>
                   </div>
@@ -309,10 +254,10 @@ function LastfmPage() {
                     <ListMusic className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
-                        ,lastfm recent
+                        ,spotify pause
                       </code>
                       <p className="text-[11px] text-muted-foreground">
-                        Lists your recent scrobbles
+                        Toggle pause and resume on your active device
                       </p>
                     </div>
                   </div>
@@ -320,10 +265,10 @@ function LastfmPage() {
                     <Flame className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
-                        ,lastfm topartists
+                        ,spotify toptracks
                       </code>
                       <p className="text-[11px] text-muted-foreground">
-                        Shows your top artists across timeframes
+                        View your top 50 Spotify tracks
                       </p>
                     </div>
                   </div>
@@ -331,10 +276,10 @@ function LastfmPage() {
                     <Trophy className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
-                        ,lastfm crowns
+                        ,spotify vc
                       </code>
                       <p className="text-[11px] text-muted-foreground">
-                        Compete for crowns with other members
+                        Stream your active Spotify music in your voice channel
                       </p>
                     </div>
                   </div>
@@ -358,20 +303,27 @@ function LastfmPage() {
             </div>
           </div>
         ) : (
-          /* Empty / No Token State */
+          /* Empty / No Code State */
           <div className="space-y-6">
             <div className="rounded-xl border border-border bg-surface p-5 text-center shadow-panel sm:p-10">
               <div className="mx-auto flex size-12 items-center justify-center rounded-full border border-border bg-elevated text-muted-foreground">
                 <KeyRound className="size-6 text-foreground" />
               </div>
 
+              {error ? (
+                <div className="mx-auto mt-4 flex max-w-md items-center justify-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+                  <AlertCircle className="size-4 shrink-0" />
+                  <span>Authorization encountered an error ({error}). Please try again.</span>
+                </div>
+              ) : null}
+
               <h2 className="mt-4 font-display text-lg font-bold sm:text-xl">
-                No authorization token found
+                No authorization code found
               </h2>
               <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                To link your Last.fm account, start by using the{" "}
+                To link your Spotify account, start by using the{" "}
                 <code className="rounded bg-elevated px-1.5 py-0.5 font-mono text-xs text-foreground">
-                  ,lastfm login
+                  ,spotify login
                 </code>{" "}
                 command in Discord.
               </p>
@@ -386,7 +338,7 @@ function LastfmPage() {
                   <p className="mt-1 text-xs text-muted-foreground">
                     Type{" "}
                     <code className="rounded bg-elevated px-1 font-mono text-[10px]">
-                      ,lastfm login
+                      ,spotify login
                     </code>{" "}
                     in chat.
                   </p>
@@ -396,9 +348,9 @@ function LastfmPage() {
                   <div className="flex size-6 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
                     2
                   </div>
-                  <h3 className="mt-2.5 text-xs font-bold">Authorize on Last.fm</h3>
+                  <h3 className="mt-2.5 text-xs font-bold">Authorize on Spotify</h3>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Click the authorization link generated by Adore.
+                    Click the authorization link generated by Adore in your DMs.
                   </p>
                 </div>
 
@@ -406,17 +358,17 @@ function LastfmPage() {
                   <div className="flex size-6 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
                     3
                   </div>
-                  <h3 className="mt-2.5 text-xs font-bold">Return with Token</h3>
+                  <h3 className="mt-2.5 text-xs font-bold">Return with Code</h3>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Last.fm will redirect you back here with your token.
+                    Spotify will redirect you back here with your authorization code.
                   </p>
                 </div>
               </div>
 
-              {/* Manual Token Input Fallback */}
+              {/* Manual Code Input Fallback */}
               <div className="mt-6 border-t border-border pt-6 text-left sm:mt-8 sm:pt-8">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Have a token or callback URL?
+                  Have a code or callback URL?
                 </h3>
                 <form
                   onSubmit={handleManualSubmit}
@@ -426,14 +378,14 @@ function LastfmPage() {
                     type="text"
                     value={manualInput}
                     onChange={(e) => setManualInput(e.target.value)}
-                    placeholder="Paste token or https://adore.rest/lastfm?token=..."
+                    placeholder="Paste code or https://adore.rest/spotify?code=..."
                     className="h-10 flex-1 rounded-md border border-input bg-background px-3 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                   <button
                     type="submit"
                     className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                   >
-                    Load Token
+                    Load Code
                   </button>
                 </form>
               </div>

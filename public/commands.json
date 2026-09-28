@@ -2,78 +2,23 @@
   {
     "name": "Moderation",
     "commands": [
-      [
-        "ban",
-        "Ban the user from the server",
-        "(user) (reason)",
-        "Ban Members"
-      ],
+      ["ban", "Ban the user from the server", "(user) (reason)", "Ban Members"],
       [
         "botclear",
         "Deletes the specified amount of bot commands from the current channel",
         "none",
         "Manage Messages"
       ],
-      [
-        "clearwarns",
-        "Clear all warnings for the mentioned member",
-        "(user)",
-        "Manage Messages"
-      ],
-      [
-        "forcenick",
-        "Force a members current nickname",
-        "(user) (nickname)",
-        "Manage Nicknames"
-      ],
-      [
-        "forcenick list",
-        "List all forcenicked members",
-        "none",
-        "Manage Nicknames"
-      ],
-      [
-        "hardban",
-        "Keep the member banned",
-        "(user) (reason)",
-        "Security Admin"
-      ],
-      [
-        "hardbans",
-        "View all hardbanned users in this server",
-        "none",
-        "Ban Members"
-      ],
-      [
-        "hide",
-        "Hide a channel from everyone",
-        "(channel)",
-        "Manage Channels"
-      ],
-      [
-        "history",
-        "View punishment history for a member",
-        "(member) (action)",
-        "Manage Messages"
-      ],
-      [
-        "history remove",
-        "Remove a specific case from history",
-        "(case id)",
-        "Administrator"
-      ],
-      [
-        "history removeall",
-        "Remove all cases for a member",
-        "(member)",
-        "Administrator"
-      ],
-      [
-        "history view",
-        "View details of a specific case",
-        "(case id)",
-        "Manage Messages"
-      ],
+      ["clearwarns", "Clear all warnings for the mentioned member", "(user)", "Manage Messages"],
+      ["forcenick", "Force a members current nickname", "(user) (nickname)", "Manage Nicknames"],
+      ["forcenick list", "List all forcenicked members", "none", "Manage Nicknames"],
+      ["hardban", "Keep the member banned", "(user) (reason)", "Security Admin"],
+      ["hardbans", "View all hardbanned users in this server", "none", "Ban Members"],
+      ["hide", "Hide a channel from everyone", "(channel)", "Manage Channels"],
+      ["history", "View punishment history for a member", "(member) (action)", "Manage Messages"],
+      ["history remove", "Remove a specific case from history", "(case id)", "Administrator"],
+      ["history removeall", "Remove all cases for a member", "(member)", "Administrator"],
+      ["history view", "View details of a specific case", "(case id)", "Manage Messages"],
       [
         "imute",
         "Remove a member's attach files & embed links permission",
@@ -380,42 +325,12 @@
         "(user)",
         "Manage Messages"
       ],
-      [
-        "jail",
-        "Jails the mentioned user",
-        "(user) (duration) (reason)",
-        "Manage Roles"
-      ],
-      [
-        "kick",
-        "Kicks the mentioned user from the guild",
-        "(user) (reason)",
-        "Kick Members"
-      ],
-      [
-        "lock",
-        "Lock a channel for everyone",
-        "(channel)",
-        "Manage Channels"
-      ],
-      [
-        "lockall",
-        "Lock all text channels in the server",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "modhistory",
-        "View moderation history for a moderator",
-        "(moderator)",
-        "Manage Messages"
-      ],
-      [
-        "modstats",
-        "View moderation statistics for a moderator",
-        "(moderator)",
-        "Manage Messages"
-      ],
+      ["jail", "Jails the mentioned user", "(user) (duration) (reason)", "Manage Roles"],
+      ["kick", "Kicks the mentioned user from the guild", "(user) (reason)", "Kick Members"],
+      ["lock", "Lock a channel for everyone", "(channel)", "Manage Channels"],
+      ["lockall", "Lock all text channels in the server", "none", "Manage Server"],
+      ["modhistory", "View moderation history for a moderator", "(moderator)", "Manage Messages"],
+      ["modstats", "View moderation statistics for a moderator", "(moderator)", "Manage Messages"],
       [
         "mute",
         "Mute the member in current channel",
@@ -428,42 +343,17 @@
         "(channel)",
         "Manage Channels"
       ],
-      [
-        "nuke",
-        "Clone the current channel",
-        "(channel)",
-        "Administrator"
-      ],
+      ["nuke", "Clone the current channel", "(channel)", "Administrator"],
       [
         "nuke add",
         "Schedule a nuke for a channel",
         "(interval) (channel) (message)",
         "Administrator"
       ],
-      [
-        "nuke list",
-        "View all scheduled nukes",
-        "none",
-        "Administrator"
-      ],
-      [
-        "nuke remove",
-        "Remove scheduled nuke for a channel",
-        "(channel)",
-        "Administrator"
-      ],
-      [
-        "nuke view",
-        "View message after scheduled nuke for channel",
-        "(channel)",
-        "Administrator"
-      ],
-      [
-        "pin",
-        "Pin a message by url or by id",
-        "(message)",
-        "Manage Messages"
-      ],
+      ["nuke list", "View all scheduled nukes", "none", "Administrator"],
+      ["nuke remove", "Remove scheduled nuke for a channel", "(channel)", "Administrator"],
+      ["nuke view", "View message after scheduled nuke for channel", "(channel)", "Administrator"],
+      ["pin", "Pin a message by url or by id", "(message)", "Manage Messages"],
       [
         "purge",
         "Deletes the specified amount of messages from the current channel",
@@ -506,12 +396,7 @@
         "(user) (duration) (reason)",
         "Ban Members"
       ],
-      [
-        "stfu",
-        "Auto-delete a member's messages",
-        "(user)",
-        "Moderate Members"
-      ],
+      ["stfu", "Auto-delete a member's messages", "(user)", "Moderate Members"],
       [
         "stripstaff",
         "Removes all moderation roles and fake permissions from a user",
@@ -524,95 +409,30 @@
         "(user) (duration) (reason)",
         "Moderate Members"
       ],
-      [
-        "topic",
-        "Change the topic of a channel",
-        "(topic)",
-        "Manage Channels"
-      ],
-      [
-        "unban",
-        "Unban a user from the server",
-        "(user) (reason)",
-        "Ban Members"
-      ],
+      ["topic", "Change the topic of a channel", "(topic)", "Manage Channels"],
+      ["unban", "Unban a user from the server", "(user) (reason)", "Ban Members"],
       [
         "unbanall",
         "Unban all users from the server (excludes hardbanned users)",
         "none",
         "Server Owner"
       ],
-      [
-        "unhide",
-        "Unhide a channel for everyone",
-        "(channel)",
-        "Manage Channels"
-      ],
-      [
-        "unjail",
-        "Unjails the mentioned user",
-        "(user)",
-        "Manage Roles"
-      ],
-      [
-        "unlock",
-        "Unlock a channel for everyone",
-        "(channel)",
-        "Manage Channels"
-      ],
-      [
-        "unlockall",
-        "Unlock all text channels in the server",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "unmute",
-        "Unmute a member",
-        "(user)",
-        "Manage Messages"
-      ],
-      [
-        "unpin",
-        "Unpin a message by url or by id",
-        "(message)",
-        "Manage Messages"
-      ],
-      [
-        "unstfu",
-        "Stop auto-deleting a member's messages",
-        "(user)",
-        "Moderate Members"
-      ],
-      [
-        "untimeout",
-        "Removes the timeout for a member",
-        "(user)",
-        "Moderate Members"
-      ],
-      [
-        "warn",
-        "Warn the mentioned member",
-        "(user) (reason)",
-        "Manage Messages"
-      ],
-      [
-        "warnings",
-        "View warnings for the member",
-        "(user)",
-        "Manage Messages"
-      ]
+      ["unhide", "Unhide a channel for everyone", "(channel)", "Manage Channels"],
+      ["unjail", "Unjails the mentioned user", "(user)", "Manage Roles"],
+      ["unlock", "Unlock a channel for everyone", "(channel)", "Manage Channels"],
+      ["unlockall", "Unlock all text channels in the server", "none", "Manage Server"],
+      ["unmute", "Unmute a member", "(user)", "Manage Messages"],
+      ["unpin", "Unpin a message by url or by id", "(message)", "Manage Messages"],
+      ["unstfu", "Stop auto-deleting a member's messages", "(user)", "Moderate Members"],
+      ["untimeout", "Removes the timeout for a member", "(user)", "Moderate Members"],
+      ["warn", "Warn the mentioned member", "(user) (reason)", "Manage Messages"],
+      ["warnings", "View warnings for the member", "(user)", "Manage Messages"]
     ]
   },
   {
     "name": "Security",
     "commands": [
-      [
-        "antinuke",
-        "Manage antinuke settings",
-        "(subcommand)",
-        "Security Admin"
-      ],
+      ["antinuke", "Manage antinuke settings", "(subcommand)", "Security Admin"],
       [
         "antinuke ban",
         "Toggle ban protection",
@@ -637,12 +457,7 @@
         "(on/off) (--limit) (--punishment)",
         "Security Admin"
       ],
-      [
-        "antinuke overview",
-        "View antinuke settings overview",
-        "none",
-        "Security Admin"
-      ],
+      ["antinuke overview", "View antinuke settings overview", "none", "Security Admin"],
       [
         "antinuke permissions",
         "Toggle dangerous permissions protection (administrator, manage_guild)",
@@ -673,18 +488,8 @@
         "(user or bot_id)",
         "Security Admin"
       ],
-      [
-        "antinuke whitelists",
-        "List all antinuke whitelisted users",
-        "none",
-        "Security Admin"
-      ],
-      [
-        "antiraid",
-        "Manage antiraid settings",
-        "(subcommand)",
-        "Security Admin"
-      ],
+      ["antinuke whitelists", "List all antinuke whitelisted users", "none", "Security Admin"],
+      ["antiraid", "Manage antiraid settings", "(subcommand)", "Security Admin"],
       [
         "antiraid avatar",
         "Toggle kicking accounts with default avatar",
@@ -703,36 +508,16 @@
         "(on/off) (--punishment)",
         "Security Admin"
       ],
-      [
-        "antiraid overview",
-        "View antiraid settings overview",
-        "none",
-        "Security Admin"
-      ],
-      [
-        "antiraid whitelist",
-        "Toggle a user on the antiraid whitelist",
-        "(user)",
-        "Security Admin"
-      ],
-      [
-        "antiraid whitelists",
-        "List all antiraid whitelisted users",
-        "none",
-        "Security Admin"
-      ],
+      ["antiraid overview", "View antiraid settings overview", "none", "Security Admin"],
+      ["antiraid whitelist", "Toggle a user on the antiraid whitelist", "(user)", "Security Admin"],
+      ["antiraid whitelists", "List all antiraid whitelisted users", "none", "Security Admin"],
       [
         "disablecommand",
         "Disable commands in channels or globally",
         "(channel) (command)",
         "Administrator"
       ],
-      [
-        "disablecommand list",
-        "List all disabled commands",
-        "none",
-        "Administrator"
-      ],
+      ["disablecommand list", "List all disabled commands", "none", "Administrator"],
       [
         "enablecommand",
         "Enable previously disabled commands",
@@ -763,90 +548,35 @@
         "(role) (permission1, permission2, ...)",
         "Server Owner"
       ],
-      [
-        "fakepermissions reset",
-        "Reset all fake permissions in the server",
-        "none",
-        "Server Owner"
-      ],
+      ["fakepermissions reset", "Reset all fake permissions in the server", "none", "Server Owner"],
       [
         "leakcheck",
         "Check if an email or username appears in data breaches",
         "(email or username)",
         "none"
       ],
-      [
-        "overview",
-        "View an overview of the server's configuration",
-        "none",
-        "none"
-      ],
-      [
-        "restrictcommand",
-        "Restrict commands to specific roles",
-        "(subcommand)",
-        "Administrator"
-      ],
+      ["overview", "View an overview of the server's configuration", "none", "none"],
+      ["restrictcommand", "Restrict commands to specific roles", "(subcommand)", "Administrator"],
       [
         "restrictcommand add",
         "Restrict a command to a specific role",
         "(command) (role)",
         "Administrator"
       ],
-      [
-        "restrictcommand list",
-        "List all restricted commands",
-        "none",
-        "Administrator"
-      ],
+      ["restrictcommand list", "List all restricted commands", "none", "Administrator"],
       [
         "restrictcommand remove",
         "Remove a command restriction from a role",
         "(command) (role)",
         "Administrator"
       ],
-      [
-        "restrictcommand reset",
-        "Remove all command restrictions",
-        "none",
-        "Administrator"
-      ],
-      [
-        "security",
-        "Manage security settings",
-        "(subcommand)",
-        "Server Owner"
-      ],
-      [
-        "security admin",
-        "Toggle a user as security admin",
-        "(user)",
-        "Server Owner"
-      ],
-      [
-        "security admins",
-        "List all security admins",
-        "none",
-        "Server Owner"
-      ],
-      [
-        "setme",
-        "Setup jail role and channel",
-        "none",
-        "Administrator"
-      ],
-      [
-        "setmute",
-        "Setup mute roles (muted, imuted, rmuted)",
-        "none",
-        "Administrator"
-      ],
-      [
-        "setup",
-        "Manage server settings",
-        "(subcommand)",
-        "Administrator"
-      ],
+      ["restrictcommand reset", "Remove all command restrictions", "none", "Administrator"],
+      ["security", "Manage security settings", "(subcommand)", "Server Owner"],
+      ["security admin", "Toggle a user as security admin", "(user)", "Server Owner"],
+      ["security admins", "List all security admins", "none", "Server Owner"],
+      ["setme", "Setup jail role and channel", "none", "Administrator"],
+      ["setmute", "Setup mute roles (muted, imuted, rmuted)", "none", "Administrator"],
+      ["setup", "Manage server settings", "(subcommand)", "Administrator"],
       [
         "setup baserole",
         "Set the base role for booster role positioning",
@@ -859,124 +589,39 @@
         "(user)",
         "Server Owner"
       ],
-      [
-        "setup nsfw",
-        "Manage NSFW bypass settings for the server",
-        "(on/off)",
-        "Administrator"
-      ]
+      ["setup nsfw", "Manage NSFW bypass settings for the server", "(on/off)", "Administrator"]
     ]
   },
   {
     "name": "Music",
     "commands": [
-      [
-        "autoplay",
-        "Toggle or view autoplay for similar songs",
-        "[on|off]",
-        "none"
-      ],
-      [
-        "autoplay off",
-        "Disable autoplay",
-        "none",
-        "none"
-      ],
-      [
-        "autoplay on",
-        "Enable autoplay for similar songs",
-        "none",
-        "none"
-      ],
-      [
-        "disconnect",
-        "Stop playback and leave the voice channel",
-        "none",
-        "none"
-      ],
-      [
-        "pause",
-        "Pause playback",
-        "none",
-        "none"
-      ],
-      [
-        "play",
-        "Play a song by name or URL",
-        "(query)",
-        "none"
-      ],
-      [
-        "queue",
-        "View or manage the music queue",
-        "none",
-        "none"
-      ],
-      [
-        "queue empty",
-        "Clear the queue",
-        "none",
-        "none"
-      ],
-      [
-        "queue remove",
-        "Remove a track from the queue by position",
-        "(position)",
-        "none"
-      ],
-      [
-        "queue shuffle",
-        "Shuffle the queue",
-        "none",
-        "none"
-      ],
-      [
-        "repeat",
-        "Toggle repeat mode (off → song → queue)",
-        "[off|song|queue]",
-        "none"
-      ],
-      [
-        "resume",
-        "Resume playback",
-        "none",
-        "none"
-      ],
+      ["autoplay", "Toggle or view autoplay for similar songs", "[on|off]", "none"],
+      ["autoplay off", "Disable autoplay", "none", "none"],
+      ["autoplay on", "Enable autoplay for similar songs", "none", "none"],
+      ["disconnect", "Stop playback and leave the voice channel", "none", "none"],
+      ["pause", "Pause playback", "none", "none"],
+      ["play", "Play a song by name or URL", "(query)", "none"],
+      ["queue", "View or manage the music queue", "none", "none"],
+      ["queue empty", "Clear the queue", "none", "none"],
+      ["queue remove", "Remove a track from the queue by position", "(position)", "none"],
+      ["queue shuffle", "Shuffle the queue", "none", "none"],
+      ["repeat", "Toggle repeat mode (off → song → queue)", "[off|song|queue]", "none"],
+      ["resume", "Resume playback", "none", "none"],
       [
         "shazam",
         "Identify a song from an audio or video attachment",
         "(attach audio/video or reply to one)",
         "none"
       ],
-      [
-        "shuffle",
-        "Shuffle the queue",
-        "none",
-        "none"
-      ],
-      [
-        "skip",
-        "Skip the current track",
-        "none",
-        "none"
-      ],
-      [
-        "volume",
-        "Set or view playback volume (0–100)",
-        "[level]",
-        "none"
-      ]
+      ["shuffle", "Shuffle the queue", "none", "none"],
+      ["skip", "Skip the current track", "none", "none"],
+      ["volume", "Set or view playback volume (0–100)", "[level]", "none"]
     ]
   },
   {
     "name": "Community",
     "commands": [
-      [
-        "autoreact",
-        "Manage automatic reactions to trigger words",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["autoreact", "Manage automatic reactions to trigger words", "(subcommand)", "Manage Server"],
       [
         "autoreact add",
         "Add an autoreact emoji to a trigger word",
@@ -989,132 +634,47 @@
         "(trigger)",
         "Manage Server"
       ],
-      [
-        "autoreact list",
-        "List all autoreacts",
-        "none",
-        "Manage Server"
-      ],
+      ["autoreact list", "List all autoreacts", "none", "Manage Server"],
       [
         "autoreact remove",
         "Remove an autoreact emoji from a trigger word",
         "(emoji) (trigger)",
         "Manage Server"
       ],
-      [
-        "autoreact reset",
-        "Remove all autoreacts",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "autoresponder",
-        "Manage automatic responses to triggers",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["autoreact reset", "Remove all autoreacts", "none", "Manage Server"],
+      ["autoresponder", "Manage automatic responses to triggers", "(subcommand)", "Manage Server"],
       [
         "autoresponder add",
         "Add an autoresponse trigger",
         "(trigger), (response)",
         "Manage Server"
       ],
-      [
-        "autoresponder list",
-        "List all autoresponders",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "autoresponder remove",
-        "Remove an autoresponse trigger",
-        "(trigger)",
-        "Manage Server"
-      ],
-      [
-        "autoresponder reset",
-        "Remove all autoresponders",
-        "none",
-        "Manage Server"
-      ],
+      ["autoresponder list", "List all autoresponders", "none", "Manage Server"],
+      ["autoresponder remove", "Remove an autoresponse trigger", "(trigger)", "Manage Server"],
+      ["autoresponder reset", "Remove all autoresponders", "none", "Manage Server"],
       [
         "autoresponder update",
         "Update an existing autoresponse",
         "(trigger), (new response)",
         "Manage Server"
       ],
-      [
-        "autoresponder view",
-        "View an autoresponse",
-        "(trigger)",
-        "Manage Server"
-      ],
+      ["autoresponder view", "View an autoresponse", "(trigger)", "Manage Server"],
       [
         "autorole",
         "Manage roles automatically assigned to new members",
         "(subcommand)",
         "Administrator"
       ],
-      [
-        "autorole add",
-        "Add a role to be assigned to new members",
-        "(role)",
-        "Administrator"
-      ],
-      [
-        "autorole list",
-        "List all autoroles",
-        "none",
-        "Administrator"
-      ],
-      [
-        "autorole remove",
-        "Remove a role from autoroles",
-        "(role)",
-        "Administrator"
-      ],
-      [
-        "autorole reset",
-        "Remove all autoroles",
-        "none",
-        "Administrator"
-      ],
-      [
-        "backup",
-        "Manage server backups",
-        "(subcommand)",
-        "none"
-      ],
-      [
-        "backup create",
-        "Create a backup of the server",
-        "(name)",
-        "Server Owner"
-      ],
-      [
-        "backup delete",
-        "Delete a backup",
-        "(backup id)",
-        "none"
-      ],
-      [
-        "backup info",
-        "View information about a backup",
-        "(backup id)",
-        "none"
-      ],
-      [
-        "backup list",
-        "List all your backups",
-        "none",
-        "none"
-      ],
-      [
-        "backup load",
-        "Load a backup (interactive menu)",
-        "(backup id)",
-        "Server Owner"
-      ],
+      ["autorole add", "Add a role to be assigned to new members", "(role)", "Administrator"],
+      ["autorole list", "List all autoroles", "none", "Administrator"],
+      ["autorole remove", "Remove a role from autoroles", "(role)", "Administrator"],
+      ["autorole reset", "Remove all autoroles", "none", "Administrator"],
+      ["backup", "Manage server backups", "(subcommand)", "none"],
+      ["backup create", "Create a backup of the server", "(name)", "Server Owner"],
+      ["backup delete", "Delete a backup", "(backup id)", "none"],
+      ["backup info", "View information about a backup", "(backup id)", "none"],
+      ["backup list", "List all your backups", "none", "none"],
+      ["backup load", "Load a backup (interactive menu)", "(backup id)", "Server Owner"],
       [
         "badge",
         "Reward members who display this server's tag with a role",
@@ -1133,12 +693,7 @@
         "(message/view/reset)",
         "Administrator"
       ],
-      [
-        "badge overview",
-        "View the server tag reward settings",
-        "none",
-        "Manage Server"
-      ],
+      ["badge overview", "View the server tag reward settings", "none", "Manage Server"],
       [
         "badge role",
         "Manage the roles granted for displaying the server tag",
@@ -1151,150 +706,40 @@
         "(role)",
         "Administrator"
       ],
-      [
-        "badge role list",
-        "List all server tag reward roles",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "badge role remove",
-        "Remove a role from the server tag rewards",
-        "(role)",
-        "Administrator"
-      ],
-      [
-        "badge sync",
-        "Sync every member's server tag role",
-        "none",
-        "Administrator"
-      ],
-      [
-        "boost",
-        "Manage boost messages for server boosters",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["badge role list", "List all server tag reward roles", "none", "Manage Server"],
+      ["badge role remove", "Remove a role from the server tag rewards", "(role)", "Administrator"],
+      ["badge sync", "Sync every member's server tag role", "none", "Administrator"],
+      ["boost", "Manage boost messages for server boosters", "(subcommand)", "Manage Server"],
       [
         "boost add",
         "Add a boost message to a channel",
         "(channel) (message) (para)",
         "Manage Server"
       ],
-      [
-        "boost award",
-        "Manage the boost award role",
-        "(role|remove)",
-        "Manage Server"
-      ],
-      [
-        "boost list",
-        "List all boost messages",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "boost remove",
-        "Remove a boost message from a channel",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "boost view",
-        "View a boost message for a channel",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "boosterrole",
-        "Manage your custom booster role",
-        "(subcommand)",
-        "none"
-      ],
+      ["boost award", "Manage the boost award role", "(role|remove)", "Manage Server"],
+      ["boost list", "List all boost messages", "none", "Manage Server"],
+      ["boost remove", "Remove a boost message from a channel", "(channel)", "Manage Server"],
+      ["boost view", "View a boost message for a channel", "(channel)", "Manage Server"],
+      ["boosterrole", "Manage your custom booster role", "(subcommand)", "none"],
       [
         "boosterrole cleanup",
         "Remove booster roles from users who stopped boosting",
         "none",
         "Manage Roles"
       ],
-      [
-        "boosterrole color",
-        "Change your booster role color",
-        "(color) (second color)",
-        "none"
-      ],
-      [
-        "boosterrole create",
-        "Create your custom booster role",
-        "(name)",
-        "none"
-      ],
-      [
-        "boosterrole delete",
-        "Delete your booster role",
-        "none",
-        "none"
-      ],
-      [
-        "boosterrole icon",
-        "Change your booster role icon",
-        "(emoji)",
-        "none"
-      ],
-      [
-        "boosterrole list",
-        "List all booster roles in the server",
-        "none",
-        "Manage Roles"
-      ],
-      [
-        "boosterrole name",
-        "Rename your booster role",
-        "(new name)",
-        "none"
-      ],
-      [
-        "boosterrole remove",
-        "Remove a shared booster role from yourself",
-        "(user)",
-        "none"
-      ],
-      [
-        "boosterrole share",
-        "Share your booster role with another user",
-        "(user)",
-        "none"
-      ],
-      [
-        "boosterrole unshare",
-        "Remove a user from your shared role",
-        "(user)",
-        "none"
-      ],
-      [
-        "boosters",
-        "View boost tracking information",
-        "(lost/new)",
-        "Manage Server"
-      ],
-      [
-        "boosters debug",
-        "Debug boost tracking (developer only)",
-        "none",
-        "Developer"
-      ],
-      [
-        "boosters lost",
-        "View recently lost boosters",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "boosters new",
-        "View recently new boosters",
-        "none",
-        "Manage Server"
-      ],
+      ["boosterrole color", "Change your booster role color", "(color) (second color)", "none"],
+      ["boosterrole create", "Create your custom booster role", "(name)", "none"],
+      ["boosterrole delete", "Delete your booster role", "none", "none"],
+      ["boosterrole icon", "Change your booster role icon", "(emoji)", "none"],
+      ["boosterrole list", "List all booster roles in the server", "none", "Manage Roles"],
+      ["boosterrole name", "Rename your booster role", "(new name)", "none"],
+      ["boosterrole remove", "Remove a shared booster role from yourself", "(user)", "none"],
+      ["boosterrole share", "Share your booster role with another user", "(user)", "none"],
+      ["boosterrole unshare", "Remove a user from your shared role", "(user)", "none"],
+      ["boosters", "View boost tracking information", "(lost/new)", "Manage Server"],
+      ["boosters debug", "Debug boost tracking (developer only)", "none", "Developer"],
+      ["boosters lost", "View recently lost boosters", "none", "Manage Server"],
+      ["boosters new", "View recently new boosters", "none", "Manage Server"],
       [
         "boosters test",
         "Test boost tracking by inserting fake events (developer only)",
@@ -1307,24 +752,9 @@
         "(subcommand)",
         "Manage Server"
       ],
-      [
-        "bumpreminder channel",
-        "Set the channel for bump reminders",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "bumpreminder disable",
-        "Disable the bump reminder system",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "bumpreminder enable",
-        "Enable the bump reminder system",
-        "none",
-        "Manage Server"
-      ],
+      ["bumpreminder channel", "Set the channel for bump reminders", "(channel)", "Manage Server"],
+      ["bumpreminder disable", "Disable the bump reminder system", "none", "Manage Server"],
+      ["bumpreminder enable", "Enable the bump reminder system", "none", "Manage Server"],
       [
         "bumpreminder message",
         "Set or view the reminder message sent after 2 hours",
@@ -1337,12 +767,7 @@
         "none",
         "Manage Server"
       ],
-      [
-        "bumpreminder reset",
-        "Reset bump reminder to default settings",
-        "none",
-        "Manage Server"
-      ],
+      ["bumpreminder reset", "Reset bump reminder to default settings", "none", "Manage Server"],
       [
         "bumpreminder thankyou",
         "Set or view the thank you message sent after a bump",
@@ -1355,54 +780,24 @@
         "none",
         "none"
       ],
-      [
-        "buttonresponder",
-        "Manage button responses on messages",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["buttonresponder", "Manage button responses on messages", "(subcommand)", "Manage Server"],
       [
         "buttonresponder add",
         "Add a button response to a message",
         "(message link) (style) (emote) (name), (response)",
         "Manage Server"
       ],
-      [
-        "buttonresponder list",
-        "List all button responses",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "buttonresponder remove",
-        "Remove a button response",
-        "(button_id)",
-        "Manage Server"
-      ],
-      [
-        "buttonresponder reset",
-        "Remove all button responses",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "buttonrole",
-        "Manage button roles on messages",
-        "(subcommand)",
-        "Manage Roles"
-      ],
+      ["buttonresponder list", "List all button responses", "none", "Manage Server"],
+      ["buttonresponder remove", "Remove a button response", "(button_id)", "Manage Server"],
+      ["buttonresponder reset", "Remove all button responses", "none", "Manage Server"],
+      ["buttonrole", "Manage button roles on messages", "(subcommand)", "Manage Roles"],
       [
         "buttonrole add",
         "Add a button role to a message",
         "(message link) (style) (emote) (label) (role)",
         "Manage Roles"
       ],
-      [
-        "buttonrole list",
-        "List all button roles",
-        "none",
-        "Manage Roles"
-      ],
+      ["buttonrole list", "List all button roles", "none", "Manage Roles"],
       [
         "buttonrole remove",
         "Remove a button role from a message",
@@ -1415,12 +810,7 @@
         "(message link)",
         "Manage Roles"
       ],
-      [
-        "buttonrole reset",
-        "Remove all button roles",
-        "none",
-        "Manage Roles"
-      ],
+      ["buttonrole reset", "Remove all button roles", "none", "Manage Roles"],
       [
         "clownboard",
         "Set up a clownboard system for highlighting popular messages",
@@ -1433,60 +823,15 @@
         "(channel|remove)",
         "Manage Server"
       ],
-      [
-        "clownboard emoji",
-        "Set the clownboard emoji",
-        "(emoji)",
-        "Manage Server"
-      ],
-      [
-        "clownboard overview",
-        "Check current clownboard settings",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "clownboard threshold",
-        "Set the minimum reactions needed",
-        "(number)",
-        "Manage Server"
-      ],
-      [
-        "customize",
-        "Customize the bot's server appearance",
-        "(subcommand)",
-        "Server Owner"
-      ],
-      [
-        "customize avatar",
-        "Customize the bot's server avatar",
-        "(url)",
-        "Server Owner"
-      ],
-      [
-        "customize banner",
-        "Customize the bot's server banner",
-        "(url)",
-        "Server Owner"
-      ],
-      [
-        "customize bio",
-        "Customize the bot's server bio",
-        "(text)",
-        "Server Owner"
-      ],
-      [
-        "customize color",
-        "Customize the bot's server embed color",
-        "(hex)",
-        "Server Owner"
-      ],
-      [
-        "customize name",
-        "Customize the bot's server nickname",
-        "(new name)",
-        "Server Owner"
-      ],
+      ["clownboard emoji", "Set the clownboard emoji", "(emoji)", "Manage Server"],
+      ["clownboard overview", "Check current clownboard settings", "none", "Manage Server"],
+      ["clownboard threshold", "Set the minimum reactions needed", "(number)", "Manage Server"],
+      ["customize", "Customize the bot's server appearance", "(subcommand)", "Server Owner"],
+      ["customize avatar", "Customize the bot's server avatar", "(url)", "Server Owner"],
+      ["customize banner", "Customize the bot's server banner", "(url)", "Server Owner"],
+      ["customize bio", "Customize the bot's server bio", "(text)", "Server Owner"],
+      ["customize color", "Customize the bot's server embed color", "(hex)", "Server Owner"],
+      ["customize name", "Customize the bot's server nickname", "(new name)", "Server Owner"],
       [
         "dropdownrole",
         "Allow members to self-assign roles via a dropdown menu.",
@@ -1535,156 +880,56 @@
         "[message] <role or index>",
         "Manage Roles"
       ],
-      [
-        "dropdownrole reset",
-        "Remove all dropdown roles in this server",
-        "none",
-        "Manage Roles"
-      ],
+      ["dropdownrole reset", "Remove all dropdown roles in this server", "none", "Manage Roles"],
       [
         "filter",
         "Manage server automod filters using Discord AutoMod",
         "(subcommand)",
         "Manage Server"
       ],
-      [
-        "filter add",
-        "Add a word to the filter",
-        "(word)",
-        "Manage Server"
-      ],
+      ["filter add", "Add a word to the filter", "(word)", "Manage Server"],
       [
         "filter exempt",
         "Exempt a role, user, or channel from the word filter",
         "(role/user/channel)",
         "Manage Server"
       ],
-      [
-        "filter list",
-        "List all filtered words",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "filter remove",
-        "Remove a word from the filter",
-        "(word)",
-        "Manage Server"
-      ],
-      [
-        "filter reset",
-        "Reset all filters (removes all AutoMod rules)",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "firstmessage",
-        "Get the first message sent in a channel",
-        "(channel)",
-        "none"
-      ],
-      [
-        "fyp",
-        "Get a random video from tiktok's For You Page",
-        "none",
-        "none"
-      ],
-      [
-        "github",
-        "No description available.",
-        "none",
-        "none"
-      ],
+      ["filter list", "List all filtered words", "none", "Manage Server"],
+      ["filter remove", "Remove a word from the filter", "(word)", "Manage Server"],
+      ["filter reset", "Reset all filters (removes all AutoMod rules)", "none", "Manage Server"],
+      ["firstmessage", "Get the first message sent in a channel", "(channel)", "none"],
+      ["fyp", "Get a random video from tiktok's For You Page", "none", "none"],
+      ["github", "No description available.", "none", "none"],
       [
         "honeypot",
         "Set up a bait channel to catch spammers",
         "(subcommand) (args)",
         "Administrator"
       ],
-      [
-        "honeypot add",
-        "Add a honeypot bait channel",
-        "(channel) (punishment)",
-        "Administrator"
-      ],
-      [
-        "honeypot list",
-        "List all honeypot bait channels",
-        "none",
-        "Administrator"
-      ],
-      [
-        "honeypot remove",
-        "Remove a honeypot bait channel",
-        "(channel)",
-        "Administrator"
-      ],
-      [
-        "if",
-        "Reminder that Last.fm commands use L, not I",
-        "none",
-        "none"
-      ],
+      ["honeypot add", "Add a honeypot bait channel", "(channel) (punishment)", "Administrator"],
+      ["honeypot list", "List all honeypot bait channels", "none", "Administrator"],
+      ["honeypot remove", "Remove a honeypot bait channel", "(channel)", "Administrator"],
+      ["if", "Reminder that Last.fm commands use L, not I", "none", "none"],
       [
         "imgonly",
         "Manage image-only channels (text messages are auto-deleted)",
         "(subcommand)",
         "Manage Server"
       ],
-      [
-        "imgonly add",
-        "Add a channel to image-only mode",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "imgonly list",
-        "List all image-only channels",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "imgonly remove",
-        "Remove a channel from image-only mode",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "imgonly reset",
-        "Remove all image-only channels",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "inrole",
-        "View all members with a specific role",
-        "(role)",
-        "none"
-      ],
+      ["imgonly add", "Add a channel to image-only mode", "(channel)", "Manage Server"],
+      ["imgonly list", "List all image-only channels", "none", "Manage Server"],
+      ["imgonly remove", "Remove a channel from image-only mode", "(channel)", "Manage Server"],
+      ["imgonly reset", "Remove all image-only channels", "none", "Manage Server"],
+      ["inrole", "View all members with a specific role", "(role)", "none"],
       [
         "instagram",
         "Look up Instagram profiles, stories, and highlights",
         "(username or subcommand)",
         "none"
       ],
-      [
-        "instagram highlight",
-        "View an Instagram user's highlight reels",
-        "(username)",
-        "none"
-      ],
-      [
-        "instagram story",
-        "View an Instagram user's active stories",
-        "(username)",
-        "none"
-      ],
-      [
-        "itunes",
-        "Finds a song from the iTunes API",
-        "(song)",
-        "none"
-      ],
+      ["instagram highlight", "View an Instagram user's highlight reels", "(username)", "none"],
+      ["instagram story", "View an Instagram user's active stories", "(username)", "none"],
+      ["itunes", "Finds a song from the iTunes API", "(song)", "none"],
       [
         "lastfm",
         "Integrate your Last.fm account with adore and view your scrobble stats",
@@ -1697,24 +942,9 @@
         "(member) (rows x cols) (period)",
         "none"
       ],
-      [
-        "lastfm color",
-        "Set embed color for Last.fm commands",
-        "(hex)",
-        "none"
-      ],
-      [
-        "lastfm count",
-        "View your total Last.fm scrobbles",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm crowns",
-        "View a list of your crowns",
-        "(member)",
-        "none"
-      ],
+      ["lastfm color", "Set embed color for Last.fm commands", "(hex)", "none"],
+      ["lastfm count", "View your total Last.fm scrobbles", "(member)", "none"],
+      ["lastfm crowns", "View a list of your crowns", "(member)", "none"],
       [
         "lastfm customcommand",
         "Set your own custom Now Playing command",
@@ -1740,12 +970,7 @@
         "none",
         "Administrator"
       ],
-      [
-        "lastfm customcommand list",
-        "View list of custom commands for NP",
-        "none",
-        "Manage Server"
-      ],
+      ["lastfm customcommand list", "View list of custom commands for NP", "none", "Manage Server"],
       [
         "lastfm customcommand public",
         "Toggle public flag for a custom command",
@@ -1758,12 +983,7 @@
         "(member)",
         "Manage Server"
       ],
-      [
-        "lastfm customcommand reset",
-        "Resets all custom commands",
-        "none",
-        "Manage Server"
-      ],
+      ["lastfm customcommand reset", "Resets all custom commands", "none", "Manage Server"],
       [
         "lastfm customreactions",
         "Set personal upvote and downvote reaction for Now Playing",
@@ -1771,12 +991,7 @@
         "Premium",
         true
       ],
-      [
-        "lastfm favorites",
-        "View yours or a member's liked tracks",
-        "(member)",
-        "none"
-      ],
+      ["lastfm favorites", "View yours or a member's liked tracks", "(member)", "none"],
       [
         "lastfm globalwhoknows",
         "View the top listeners for an artist globally",
@@ -1801,42 +1016,12 @@
         "(member)",
         "Manage Server"
       ],
-      [
-        "lastfm hide list",
-        "View the list of all hidden members",
-        "none",
-        "none"
-      ],
-      [
-        "lastfm itunes",
-        "Gives iTunes link for the current song playing",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm login",
-        "Login and authenticate adore to use your account",
-        "none",
-        "none"
-      ],
-      [
-        "lastfm logout",
-        "Remove your Last.fm account with adore's internal system",
-        "none",
-        "none"
-      ],
-      [
-        "lastfm lyrics",
-        "Gets lyrics for the current song playing",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm milestone",
-        "See what track your given number scrobble was",
-        "(number)",
-        "none"
-      ],
+      ["lastfm hide list", "View the list of all hidden members", "none", "none"],
+      ["lastfm itunes", "Gives iTunes link for the current song playing", "(member)", "none"],
+      ["lastfm login", "Login and authenticate adore to use your account", "none", "none"],
+      ["lastfm logout", "Remove your Last.fm account with adore's internal system", "none", "none"],
+      ["lastfm lyrics", "Gets lyrics for the current song playing", "(member)", "none"],
+      ["lastfm milestone", "See what track your given number scrobble was", "(number)", "none"],
       [
         "lastfm mode",
         "Use a different embed for NP or create your own",
@@ -1844,36 +1029,11 @@
         "Premium",
         true
       ],
-      [
-        "lastfm mostcrowns",
-        "View a list of members with the most crowns",
-        "none",
-        "none"
-      ],
-      [
-        "lastfm now",
-        "Shows your current song playing from Last.fm",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm overview",
-        "See your statistics for an artist",
-        "(member) (artist)",
-        "none"
-      ],
-      [
-        "lastfm playing",
-        "See what song everyone is listening to in a server",
-        "none",
-        "none"
-      ],
-      [
-        "lastfm plays",
-        "Check how many plays you have for an artist",
-        "(member) (artist)",
-        "none"
-      ],
+      ["lastfm mostcrowns", "View a list of members with the most crowns", "none", "none"],
+      ["lastfm now", "Shows your current song playing from Last.fm", "(member)", "none"],
+      ["lastfm overview", "See your statistics for an artist", "(member) (artist)", "none"],
+      ["lastfm playing", "See what song everyone is listening to in a server", "none", "none"],
+      ["lastfm plays", "Check how many plays you have for an artist", "(member) (artist)", "none"],
       [
         "lastfm playsalbum",
         "Check how many plays you have for an album",
@@ -1898,78 +1058,28 @@
         "(upvote reaction) (downvote reaction)",
         "Manage Server"
       ],
-      [
-        "lastfm recent",
-        "View your recent tracks",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm recentfor",
-        "View your recent tracks for an artist",
-        "(artist)",
-        "none"
-      ],
-      [
-        "lastfm recommendation",
-        "Recommends a random artist from your library",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm score",
-        "View your Last.fm score and statistics",
-        "(member)",
-        "none"
-      ],
+      ["lastfm recent", "View your recent tracks", "(member)", "none"],
+      ["lastfm recentfor", "View your recent tracks for an artist", "(artist)", "none"],
+      ["lastfm recommendation", "Recommends a random artist from your library", "(member)", "none"],
+      ["lastfm score", "View your Last.fm score and statistics", "(member)", "none"],
       [
         "lastfm soundcloud",
         "Gives Soundcloud link for the current song playing",
         "(member)",
         "none"
       ],
-      [
-        "lastfm spotify",
-        "Gives Spotify link for the current song playing",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm spotifyalbum",
-        "Finds album results from the Spotify API",
-        "(album)",
-        "none"
-      ],
-      [
-        "lastfm spotifytrack",
-        "Finds track results from the Spotify API",
-        "(track)",
-        "none"
-      ],
-      [
-        "lastfm streak",
-        "View your current listening streak",
-        "(member)",
-        "none"
-      ],
+      ["lastfm spotify", "Gives Spotify link for the current song playing", "(member)", "none"],
+      ["lastfm spotifyalbum", "Finds album results from the Spotify API", "(album)", "none"],
+      ["lastfm spotifytrack", "Finds track results from the Spotify API", "(track)", "none"],
+      ["lastfm streak", "View your current listening streak", "(member)", "none"],
       [
         "lastfm taste",
         "Compare your music taste between you and someone else",
         "(member) (period)",
         "none"
       ],
-      [
-        "lastfm topalbums",
-        "View your most listened to albums",
-        "(member) (period)",
-        "none"
-      ],
-      [
-        "lastfm topartists",
-        "View your most listened to artists",
-        "(member) (period)",
-        "none"
-      ],
+      ["lastfm topalbums", "View your most listened to albums", "(member) (period)", "none"],
+      ["lastfm topartists", "View your most listened to artists", "(member) (period)", "none"],
       [
         "lastfm toptenalbums",
         "View your top ten albums for an artist",
@@ -1982,18 +1092,8 @@
         "(member) (artist)",
         "none"
       ],
-      [
-        "lastfm toptracks",
-        "View your most listened to tracks",
-        "(member) (period)",
-        "none"
-      ],
-      [
-        "lastfm update",
-        "Update your Last.fm library",
-        "--params",
-        "none"
-      ],
+      ["lastfm toptracks", "View your most listened to tracks", "(member) (period)", "none"],
+      ["lastfm update", "Update your Last.fm library", "--params", "none"],
       [
         "lastfm url",
         "Submit your own artworks for an album cover if you don't want the artwork from Last.fm",
@@ -2006,18 +1106,8 @@
         "(artist - album)",
         "none"
       ],
-      [
-        "lastfm whois",
-        "View Last.fm profile information",
-        "(member)",
-        "none"
-      ],
-      [
-        "lastfm whoknows",
-        "View the top listeners for an artist in a guild",
-        "(artist)",
-        "none"
-      ],
+      ["lastfm whois", "View Last.fm profile information", "(member)", "none"],
+      ["lastfm whoknows", "View the top listeners for an artist in a guild", "(artist)", "none"],
       [
         "lastfm wkalbum",
         "View the top listeners for an album by an artist",
@@ -2030,54 +1120,19 @@
         "(artist) - (track)",
         "none"
       ],
-      [
-        "lastfm youtube",
-        "Gives YouTube link for the current song playing",
-        "(member)",
-        "none"
-      ],
-      [
-        "leave",
-        "Manage leave messages for departing members",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["lastfm youtube", "Gives YouTube link for the current song playing", "(member)", "none"],
+      ["leave", "Manage leave messages for departing members", "(subcommand)", "Manage Server"],
       [
         "leave add",
         "Add a leave message to a channel",
         "(channel) (message) (para)",
         "Manage Server"
       ],
-      [
-        "leave list",
-        "List all leave messages",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "leave remove",
-        "Remove a leave message from a channel",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "leave view",
-        "View a leave message for a channel",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "levels",
-        "View and manage the leveling system",
-        "(subcommand)",
-        "none"
-      ],
-      [
-        "levels add",
-        "Add a role reward for reaching a level",
-        "(role) (level)",
-        "Administrator"
-      ],
+      ["leave list", "List all leave messages", "none", "Manage Server"],
+      ["leave remove", "Remove a leave message from a channel", "(channel)", "Manage Server"],
+      ["leave view", "View a leave message for a channel", "(channel)", "Manage Server"],
+      ["levels", "View and manage the leveling system", "(subcommand)", "none"],
+      ["levels add", "Add a role reward for reaching a level", "(role) (level)", "Administrator"],
       [
         "levels channel",
         "Set the channel or thread for level up messages",
@@ -2090,36 +1145,11 @@
         "none",
         "Administrator"
       ],
-      [
-        "levels disable",
-        "Disable the leveling system",
-        "none",
-        "Administrator"
-      ],
-      [
-        "levels enable",
-        "Enable the leveling system",
-        "none",
-        "Administrator"
-      ],
-      [
-        "levels leaderboard",
-        "View the XP leaderboard",
-        "none",
-        "none"
-      ],
-      [
-        "levels leaderboard name",
-        "Set the leaderboard title",
-        "(title)",
-        "Administrator"
-      ],
-      [
-        "levels list",
-        "View all XP reward roles",
-        "none",
-        "none"
-      ],
+      ["levels disable", "Disable the leveling system", "none", "Administrator"],
+      ["levels enable", "Enable the leveling system", "none", "Administrator"],
+      ["levels leaderboard", "View the XP leaderboard", "none", "none"],
+      ["levels leaderboard name", "Set the leaderboard title", "(title)", "Administrator"],
+      ["levels list", "View all XP reward roles", "none", "none"],
       [
         "levels message",
         "Set the level up message (supports embed code)",
@@ -2132,126 +1162,36 @@
         "(channel/pm/context/none)",
         "Administrator"
       ],
-      [
-        "levels overview",
-        "View leveling system settings",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "levels remove",
-        "Remove a level reward",
-        "(level)",
-        "Administrator"
-      ],
-      [
-        "levels reset",
-        "Reset all leveling data for this server",
-        "none",
-        "Administrator"
-      ],
-      [
-        "levels setrate",
-        "Set the XP multiplier",
-        "(multiplier)",
-        "Administrator"
-      ],
+      ["levels overview", "View leveling system settings", "none", "Manage Server"],
+      ["levels remove", "Remove a level reward", "(level)", "Administrator"],
+      ["levels reset", "Reset all leveling data for this server", "none", "Administrator"],
+      ["levels setrate", "Set the XP multiplier", "(multiplier)", "Administrator"],
       [
         "levels stackroles",
         "Enable or disable stacking of level roles",
         "(on/off)",
         "Administrator"
       ],
-      [
-        "levels sync",
-        "Sync all members' level roles",
-        "none",
-        "Administrator"
-      ],
-      [
-        "logs",
-        "Configure logging channels",
-        "(subcommand)",
-        "Manage Server"
-      ],
-      [
-        "logs add",
-        "Set a channel for a log type",
-        "(channel) (type)",
-        "Manage Server"
-      ],
-      [
-        "logs list",
-        "View all configured log channels",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "logs remove",
-        "Remove a log channel",
-        "(type)",
-        "Manage Server"
-      ],
-      [
-        "nowplaying",
-        "Shows your current song playing from Last.fm",
-        "(member)",
-        "none"
-      ],
-      [
-        "prefix",
-        "View or manage the server prefix",
-        "(prefix|remove)",
-        "none"
-      ],
-      [
-        "reaction",
-        "Manage automatic reactions on channels",
-        "(subcommand)",
-        "Manage Server"
-      ],
-      [
-        "reaction add",
-        "Add reactions to a channel",
-        "(channel) (reactions...)",
-        "Manage Server"
-      ],
-      [
-        "reaction list",
-        "List all channel reactions",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "reaction remove",
-        "Remove reactions from a channel",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "reaction reset",
-        "Remove all channel reactions",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "reactionrole",
-        "Manage reaction roles on messages",
-        "(subcommand)",
-        "Manage Roles"
-      ],
+      ["levels sync", "Sync all members' level roles", "none", "Administrator"],
+      ["logs", "Configure logging channels", "(subcommand)", "Manage Server"],
+      ["logs add", "Set a channel for a log type", "(channel) (type)", "Manage Server"],
+      ["logs list", "View all configured log channels", "none", "Manage Server"],
+      ["logs remove", "Remove a log channel", "(type)", "Manage Server"],
+      ["nowplaying", "Shows your current song playing from Last.fm", "(member)", "none"],
+      ["prefix", "View or manage the server prefix", "(prefix|remove)", "none"],
+      ["reaction", "Manage automatic reactions on channels", "(subcommand)", "Manage Server"],
+      ["reaction add", "Add reactions to a channel", "(channel) (reactions...)", "Manage Server"],
+      ["reaction list", "List all channel reactions", "none", "Manage Server"],
+      ["reaction remove", "Remove reactions from a channel", "(channel)", "Manage Server"],
+      ["reaction reset", "Remove all channel reactions", "none", "Manage Server"],
+      ["reactionrole", "Manage reaction roles on messages", "(subcommand)", "Manage Roles"],
       [
         "reactionrole add",
         "Add a reaction role to a message",
         "(message link) (reaction) (role)",
         "Manage Roles"
       ],
-      [
-        "reactionrole list",
-        "List all reaction roles",
-        "none",
-        "Manage Roles"
-      ],
+      ["reactionrole list", "List all reaction roles", "none", "Manage Roles"],
       [
         "reactionrole remove",
         "Remove a reaction role from a message",
@@ -2264,78 +1204,28 @@
         "(message link)",
         "Manage Roles"
       ],
-      [
-        "reactionrole reset",
-        "Remove all reaction roles",
-        "none",
-        "Manage Roles"
-      ],
+      ["reactionrole reset", "Remove all reaction roles", "none", "Manage Roles"],
       [
         "repost",
         "Download Instagram, TikTok, X/Twitter, Reddit, or YouTube content",
         "(url)",
         "none"
       ],
-      [
-        "roblox",
-        "No description available.",
-        "none",
-        "none"
-      ],
-      [
-        "roblox avatar",
-        "No description available.",
-        "none",
-        "none"
-      ],
-      [
-        "role",
-        "Manage roles for members",
-        "(user) (roles...)",
-        "Manage Roles"
-      ],
-      [
-        "role add",
-        "Add a role to a member",
-        "(user) (role)",
-        "Manage Roles"
-      ],
-      [
-        "role bots",
-        "Add a role to all bot members",
-        "(role)",
-        "Administrator"
-      ],
-      [
-        "role cancel",
-        "Cancel a pending mass role operation",
-        "none",
-        "Manage Roles"
-      ],
-      [
-        "role color",
-        "Change a role's color",
-        "(role) (color)",
-        "Manage Roles"
-      ],
+      ["roblox", "No description available.", "none", "none"],
+      ["roblox avatar", "No description available.", "none", "none"],
+      ["role", "Manage roles for members", "(user) (roles...)", "Manage Roles"],
+      ["role add", "Add a role to a member", "(user) (role)", "Manage Roles"],
+      ["role bots", "Add a role to all bot members", "(role)", "Administrator"],
+      ["role cancel", "Cancel a pending mass role operation", "none", "Manage Roles"],
+      ["role color", "Change a role's color", "(role) (color)", "Manage Roles"],
       [
         "role color gradient",
         "Change a role to a gradient color",
         "(color) (second color) (role)",
         "Manage Roles"
       ],
-      [
-        "role create",
-        "Create a new role",
-        "(name)",
-        "Manage Roles"
-      ],
-      [
-        "role delete",
-        "Delete a role",
-        "(role)",
-        "Manage Roles"
-      ],
+      ["role create", "Create a new role", "(name)", "Manage Roles"],
+      ["role delete", "Delete a role", "(role)", "Manage Roles"],
       [
         "role has",
         "Manage role assignments for members with a specific role",
@@ -2354,181 +1244,40 @@
         "(has_role) (remove_role)",
         "Administrator"
       ],
-      [
-        "role humans",
-        "Add a role to all human members",
-        "(role)",
-        "Administrator"
-      ],
-      [
-        "role icon",
-        "Change a role's icon",
-        "(role) (emoji/url)",
-        "Manage Roles"
-      ],
-      [
-        "role rename",
-        "Rename a role",
-        "(role) (new name)",
-        "Manage Roles"
-      ],
+      ["role humans", "Add a role to all human members", "(role)", "Administrator"],
+      ["role icon", "Change a role's icon", "(role) (emoji/url)", "Manage Roles"],
+      ["role rename", "Rename a role", "(role) (new name)", "Manage Roles"],
       [
         "role restore",
         "Restore roles for a member who left and rejoined",
         "(member)",
         "Manage Roles"
       ],
-      [
-        "roles",
-        "View all roles in the server",
-        "none",
-        "none"
-      ],
-      [
-        "selfprefix",
-        "View or manage your personal prefix",
-        "(prefix|remove)",
-        "Premium",
-        true
-      ],
-      [
-        "setbanner",
-        "Change the server's banner",
-        "(url)",
-        "Manage Server"
-      ],
-      [
-        "seticon",
-        "Change the server's icon",
-        "(url)",
-        "Manage Server"
-      ],
-      [
-        "setlevel",
-        "Set a member's level",
-        "(member) (level)",
-        "Administrator"
-      ],
-      [
-        "setsplash",
-        "Change the server's invite splash",
-        "(url)",
-        "Manage Server"
-      ],
-      [
-        "setxp",
-        "Set a member's XP",
-        "(member) (xp)",
-        "Administrator"
-      ],
-      [
-        "spotify",
-        "Spotify music commands",
-        "(subcommand)",
-        "none"
-      ],
-      [
-        "spotify account",
-        "View your connected Spotify account",
-        "none",
-        "none"
-      ],
-      [
-        "spotify like",
-        "Like/Unlike the current track",
-        "none",
-        "none"
-      ],
-      [
-        "spotify login",
-        "Connect your Spotify account",
-        "none",
-        "none"
-      ],
-      [
-        "spotify logout",
-        "Disconnect your Spotify account",
-        "none",
-        "none"
-      ],
-      [
-        "spotify next",
-        "Skip to the next track",
-        "none",
-        "none"
-      ],
-      [
-        "spotify pause",
-        "Pause/Resume Spotify playback",
-        "none",
-        "none"
-      ],
-      [
-        "spotify play",
-        "Play a track or playlist on Spotify",
-        "(song)",
-        "none"
-      ],
-      [
-        "spotify previous",
-        "Go back to the previous track",
-        "none",
-        "none"
-      ],
-      [
-        "spotify queue",
-        "View your Spotify queue",
-        "none",
-        "none"
-      ],
-      [
-        "spotify rewind",
-        "Rewind the current track",
-        "(seconds)",
-        "none"
-      ],
-      [
-        "spotify seek",
-        "Seek to a position in the current track",
-        "(seconds)",
-        "none"
-      ],
-      [
-        "spotify topartists",
-        "View your top 50 Spotify artists",
-        "none",
-        "none"
-      ],
-      [
-        "spotify toptracks",
-        "View your top 50 Spotify tracks",
-        "none",
-        "none"
-      ],
-      [
-        "spotify vc",
-        "Play your current Spotify track in your voice channel",
-        "none",
-        "none"
-      ],
-      [
-        "spotify volume",
-        "Set Spotify volume",
-        "(1-100)",
-        "none"
-      ],
-      [
-        "spotifyalbum",
-        "Finds album results from the Spotify API",
-        "(album)",
-        "none"
-      ],
-      [
-        "spotifytrack",
-        "Finds track results from the Spotify API",
-        "(track)",
-        "none"
-      ],
+      ["roles", "View all roles in the server", "none", "none"],
+      ["selfprefix", "View or manage your personal prefix", "(prefix|remove)", "Premium", true],
+      ["setbanner", "Change the server's banner", "(url)", "Manage Server"],
+      ["seticon", "Change the server's icon", "(url)", "Manage Server"],
+      ["setlevel", "Set a member's level", "(member) (level)", "Administrator"],
+      ["setsplash", "Change the server's invite splash", "(url)", "Manage Server"],
+      ["setxp", "Set a member's XP", "(member) (xp)", "Administrator"],
+      ["spotify", "Spotify music commands", "(subcommand)", "none"],
+      ["spotify account", "View your connected Spotify account", "none", "none"],
+      ["spotify like", "Like/Unlike the current track", "none", "none"],
+      ["spotify login", "Connect your Spotify account", "none", "none"],
+      ["spotify logout", "Disconnect your Spotify account", "none", "none"],
+      ["spotify next", "Skip to the next track", "none", "none"],
+      ["spotify pause", "Pause/Resume Spotify playback", "none", "none"],
+      ["spotify play", "Play a track or playlist on Spotify", "(song)", "none"],
+      ["spotify previous", "Go back to the previous track", "none", "none"],
+      ["spotify queue", "View your Spotify queue", "none", "none"],
+      ["spotify rewind", "Rewind the current track", "(seconds)", "none"],
+      ["spotify seek", "Seek to a position in the current track", "(seconds)", "none"],
+      ["spotify topartists", "View your top 50 Spotify artists", "none", "none"],
+      ["spotify toptracks", "View your top 50 Spotify tracks", "none", "none"],
+      ["spotify vc", "Play your current Spotify track in your voice channel", "none", "none"],
+      ["spotify volume", "Set Spotify volume", "(1-100)", "none"],
+      ["spotifyalbum", "Finds album results from the Spotify API", "(album)", "none"],
+      ["spotifytrack", "Finds track results from the Spotify API", "(track)", "none"],
       [
         "starboard",
         "Set up a starboard system for highlighting popular messages",
@@ -2541,108 +1290,33 @@
         "(channel|remove)",
         "Manage Server"
       ],
-      [
-        "starboard emoji",
-        "Set the starboard emoji",
-        "(emoji)",
-        "Manage Server"
-      ],
-      [
-        "starboard overview",
-        "Check current starboard settings",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "starboard threshold",
-        "Set the minimum reactions needed",
-        "(number)",
-        "Manage Server"
-      ],
-      [
-        "stats",
-        "View server and user statistics",
-        "(subcommand)",
-        "none"
-      ],
-      [
-        "stats server",
-        "View server-wide statistics",
-        "none",
-        "none"
-      ],
-      [
-        "stats user",
-        "View user statistics",
-        "(member)",
-        "none"
-      ],
-      [
-        "stickymessage",
-        "Manage sticky messages in channels",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["starboard emoji", "Set the starboard emoji", "(emoji)", "Manage Server"],
+      ["starboard overview", "Check current starboard settings", "none", "Manage Server"],
+      ["starboard threshold", "Set the minimum reactions needed", "(number)", "Manage Server"],
+      ["stats", "View server and user statistics", "(subcommand)", "none"],
+      ["stats server", "View server-wide statistics", "none", "none"],
+      ["stats user", "View user statistics", "(member)", "none"],
+      ["stickymessage", "Manage sticky messages in channels", "(subcommand)", "Manage Server"],
       [
         "stickymessage add",
         "Add a sticky message to a channel",
         "(channel) (message) (para)",
         "Manage Server"
       ],
-      [
-        "stickymessage list",
-        "List all sticky messages",
-        "none",
-        "Manage Server"
-      ],
+      ["stickymessage list", "List all sticky messages", "none", "Manage Server"],
       [
         "stickymessage remove",
         "Remove a sticky message from a channel",
         "(channel)",
         "Manage Server"
       ],
-      [
-        "stickymessage reset",
-        "Remove all sticky messages",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "stickymessage view",
-        "View a sticky message configuration",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "ticket",
-        "Manage the ticket system for your server",
-        "(subcommand)",
-        "Manage Server"
-      ],
-      [
-        "ticket form",
-        "Manage ticket forms",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "ticket form create",
-        "Create a new form",
-        "(name) (title)",
-        "Manage Server"
-      ],
-      [
-        "ticket form delete",
-        "Delete a form",
-        "(name)",
-        "Manage Server"
-      ],
-      [
-        "ticket form field",
-        "Manage form fields",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["stickymessage reset", "Remove all sticky messages", "none", "Manage Server"],
+      ["stickymessage view", "View a sticky message configuration", "(channel)", "Manage Server"],
+      ["ticket", "Manage the ticket system for your server", "(subcommand)", "Manage Server"],
+      ["ticket form", "Manage ticket forms", "none", "Manage Server"],
+      ["ticket form create", "Create a new form", "(name) (title)", "Manage Server"],
+      ["ticket form delete", "Delete a form", "(name)", "Manage Server"],
+      ["ticket form field", "Manage form fields", "(subcommand)", "Manage Server"],
       [
         "ticket form field add",
         "Add a field to a form",
@@ -2655,54 +1329,24 @@
         "ticket form field (name) delete (field_key)",
         "Manage Server"
       ],
-      [
-        "ticket option",
-        "Manage panel options",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["ticket option", "Manage panel options", "(subcommand)", "Manage Server"],
       [
         "ticket option create",
         "Create a new option for a panel",
         "(panel) (label)",
         "Manage Server"
       ],
-      [
-        "ticket option delete",
-        "Delete an option",
-        "(option_id)",
-        "Manage Server"
-      ],
-      [
-        "ticket overview",
-        "Show ticket system overview",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "ticket panel",
-        "Manage ticket panels",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["ticket option delete", "Delete an option", "(option_id)", "Manage Server"],
+      ["ticket overview", "Show ticket system overview", "none", "Manage Server"],
+      ["ticket panel", "Manage ticket panels", "(subcommand)", "Manage Server"],
       [
         "ticket panel category",
         "Set category for ticket channels",
         "(name) (category)",
         "Manage Server"
       ],
-      [
-        "ticket panel create",
-        "Create a new ticket panel",
-        "(name)",
-        "Manage Server"
-      ],
-      [
-        "ticket panel delete",
-        "Delete a ticket panel",
-        "(name)",
-        "Manage Server"
-      ],
+      ["ticket panel create", "Create a new ticket panel", "(name)", "Manage Server"],
+      ["ticket panel delete", "Delete a ticket panel", "(name)", "Manage Server"],
       [
         "ticket panel mode",
         "Set panel mode (button or dropdown)",
@@ -2715,198 +1359,63 @@
         "(name) [channel]",
         "Manage Server"
       ],
-      [
-        "tiktok",
-        "Look up tiktok profiles",
-        "(username)",
-        "none"
-      ],
-      [
-        "twitch",
-        "Look up twitch profiles",
-        "(streamer)",
-        "none"
-      ],
-      [
-        "twitter",
-        "Look up twitter profiles",
-        "(handle)",
-        "none"
-      ],
-      [
-        "valorant",
-        "No description available.",
-        "none",
-        "none"
-      ],
-      [
-        "voicemaster",
-        "Manage voice master settings",
-        "vm (subcommand)",
-        "none"
-      ],
-      [
-        "voicemaster bitrate",
-        "Set bitrate for your voice channel",
-        "vm bitrate (kbps)",
-        "none"
-      ],
-      [
-        "voicemaster claim",
-        "Claim an orphaned voice channel",
-        "vm claim",
-        "none"
-      ],
+      ["tiktok", "Look up tiktok profiles", "(username)", "none"],
+      ["twitch", "Look up twitch profiles", "(streamer)", "none"],
+      ["twitter", "Look up twitter profiles", "(handle)", "none"],
+      ["valorant", "No description available.", "none", "none"],
+      ["voicemaster", "Manage voice master settings", "vm (subcommand)", "none"],
+      ["voicemaster bitrate", "Set bitrate for your voice channel", "vm bitrate (kbps)", "none"],
+      ["voicemaster claim", "Claim an orphaned voice channel", "vm claim", "none"],
       [
         "voicemaster cleanup",
         "Remove voice time data for members who left the server",
         "vm cleanup",
         "Administrator"
       ],
-      [
-        "voicemaster hide",
-        "Hide your voice channel",
-        "vm hide",
-        "none"
-      ],
-      [
-        "voicemaster leaderboard",
-        "View the voice time leaderboard",
-        "vm leaderboard",
-        "none"
-      ],
-      [
-        "voicemaster limit",
-        "Set user limit for your voice channel",
-        "vm limit (number)",
-        "none"
-      ],
-      [
-        "voicemaster lock",
-        "Lock your voice channel",
-        "vm lock",
-        "none"
-      ],
-      [
-        "voicemaster name",
-        "Rename your voice channel",
-        "vm name (new name)",
-        "none"
-      ],
-      [
-        "voicemaster nsfw",
-        "Toggle NSFW for your voice channel",
-        "vm nsfw",
-        "none"
-      ],
-      [
-        "voicemaster permit",
-        "Allow a user to join your voice channel",
-        "vm permit (user)",
-        "none"
-      ],
-      [
-        "voicemaster region",
-        "Set voice region for your channel",
-        "vm region (region)",
-        "none"
-      ],
-      [
-        "voicemaster reject",
-        "Reject a user from your voice channel",
-        "vm reject (user)",
-        "none"
-      ],
-      [
-        "voicemaster reset",
-        "Reset voice master setup",
-        "vm reset",
-        "Administrator"
-      ],
+      ["voicemaster hide", "Hide your voice channel", "vm hide", "none"],
+      ["voicemaster leaderboard", "View the voice time leaderboard", "vm leaderboard", "none"],
+      ["voicemaster limit", "Set user limit for your voice channel", "vm limit (number)", "none"],
+      ["voicemaster lock", "Lock your voice channel", "vm lock", "none"],
+      ["voicemaster name", "Rename your voice channel", "vm name (new name)", "none"],
+      ["voicemaster nsfw", "Toggle NSFW for your voice channel", "vm nsfw", "none"],
+      ["voicemaster permit", "Allow a user to join your voice channel", "vm permit (user)", "none"],
+      ["voicemaster region", "Set voice region for your channel", "vm region (region)", "none"],
+      ["voicemaster reject", "Reject a user from your voice channel", "vm reject (user)", "none"],
+      ["voicemaster reset", "Reset voice master setup", "vm reset", "Administrator"],
       [
         "voicemaster sendpanel",
         "Resend the voice master panel and delete the old one",
         "vm sendpanel (channel)",
         "Administrator"
       ],
-      [
-        "voicemaster setup",
-        "Setup voice master for this server",
-        "vm setup",
-        "Administrator"
-      ],
-      [
-        "voicemaster status",
-        "Set status for your voice channel",
-        "vm status (text)",
-        "none"
-      ],
+      ["voicemaster setup", "Setup voice master for this server", "vm setup", "Administrator"],
+      ["voicemaster status", "Set status for your voice channel", "vm status (text)", "none"],
       [
         "voicemaster transfer",
         "Transfer ownership of your voice channel",
         "vm transfer (user)",
         "none"
       ],
-      [
-        "voicemaster unhide",
-        "Unhide your voice channel",
-        "vm unhide",
-        "none"
-      ],
-      [
-        "voicemaster unlock",
-        "Unlock your voice channel",
-        "vm unlock",
-        "none"
-      ],
-      [
-        "welcome",
-        "Manage welcome messages for new members",
-        "(subcommand)",
-        "Manage Server"
-      ],
+      ["voicemaster unhide", "Unhide your voice channel", "vm unhide", "none"],
+      ["voicemaster unlock", "Unlock your voice channel", "vm unlock", "none"],
+      ["welcome", "Manage welcome messages for new members", "(subcommand)", "Manage Server"],
       [
         "welcome add",
         "Add a welcome message to a channel",
         "(channel) (message) (para)",
         "Manage Server"
       ],
-      [
-        "welcome list",
-        "List all welcome messages",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "welcome remove",
-        "Remove a welcome message from a channel",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "welcome view",
-        "View a welcome message for a channel",
-        "(channel)",
-        "Manage Server"
-      ],
-      [
-        "youtube",
-        "Search YouTube or manage upload notifications",
-        "(query or subcommand)",
-        "none"
-      ],
+      ["welcome list", "List all welcome messages", "none", "Manage Server"],
+      ["welcome remove", "Remove a welcome message from a channel", "(channel)", "Manage Server"],
+      ["welcome view", "View a welcome message for a channel", "(channel)", "Manage Server"],
+      ["youtube", "Search YouTube or manage upload notifications", "(query or subcommand)", "none"],
       [
         "youtube add",
         "Add a YouTube upload notification",
         "(channel) (channel url)",
         "Manage Server"
       ],
-      [
-        "youtube list",
-        "List YouTube notifications",
-        "none",
-        "Manage Server"
-      ],
+      ["youtube list", "List YouTube notifications", "none", "Manage Server"],
       [
         "youtube message",
         "Set or view a YouTube notification message",
@@ -2930,1069 +1439,242 @@
   {
     "name": "Fun & economy",
     "commands": [
-      [
-        "8ball",
-        "Ask the magic 8-ball a question",
-        "(question)",
-        "none"
-      ],
-      [
-        "advice",
-        "Get random advice",
-        "(user)",
-        "none"
-      ],
-      [
-        "allowance",
-        "Send coins to your spouse",
-        "(amount)",
-        "none"
-      ],
-      [
-        "anal",
-        "`NSFW` anal roleplay command",
-        "(user)",
-        "none"
-      ],
-      [
-        "angry",
-        "Show you're angry",
-        "none",
-        "none"
-      ],
-      [
-        "balance",
-        "Check your or someone else's balance",
-        "(user)",
-        "none"
-      ],
-      [
-        "bite",
-        "Bite someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "blacktea",
-        "BlackTea word game commands",
-        "none",
-        "none"
-      ],
-      [
-        "blacktea quit",
-        "Leave the current BlackTea game",
-        "none",
-        "none"
-      ],
-      [
-        "blacktea start",
-        "Start a BlackTea game lobby",
-        "none",
-        "none"
-      ],
-      [
-        "blacktea stats",
-        "View BlackTea game statistics",
-        "(user)",
-        "none"
-      ],
-      [
-        "blacktea stop",
-        "Stop the current BlackTea game",
-        "none",
-        "none"
-      ],
-      [
-        "blowjob",
-        "`NSFW` blowjob roleplay command",
-        "(user)",
-        "none"
-      ],
-      [
-        "blush",
-        "Show you're blushing",
-        "none",
-        "none"
-      ],
-      [
-        "bonk",
-        "Bonk someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "bully",
-        "Bully someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "cards",
-        "Play question answer with your loved one",
-        "none",
-        "none"
-      ],
-      [
-        "coinflip",
-        "Flip a coin and bet on the outcome",
-        "(amount) (choice)",
-        "none"
-      ],
-      [
-        "compliment",
-        "Get a random compliment",
-        "(user)",
-        "none"
-      ],
-      [
-        "couplebal",
-        "View combined wallet and bank with your spouse",
-        "none",
-        "none"
-      ],
-      [
-        "crime",
-        "Commit crimes to earn coins",
-        "none",
-        "none"
-      ],
-      [
-        "cry",
-        "Show you're crying",
-        "none",
-        "none"
-      ],
-      [
-        "cuddle",
-        "Cuddle someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "cum",
-        "`NSFW` cum roleplay command",
-        "(user)",
-        "none"
-      ],
-      [
-        "daily",
-        "Claim your daily coins with streak bonuses",
-        "none",
-        "none"
-      ],
-      [
-        "dance",
-        "Dance with someone or alone",
-        "(user)",
-        "none"
-      ],
-      [
-        "dare",
-        "Get a dare challenge",
-        "(rating)",
-        "none"
-      ],
-      [
-        "deposit",
-        "Deposit coins from wallet to bank",
-        "(amount)",
-        "none"
-      ],
-      [
-        "divorce",
-        "Divorce your spouse",
-        "none",
-        "none"
-      ],
-      [
-        "earn",
-        "View all available earning methods",
-        "none",
-        "none"
-      ],
-      [
-        "edaters",
-        "View all married couples in the server",
-        "none",
-        "none"
-      ],
-      [
-        "fact",
-        "Get a random fact",
-        "(user)",
-        "none"
-      ],
-      [
-        "freaky",
-        "freaky script style",
-        "(text)",
-        "none"
-      ],
-      [
-        "fuck",
-        "`NSFW` fuck roleplay command",
-        "(user)",
-        "none"
-      ],
-      [
-        "glomp",
-        "Glomp someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "hangup",
-        "Disconnect your active phone call",
-        "none",
-        "none"
-      ],
-      [
-        "headpat",
-        "Give someone a headpat",
-        "(user)",
-        "none"
-      ],
-      [
-        "highfive",
-        "Highfive someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "hug",
-        "Give someone a warm hug",
-        "(user)",
-        "none"
-      ],
-      [
-        "insult",
-        "Get a random insult",
-        "(user)",
-        "none"
-      ],
-      [
-        "joke",
-        "Get a random joke",
-        "(user)",
-        "none"
-      ],
-      [
-        "kill",
-        "Kill someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "kiss",
-        "Give someone a sweet kiss",
-        "(user)",
-        "none"
-      ],
-      [
-        "leaderboard",
-        "View the richest users",
-        "none",
-        "none"
-      ],
-      [
-        "lick",
-        "Lick someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "married",
-        "Check your or another user's marriage status",
-        "(user)",
-        "none"
-      ],
-      [
-        "marry",
-        "Propose marriage to another user",
-        "(user)",
-        "none"
-      ],
-      [
-        "nhie",
-        "Get a never have I ever question",
-        "(rating)",
-        "none"
-      ],
-      [
-        "nom",
-        "Nom someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "oursong",
-        "Set the song shown on your marriage",
-        "[song]",
-        "none"
-      ],
-      [
-        "paranoia",
-        "Get a paranoia question",
-        "(rating)",
-        "none"
-      ],
-      [
-        "pat",
-        "Give someone a gentle pat",
-        "(user)",
-        "none"
-      ],
-      [
-        "phone",
-        "Phone overview and tools",
-        "(subcommand)",
-        "none"
-      ],
-      [
-        "phone block",
-        "Block a phone id from matching you on userphone",
-        "(phone id)",
-        "none"
-      ],
-      [
-        "phone blocks",
-        "List phone ids you have blocked",
-        "none",
-        "none"
-      ],
-      [
-        "phone id",
-        "Show your phone id",
-        "none",
-        "none"
-      ],
-      [
-        "phone overview",
-        "Your phone profile and global stats",
-        "none",
-        "none"
-      ],
-      [
-        "phone report",
-        "Report a phone id for abuse",
-        "(phone id) (reason)",
-        "none"
-      ],
-      [
-        "phone unblock",
-        "Unblock a phone id",
-        "(phone id)",
-        "none"
-      ],
+      ["8ball", "Ask the magic 8-ball a question", "(question)", "none"],
+      ["advice", "Get random advice", "(user)", "none"],
+      ["allowance", "Send coins to your spouse", "(amount)", "none"],
+      ["anal", "`NSFW` anal roleplay command", "(user)", "none"],
+      ["angry", "Show you're angry", "none", "none"],
+      ["balance", "Check your or someone else's balance", "(user)", "none"],
+      ["bite", "Bite someone", "(user)", "none"],
+      ["blacktea", "BlackTea word game commands", "none", "none"],
+      ["blacktea quit", "Leave the current BlackTea game", "none", "none"],
+      ["blacktea start", "Start a BlackTea game lobby", "none", "none"],
+      ["blacktea stats", "View BlackTea game statistics", "(user)", "none"],
+      ["blacktea stop", "Stop the current BlackTea game", "none", "none"],
+      ["blowjob", "`NSFW` blowjob roleplay command", "(user)", "none"],
+      ["blush", "Show you're blushing", "none", "none"],
+      ["bonk", "Bonk someone", "(user)", "none"],
+      ["bully", "Bully someone", "(user)", "none"],
+      ["cards", "Play question answer with your loved one", "none", "none"],
+      ["coinflip", "Flip a coin and bet on the outcome", "(amount) (choice)", "none"],
+      ["compliment", "Get a random compliment", "(user)", "none"],
+      ["couplebal", "View combined wallet and bank with your spouse", "none", "none"],
+      ["crime", "Commit crimes to earn coins", "none", "none"],
+      ["cry", "Show you're crying", "none", "none"],
+      ["cuddle", "Cuddle someone", "(user)", "none"],
+      ["cum", "`NSFW` cum roleplay command", "(user)", "none"],
+      ["daily", "Claim your daily coins with streak bonuses", "none", "none"],
+      ["dance", "Dance with someone or alone", "(user)", "none"],
+      ["dare", "Get a dare challenge", "(rating)", "none"],
+      ["deposit", "Deposit coins from wallet to bank", "(amount)", "none"],
+      ["divorce", "Divorce your spouse", "none", "none"],
+      ["earn", "View all available earning methods", "none", "none"],
+      ["edaters", "View all married couples in the server", "none", "none"],
+      ["fact", "Get a random fact", "(user)", "none"],
+      ["freaky", "freaky script style", "(text)", "none"],
+      ["fuck", "`NSFW` fuck roleplay command", "(user)", "none"],
+      ["glomp", "Glomp someone", "(user)", "none"],
+      ["hangup", "Disconnect your active phone call", "none", "none"],
+      ["headpat", "Give someone a headpat", "(user)", "none"],
+      ["highfive", "Highfive someone", "(user)", "none"],
+      ["hug", "Give someone a warm hug", "(user)", "none"],
+      ["insult", "Get a random insult", "(user)", "none"],
+      ["joke", "Get a random joke", "(user)", "none"],
+      ["kill", "Kill someone", "(user)", "none"],
+      ["kiss", "Give someone a sweet kiss", "(user)", "none"],
+      ["leaderboard", "View the richest users", "none", "none"],
+      ["lick", "Lick someone", "(user)", "none"],
+      ["married", "Check your or another user's marriage status", "(user)", "none"],
+      ["marry", "Propose marriage to another user", "(user)", "none"],
+      ["nhie", "Get a never have I ever question", "(rating)", "none"],
+      ["nom", "Nom someone", "(user)", "none"],
+      ["oursong", "Set the song shown on your marriage", "[song]", "none"],
+      ["paranoia", "Get a paranoia question", "(rating)", "none"],
+      ["pat", "Give someone a gentle pat", "(user)", "none"],
+      ["phone", "Phone overview and tools", "(subcommand)", "none"],
+      ["phone block", "Block a phone id from matching you on userphone", "(phone id)", "none"],
+      ["phone blocks", "List phone ids you have blocked", "none", "none"],
+      ["phone id", "Show your phone id", "none", "none"],
+      ["phone overview", "Your phone profile and global stats", "none", "none"],
+      ["phone report", "Report a phone id for abuse", "(phone id) (reason)", "none"],
+      ["phone unblock", "Unblock a phone id", "(phone id)", "none"],
       [
         "phone username",
         "Set your anonymous phone username (once, 4-12 letters/numbers)",
         "(name)",
         "none"
       ],
-      [
-        "pick",
-        "Pick up coins from the streets",
-        "none",
-        "none"
-      ],
-      [
-        "pickup",
-        "Get a random pickup line",
-        "(user)",
-        "none"
-      ],
-      [
-        "poke",
-        "Poke someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "pp",
-        "Measure someone's pp size",
-        "(user)",
-        "none"
-      ],
-      [
-        "pussylick",
-        "`NSFW` pussylick roleplay command",
-        "(user)",
-        "none"
-      ],
-      [
-        "roast",
-        "Get a random roast",
-        "(user)",
-        "none"
-      ],
-      [
-        "rpstats",
-        "View roleplay statistics",
-        "(user) (action)",
-        "none"
-      ],
-      [
-        "serverphone",
-        "Call another server's phone channel",
-        "none",
-        "none"
-      ],
+      ["pick", "Pick up coins from the streets", "none", "none"],
+      ["pickup", "Get a random pickup line", "(user)", "none"],
+      ["poke", "Poke someone", "(user)", "none"],
+      ["pp", "Measure someone's pp size", "(user)", "none"],
+      ["pussylick", "`NSFW` pussylick roleplay command", "(user)", "none"],
+      ["roast", "Get a random roast", "(user)", "none"],
+      ["rpstats", "View roleplay statistics", "(user) (action)", "none"],
+      ["serverphone", "Call another server's phone channel", "none", "none"],
       [
         "serverphone channel",
         "Set this server's phone channel (auto-enables)",
         "(#channel)",
         "Manage Channels"
       ],
-      [
-        "serverphone disable",
-        "Disable this server's phone line",
-        "none",
-        "Manage Channels"
-      ],
+      ["serverphone disable", "Disable this server's phone line", "none", "Manage Channels"],
       [
         "serverphone enable",
         "Enable serverphone on this channel (or a given channel)",
         "(#channel)",
         "Manage Channels"
       ],
-      [
-        "slap",
-        "Slap someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "slots",
-        "Play the slot machine! Match symbols to win!",
-        "(amount)",
-        "none"
-      ],
-      [
-        "slut",
-        "Work in the adult entertainment industry to earn coins",
-        "none",
-        "none"
-      ],
-      [
-        "solo",
-        "`NSFW` solo roleplay command",
-        "none",
-        "none"
-      ],
-      [
-        "threesome",
-        "`NSFW` threesome roleplay command",
-        "(user) (type)",
-        "none"
-      ],
-      [
-        "tictactoe",
-        "Challenge someone to a game of Tic-Tac-Toe",
-        "(user)",
-        "none"
-      ],
-      [
-        "tictactoe stats",
-        "View Tic-Tac-Toe win/loss/draw stats",
-        "(user)",
-        "none"
-      ],
-      [
-        "transfer",
-        "Transfer coins from your wallet to another user",
-        "(user) (amount)",
-        "none"
-      ],
-      [
-        "truth",
-        "Get a truth question",
-        "(rating)",
-        "none"
-      ],
+      ["slap", "Slap someone", "(user)", "none"],
+      ["slots", "Play the slot machine! Match symbols to win!", "(amount)", "none"],
+      ["slut", "Work in the adult entertainment industry to earn coins", "none", "none"],
+      ["solo", "`NSFW` solo roleplay command", "none", "none"],
+      ["threesome", "`NSFW` threesome roleplay command", "(user) (type)", "none"],
+      ["tictactoe", "Challenge someone to a game of Tic-Tac-Toe", "(user)", "none"],
+      ["tictactoe stats", "View Tic-Tac-Toe win/loss/draw stats", "(user)", "none"],
+      ["transfer", "Transfer coins from your wallet to another user", "(user) (amount)", "none"],
+      ["truth", "Get a truth question", "(rating)", "none"],
       [
         "tts",
         "Convert text to a voice note using Microsoft neural voices",
         "(speaker) (text)",
         "none"
       ],
-      [
-        "tts voice",
-        "Pick the voice used for your TTS messages",
-        "none",
-        "none"
-      ],
-      [
-        "userphone",
-        "Call a random online user, or a specific phone id",
-        "(phone id)",
-        "none"
-      ],
-      [
-        "userphone disable",
-        "Opt out of receiving userphone calls",
-        "none",
-        "none"
-      ],
-      [
-        "userphone enable",
-        "Opt in to receive anonymous userphone calls",
-        "none",
-        "none"
-      ],
-      [
-        "uwu",
-        "Uwuify textfy",
-        "(text)",
-        "none"
-      ],
-      [
-        "vow",
-        "Set the vow shown on your marriage",
-        "[text]",
-        "none"
-      ],
-      [
-        "wave",
-        "Wave at someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "wink",
-        "Wink at someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "withdraw",
-        "Withdraw coins from bank to wallet",
-        "(amount)",
-        "none"
-      ],
-      [
-        "wyr",
-        "Get a would you rather question",
-        "(rating)",
-        "none"
-      ],
-      [
-        "yaoi",
-        "`NSFW` yaoi roleplay command",
-        "(user)",
-        "none"
-      ],
-      [
-        "yeet",
-        "Yeet someone",
-        "(user)",
-        "none"
-      ],
-      [
-        "yomama",
-        "Get a random yo mama joke",
-        "(user)",
-        "none"
-      ],
-      [
-        "yuri",
-        "`NSFW` yuri roleplay command",
-        "(user)",
-        "none"
-      ]
+      ["tts voice", "Pick the voice used for your TTS messages", "none", "none"],
+      ["userphone", "Call a random online user, or a specific phone id", "(phone id)", "none"],
+      ["userphone disable", "Opt out of receiving userphone calls", "none", "none"],
+      ["userphone enable", "Opt in to receive anonymous userphone calls", "none", "none"],
+      ["uwu", "Uwuify textfy", "(text)", "none"],
+      ["vow", "Set the vow shown on your marriage", "[text]", "none"],
+      ["wave", "Wave at someone", "(user)", "none"],
+      ["wink", "Wink at someone", "(user)", "none"],
+      ["withdraw", "Withdraw coins from bank to wallet", "(amount)", "none"],
+      ["wyr", "Get a would you rather question", "(rating)", "none"],
+      ["yaoi", "`NSFW` yaoi roleplay command", "(user)", "none"],
+      ["yeet", "Yeet someone", "(user)", "none"],
+      ["yomama", "Get a random yo mama joke", "(user)", "none"],
+      ["yuri", "`NSFW` yuri roleplay command", "(user)", "none"]
     ]
   },
   {
     "name": "Utility",
     "commands": [
-      [
-        "afk",
-        "Set your AFK status",
-        "(reason)",
-        "none"
-      ],
-      [
-        "alias",
-        "Manage server command aliases",
-        "(subcommand)",
-        "Administrator"
-      ],
+      ["afk", "Set your AFK status", "(reason)", "none"],
+      ["alias", "Manage server command aliases", "(subcommand)", "Administrator"],
       [
         "alias add",
         "Add a shortcut alias for a command. Use {0} as a placeholder for arguments",
         "(shortcut) (command)",
         "Administrator"
       ],
-      [
-        "alias list",
-        "List all server aliases",
-        "none",
-        "Administrator"
-      ],
-      [
-        "alias remove",
-        "Remove a specific alias for a command",
-        "(shortcut)",
-        "Administrator"
-      ],
+      ["alias list", "List all server aliases", "none", "Administrator"],
+      ["alias remove", "Remove a specific alias for a command", "(shortcut)", "Administrator"],
       [
         "alias removeall",
         "Remove all aliases for a specific command",
         "(command)",
         "Administrator"
       ],
-      [
-        "alias reset",
-        "Remove all server aliases",
-        "none",
-        "Administrator"
-      ],
-      [
-        "alias view",
-        "View what command an alias maps to",
-        "(shortcut)",
-        "Administrator"
-      ],
-      [
-        "ask",
-        "Ask a question using AI (text, images, or voice)",
-        "(question)",
-        "Premium",
-        true
-      ],
-      [
-        "avatar",
-        "View a user's avatar",
-        "(user)",
-        "none"
-      ],
-      [
-        "banner",
-        "View a user's banner",
-        "(user)",
-        "none"
-      ],
-      [
-        "birthday",
-        "Manage and view birthdays",
-        "(user)",
-        "none"
-      ],
+      ["alias reset", "Remove all server aliases", "none", "Administrator"],
+      ["alias view", "View what command an alias maps to", "(shortcut)", "Administrator"],
+      ["ask", "Ask a question using AI (text, images, or voice)", "(question)", "Premium", true],
+      ["avatar", "View a user's avatar", "(user)", "none"],
+      ["banner", "View a user's banner", "(user)", "none"],
+      ["birthday", "Manage and view birthdays", "(user)", "none"],
       [
         "birthday channel",
         "Set the channel for birthday announcements",
         "(channel)",
         "Manage Server"
       ],
-      [
-        "birthday disable",
-        "Disable birthday celebrations in this server",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "birthday enable",
-        "Enable birthday celebrations in this server",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "birthday list",
-        "View a list of every member's birthday",
-        "none",
-        "none"
-      ],
+      ["birthday disable", "Disable birthday celebrations in this server", "none", "Manage Server"],
+      ["birthday enable", "Enable birthday celebrations in this server", "none", "Manage Server"],
+      ["birthday list", "View a list of every member's birthday", "none", "none"],
       [
         "birthday message",
         "Set the birthday announcement message",
         "(message) (para)",
         "Manage Server"
       ],
-      [
-        "birthday overview",
-        "View birthday celebration settings",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "birthday remove",
-        "Remove your birthday",
-        "none",
-        "Developer"
-      ],
-      [
-        "birthday role",
-        "Set the birthday role given for 24 hours",
-        "(role)",
-        "Manage Server"
-      ],
-      [
-        "birthday set",
-        "Set your birthday",
-        "(date)",
-        "none"
-      ],
+      ["birthday overview", "View birthday celebration settings", "none", "Manage Server"],
+      ["birthday remove", "Remove your birthday", "none", "Developer"],
+      ["birthday role", "Set the birthday role given for 24 hours", "(role)", "Manage Server"],
+      ["birthday set", "Set your birthday", "(date)", "none"],
       [
         "calculate",
         "Advanced mathematical calculator powered by Wolfram Alpha",
         "(expression or question)",
         "none"
       ],
-      [
-        "channelinfo",
-        "View information about a channel",
-        "(channel)",
-        "none"
-      ],
-      [
-        "cleargnames",
-        "Reset your guild's name history",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "clearnames",
-        "Clear your name history",
-        "none",
-        "none"
-      ],
-      [
-        "clearsnipe",
-        "Clear all sniped messages in this channel",
-        "none",
-        "Manage Messages"
-      ],
-      [
-        "cmds",
-        "View all adore commands",
-        "none",
-        "none"
-      ],
-      [
-        "color",
-        "Display color information from a color code or name",
-        "(hex)",
-        "none"
-      ],
-      [
-        "copyembed",
-        "Get the embed code from a message",
-        "(message)",
-        "Manage Messages"
-      ],
-      [
-        "createembed",
-        "Create a custom embed or container",
-        "(code)",
-        "Manage Messages"
-      ],
-      [
-        "cya",
-        "clockout",
-        "none",
-        "none"
-      ],
-      [
-        "define",
-        "Get the definition of a word",
-        "(word)",
-        "none"
-      ],
-      [
-        "editsnipe",
-        "View recently edited messages",
-        "(index)",
-        "none"
-      ],
-      [
-        "emoji",
-        "Manage server emojis",
-        "(subcommand)",
-        "Manage Expressions"
-      ],
-      [
-        "emoji add",
-        "Add emojis to the server",
-        "(emojis...)",
-        "Manage Expressions"
-      ],
-      [
-        "emoji enlarge",
-        "Show an enlarged version of an emoji",
-        "(emoji)",
-        "none"
-      ],
-      [
-        "emoji list",
-        "List all server emojis",
-        "none",
-        "none"
-      ],
-      [
-        "emoji remove",
-        "Remove emojis from the server",
-        "(emojis...)",
-        "Manage Expressions"
-      ],
-      [
-        "enlarge",
-        "Enlarge an emoji or emote and send it as a file",
-        "(emoji/emote)",
-        "none"
-      ],
-      [
-        "gif",
-        "Convert a video to GIF or image to static GIF",
-        "none",
-        "none"
-      ],
-      [
-        "gm",
-        "Send a good morning message",
-        "none",
-        "none"
-      ],
-      [
-        "gn",
-        "Send a good night message",
-        "none",
-        "none"
-      ],
-      [
-        "gnames",
-        "View guild name changes",
-        "none",
-        "none"
-      ],
-      [
-        "google",
-        "Search the web using Google",
-        "(search)",
-        "none"
-      ],
-      [
-        "guildbanner",
-        "Return the server's banner",
-        "none",
-        "none"
-      ],
-      [
-        "guildicon",
-        "Return the server's icon",
-        "none",
-        "none"
-      ],
-      [
-        "guildsplash",
-        "Return the server's splash banner",
-        "none",
-        "none"
-      ],
-      [
-        "help",
-        "View extended help for commands",
-        "(command)",
-        "none"
-      ],
-      [
-        "hex",
-        "Get dominant colors from a picture",
-        "(user/url/attachment)",
-        "none"
-      ],
-      [
-        "image",
-        "Search for images using Google",
-        "(query)",
-        "none"
-      ],
-      [
-        "invite",
-        "View invite statistics",
-        "(member)",
-        "none"
-      ],
-      [
-        "invite inviter",
-        "View who invited a member",
-        "(member)",
-        "none"
-      ],
-      [
-        "invite leaderboard",
-        "View invite leaderboard",
-        "none",
-        "none"
-      ],
-      [
-        "invite list",
-        "View list of members invited by a user",
-        "(member)",
-        "none"
-      ],
-      [
-        "invite view",
-        "View information about an invite code",
-        "(code)",
-        "none"
-      ],
-      [
-        "klipy",
-        "Search for a GIF using Klipy",
-        "(search)",
-        "none"
-      ],
-      [
-        "latency",
-        "Check the adore's current latency",
-        "ping",
-        "none"
-      ],
-      [
-        "lyrics",
-        "Get lyrics for a song",
-        "(artist) (song title)",
-        "none"
-      ],
-      [
-        "media",
-        "Image manipulation commands",
-        "(subcommand)",
-        "none"
-      ],
+      ["channelinfo", "View information about a channel", "(channel)", "none"],
+      ["cleargnames", "Reset your guild's name history", "none", "Manage Server"],
+      ["clearnames", "Clear your name history", "none", "none"],
+      ["clearsnipe", "Clear all sniped messages in this channel", "none", "Manage Messages"],
+      ["cmds", "View all adore commands", "none", "none"],
+      ["color", "Display color information from a color code or name", "(hex)", "none"],
+      ["copyembed", "Get the embed code from a message", "(message)", "Manage Messages"],
+      ["createembed", "Create a custom embed or container", "(code)", "Manage Messages"],
+      ["cya", "clockout", "none", "none"],
+      ["define", "Get the definition of a word", "(word)", "none"],
+      ["editsnipe", "View recently edited messages", "(index)", "none"],
+      ["emoji", "Manage server emojis", "(subcommand)", "Manage Expressions"],
+      ["emoji add", "Add emojis to the server", "(emojis...)", "Manage Expressions"],
+      ["emoji enlarge", "Show an enlarged version of an emoji", "(emoji)", "none"],
+      ["emoji list", "List all server emojis", "none", "none"],
+      ["emoji remove", "Remove emojis from the server", "(emojis...)", "Manage Expressions"],
+      ["enlarge", "Enlarge an emoji or emote and send it as a file", "(emoji/emote)", "none"],
+      ["gif", "Convert a video to GIF or image to static GIF", "none", "none"],
+      ["gm", "Send a good morning message", "none", "none"],
+      ["gn", "Send a good night message", "none", "none"],
+      ["gnames", "View guild name changes", "none", "none"],
+      ["google", "Search the web using Google", "(search)", "none"],
+      ["guildbanner", "Return the server's banner", "none", "none"],
+      ["guildicon", "Return the server's icon", "none", "none"],
+      ["guildsplash", "Return the server's splash banner", "none", "none"],
+      ["help", "View extended help for commands", "(command)", "none"],
+      ["hex", "Get dominant colors from a picture", "(user/url/attachment)", "none"],
+      ["image", "Search for images using Google", "(query)", "none"],
+      ["invite", "View invite statistics", "(member)", "none"],
+      ["invite inviter", "View who invited a member", "(member)", "none"],
+      ["invite leaderboard", "View invite leaderboard", "none", "none"],
+      ["invite list", "View list of members invited by a user", "(member)", "none"],
+      ["invite view", "View information about an invite code", "(code)", "none"],
+      ["klipy", "Search for a GIF using Klipy", "(search)", "none"],
+      ["latency", "Check the adore's current latency", "ping", "none"],
+      ["lyrics", "Get lyrics for a song", "(artist) (song title)", "none"],
+      ["media", "Image manipulation commands", "(subcommand)", "none"],
       [
         "media caption",
         "Create a caption with white text area on top and image below",
         "(text)",
         "none"
       ],
-      [
-        "membercount",
-        "View the server's member count",
-        "none",
-        "none"
-      ],
-      [
-        "names",
-        "View name history for a user",
-        "(user)",
-        "none"
-      ],
-      [
-        "note",
-        "Manage your personal notes",
-        "(subcommand)",
-        "none"
-      ],
-      [
-        "note add",
-        "Add a personal note",
-        "(text)",
-        "none"
-      ],
-      [
-        "note list",
-        "List all your notes",
-        "none",
-        "none"
-      ],
-      [
-        "note remove",
-        "Remove a note by ID",
-        "(id)",
-        "none"
-      ],
-      [
-        "note reset",
-        "Delete all your notes",
-        "none",
-        "none"
-      ],
-      [
-        "note view",
-        "View a note by ID",
-        "(id)",
-        "none"
-      ],
-      [
-        "notes",
-        "List all your notes",
-        "none",
-        "none"
-      ],
-      [
-        "ocr",
-        "Extract text from images using OCR",
-        "(attach image)",
-        "none"
-      ],
+      ["membercount", "View the server's member count", "none", "none"],
+      ["names", "View name history for a user", "(user)", "none"],
+      ["note", "Manage your personal notes", "(subcommand)", "none"],
+      ["note add", "Add a personal note", "(text)", "none"],
+      ["note list", "List all your notes", "none", "none"],
+      ["note remove", "Remove a note by ID", "(id)", "none"],
+      ["note reset", "Delete all your notes", "none", "none"],
+      ["note view", "View a note by ID", "(id)", "none"],
+      ["notes", "List all your notes", "none", "none"],
+      ["ocr", "Extract text from images using OCR", "(attach image)", "none"],
       [
         "permissions",
         "View permissions for a user, role, or channel",
         "(user, role or channel)",
         "none"
       ],
-      [
-        "poll",
-        "Create a simple poll with up/down vote reactions",
-        "(question)",
-        "none"
-      ],
-      [
-        "quote",
-        "Create a quote image with your avatar and text",
-        "(text)",
-        "none"
-      ],
-      [
-        "reactionsnipe",
-        "View recently removed reactions",
-        "(index)",
-        "none"
-      ],
-      [
-        "remind",
-        "Set a reminder",
-        "(duration) (reminder)",
-        "none"
-      ],
-      [
-        "remind add",
-        "Set a reminder",
-        "(duration) (reminder)",
-        "none"
-      ],
-      [
-        "remind list",
-        "List all your reminders",
-        "none",
-        "none"
-      ],
-      [
-        "remind remove",
-        "Remove a reminder",
-        "(id)",
-        "none"
-      ],
-      [
-        "roleinfo",
-        "View information about a role",
-        "(role)",
-        "none"
-      ],
-      [
-        "screenshot",
-        "Take a screenshot of a website",
-        "(url)",
-        "none"
-      ],
-      [
-        "selfalias",
-        "Manage your personal premium aliases",
-        "(subcommand)",
-        "Premium",
-        true
-      ],
+      ["poll", "Create a simple poll with up/down vote reactions", "(question)", "none"],
+      ["quote", "Create a quote image with your avatar and text", "(text)", "none"],
+      ["reactionsnipe", "View recently removed reactions", "(index)", "none"],
+      ["remind", "Set a reminder", "(duration) (reminder)", "none"],
+      ["remind add", "Set a reminder", "(duration) (reminder)", "none"],
+      ["remind list", "List all your reminders", "none", "none"],
+      ["remind remove", "Remove a reminder", "(id)", "none"],
+      ["roleinfo", "View information about a role", "(role)", "none"],
+      ["screenshot", "Take a screenshot of a website", "(url)", "none"],
+      ["selfalias", "Manage your personal premium aliases", "(subcommand)", "Premium", true],
       [
         "selfalias add",
         "Add a shortcut alias for a command. Use {0} as a placeholder for arguments",
@@ -4000,20 +1682,8 @@
         "Premium",
         true
       ],
-      [
-        "selfalias list",
-        "List all your premium aliases",
-        "none",
-        "Premium",
-        true
-      ],
-      [
-        "selfalias remove",
-        "Remove a specific alias",
-        "(shortcut)",
-        "Premium",
-        true
-      ],
+      ["selfalias list", "List all your premium aliases", "none", "Premium", true],
+      ["selfalias remove", "Remove a specific alias", "(shortcut)", "Premium", true],
       [
         "selfalias removeall",
         "Remove all aliases for a specific command",
@@ -4021,116 +1691,44 @@
         "Premium",
         true
       ],
-      [
-        "selfalias reset",
-        "Remove all your premium aliases",
-        "none",
-        "Premium",
-        true
-      ],
-      [
-        "selfalias view",
-        "View what command an alias maps to",
-        "(shortcut)",
-        "Premium",
-        true
-      ],
-      [
-        "serveravatar",
-        "View a user's server avatar",
-        "(user)",
-        "none"
-      ],
-      [
-        "serverbanner",
-        "View a user's server banner",
-        "(user)",
-        "none"
-      ],
-      [
-        "serverinfo",
-        "View information about the server",
-        "(server id)",
-        "none"
-      ],
-      [
-        "snipe",
-        "View recently deleted messages",
-        "(index)",
-        "none"
-      ],
+      ["selfalias reset", "Remove all your premium aliases", "none", "Premium", true],
+      ["selfalias view", "View what command an alias maps to", "(shortcut)", "Premium", true],
+      ["serveravatar", "View a user's server avatar", "(user)", "none"],
+      ["serverbanner", "View a user's server banner", "(user)", "none"],
+      ["serverinfo", "View information about the server", "(server id)", "none"],
+      ["snipe", "View recently deleted messages", "(index)", "none"],
       [
         "spotlight",
         "Get notified when someone says a keyword in this server",
         "(subcommand)",
         "none"
       ],
-      [
-        "spotlight add",
-        "Add a keyword to watch for",
-        "(keyword)",
-        "none"
-      ],
+      ["spotlight add", "Add a keyword to watch for", "(keyword)", "none"],
       [
         "spotlight ignore",
         "Ignore a member, channel, or role for spotlight notifications",
         "(member or channel or role)",
         "none"
       ],
-      [
-        "spotlight ignore list",
-        "List your spotlight ignores",
-        "none",
-        "none"
-      ],
-      [
-        "spotlight list",
-        "List your watched keywords",
-        "none",
-        "none"
-      ],
-      [
-        "spotlight remove",
-        "Remove a watched keyword",
-        "(keyword)",
-        "none"
-      ],
-      [
-        "spotlight reset",
-        "Remove all watched keywords",
-        "none",
-        "none"
-      ],
+      ["spotlight ignore list", "List your spotlight ignores", "none", "none"],
+      ["spotlight list", "List your watched keywords", "none", "none"],
+      ["spotlight remove", "Remove a watched keyword", "(keyword)", "none"],
+      ["spotlight reset", "Remove all watched keywords", "none", "none"],
       [
         "steal",
         "Steal emojis or stickers from a message or by providing them directly",
         "(emojis...)",
         "Manage Expressions"
       ],
-      [
-        "sticker",
-        "Manage server stickers",
-        "(subcommand)",
-        "Manage Expressions"
-      ],
-      [
-        "sticker add",
-        "Add a sticker from a message link",
-        "(message link)",
-        "Manage Expressions"
-      ],
+      ["sticker", "Manage server stickers", "(subcommand)", "Manage Expressions"],
+      ["sticker add", "Add a sticker from a message link", "(message link)", "Manage Expressions"],
       [
         "sticker cleanup",
         "Clean up all server stickers by removing invite links and adding server tags",
         "none",
         "Manage Expressions"
       ],
-      [
-        "sticker list",
-        "List all server stickers",
-        "none",
-        "none"
-      ],
+      ["sticker list", "List all server stickers", "none", "none"],
       [
         "sticker remove",
         "Remove a sticker using a message link",
@@ -4143,30 +1741,15 @@
         "none",
         "Manage Expressions"
       ],
-      [
-        "suggest",
-        "Suggest a command for Adore",
-        "none",
-        "none"
-      ],
-      [
-        "suggestion",
-        "Manage Adore suggestions",
-        "(subcommand)",
-        "Developer"
-      ],
+      ["suggest", "Suggest a command for Adore", "none", "none"],
+      ["suggestion", "Manage Adore suggestions", "(subcommand)", "Developer"],
       [
         "suggestion blacklist",
         "Blacklist a suggestion author by suggestion id",
         "(suggestion id) [reason]",
         "Developer"
       ],
-      [
-        "suggestion blacklists",
-        "List suggestion blacklists",
-        "none",
-        "Developer"
-      ],
+      ["suggestion blacklists", "List suggestion blacklists", "none", "Developer"],
       [
         "suggestion thread",
         "Toggle suggestion discussion threads",
@@ -4197,91 +1780,25 @@
         "(subcommand) or {prefix}tag (trigger)",
         "none"
       ],
-      [
-        "tag add",
-        "Add a new tag",
-        "(trigger), (response)",
-        "Manage Messages"
-      ],
-      [
-        "tag edit",
-        "Edit a tag response",
-        "(trigger), (new response)",
-        "Manage Messages"
-      ],
-      [
-        "tag list",
-        "List all tags or tags by a user",
-        "(user)",
-        "none"
-      ],
-      [
-        "tag random",
-        "Get a random tag",
-        "(user)",
-        "none"
-      ],
-      [
-        "tag remove",
-        "Remove a tag",
-        "(trigger)",
-        "Manage Messages"
-      ],
-      [
-        "tag rename",
-        "Rename a tag trigger",
-        "(old trigger) (new trigger)",
-        "Manage Messages"
-      ],
-      [
-        "tag reset",
-        "Remove all tags (requires Manage Guild)",
-        "none",
-        "Manage Server"
-      ],
-      [
-        "timezone",
-        "Manage and view timezones",
-        "(user)",
-        "none"
-      ],
-      [
-        "timezone remove",
-        "Remove your timezone",
-        "none",
-        "none"
-      ],
-      [
-        "timezone set",
-        "Set your timezone",
-        "(location)",
-        "none"
-      ],
-      [
-        "topcommand",
-        "View the most used bot commands",
-        "none",
-        "none"
-      ],
+      ["tag add", "Add a new tag", "(trigger), (response)", "Manage Messages"],
+      ["tag edit", "Edit a tag response", "(trigger), (new response)", "Manage Messages"],
+      ["tag list", "List all tags or tags by a user", "(user)", "none"],
+      ["tag random", "Get a random tag", "(user)", "none"],
+      ["tag remove", "Remove a tag", "(trigger)", "Manage Messages"],
+      ["tag rename", "Rename a tag trigger", "(old trigger) (new trigger)", "Manage Messages"],
+      ["tag reset", "Remove all tags (requires Manage Guild)", "none", "Manage Server"],
+      ["timezone", "Manage and view timezones", "(user)", "none"],
+      ["timezone remove", "Remove your timezone", "none", "none"],
+      ["timezone set", "Set your timezone", "(location)", "none"],
+      ["topcommand", "View the most used bot commands", "none", "none"],
       [
         "transaction",
         "Get information about a cryptocurrency transaction",
         "(transaction_hash)",
         "none"
       ],
-      [
-        "transcribe",
-        "Transcribe audio or video to text",
-        "(attachment)",
-        "Premium",
-        true
-      ],
-      [
-        "translate",
-        "Translate text to different languages",
-        "(language) (text)",
-        "none"
-      ],
+      ["transcribe", "Transcribe audio or video to text", "(attachment)", "Premium", true],
+      ["translate", "Translate text to different languages", "(language) (text)", "none"],
       [
         "transparent",
         "Remove background from an image to make it transparent",
@@ -4289,30 +1806,10 @@
         "Premium",
         true
       ],
-      [
-        "uptime",
-        "Check how long adore has been online",
-        "none",
-        "none"
-      ],
-      [
-        "urban",
-        "Get the Urban Dictionary definition of a word or phrase",
-        "(word)",
-        "none"
-      ],
-      [
-        "weather",
-        "Show the current weather for a city",
-        "(city)",
-        "none"
-      ],
-      [
-        "whois",
-        "View information about a user",
-        "(user)",
-        "none"
-      ]
+      ["uptime", "Check how long adore has been online", "none", "none"],
+      ["urban", "Get the Urban Dictionary definition of a word or phrase", "(word)", "none"],
+      ["weather", "Show the current weather for a city", "(city)", "none"],
+      ["whois", "View information about a user", "(user)", "none"]
     ]
   }
 ]

@@ -162,7 +162,8 @@ export const sampleVariables: Record<string, string> = {
   "{item['name']}": "Lucky Clover",
   "{item['num_id']}": "42",
   "{target_phrase}": "Cupi Commercial Enterprise Agreement #4892",
-  "{mode_desc}": "Clock in for your daily business shift to earn wages and boost company stock value.",
+  "{mode_desc}":
+    "Clock in for your daily business shift to earn wages and boost company stock value.",
   "{ODDS_LINE}": "Odds: Common 60% · Rare 30% · Epic 9% · Legendary 1%",
   "{pity_str}": "Pity: 0/3 duds",
   "{pity_status}": "Pity: 1/3 duds",
@@ -275,18 +276,37 @@ export function renderVariables(value: string): string {
     const key = expr.trim().toLowerCase();
     if (key.includes("mention")) return "@stella";
     if (key.includes("name") || key.includes("title")) return "Starlight Cafe";
-    if (key.includes("total") || key.includes("sum") || key.includes("balance") || key.includes("coins")) return "50,000";
+    if (
+      key.includes("total") ||
+      key.includes("sum") ||
+      key.includes("balance") ||
+      key.includes("coins")
+    )
+      return "50,000";
     if (key.includes("id")) return "42";
-    if (key.includes("workers") || key.includes("count") || key.includes("shares") || key.includes("level")) return "5";
+    if (
+      key.includes("workers") ||
+      key.includes("count") ||
+      key.includes("shares") ||
+      key.includes("level")
+    )
+      return "5";
     if (key.includes("rate") || key.includes("pct") || key.includes("percent")) return "15";
-    if (key.includes("url") || key.includes("avatar") || key.includes("logo") || key.includes("icon")) return "https://cdn.discordapp.com/embed/avatars/0.png";
+    if (
+      key.includes("url") ||
+      key.includes("avatar") ||
+      key.includes("logo") ||
+      key.includes("icon")
+    )
+      return "https://cdn.discordapp.com/embed/avatars/0.png";
     if (key.includes("author") || key.includes("user") || key.includes("member")) return "stella";
     if (key.includes("guild") || key.includes("server")) return "Adore Community";
     if (key.includes("prefix")) return ",";
     if (key.includes("channel")) return "#general";
     if (key.includes("role")) return "@Member";
     if (key.includes("prize")) return "50,000 coins";
-    if (key.includes("error") || key.includes("err") || key.includes("exc")) return "An unexpected error occurred.";
+    if (key.includes("error") || key.includes("err") || key.includes("exc"))
+      return "An unexpected error occurred.";
     return match;
   });
 

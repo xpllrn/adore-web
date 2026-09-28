@@ -1,5 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, Bot, ExternalLink, Headphones, Shield, SlidersHorizontal } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Bot,
+  ExternalLink,
+  Headphones,
+  Shield,
+  SlidersHorizontal,
+} from "lucide-react";
 import { PageIntro } from "@/components/site-chrome";
 import { OFFICIAL_DOCS_URL, useLiveStatus } from "@/lib/uptime";
 
@@ -7,9 +15,16 @@ export const Route = createFileRoute("/docs")({
   head: () => ({
     meta: [
       { title: "Documentation | Adore" },
-      { name: "description", content: "Start using Adore and learn its moderation, music, community, and customization tools." },
+      {
+        name: "description",
+        content:
+          "Start using Adore and learn its moderation, music, community, and customization tools.",
+      },
       { property: "og:title", content: "Documentation | Adore" },
-      { property: "og:description", content: "Setup and feature guidance for the Adore Discord app." },
+      {
+        property: "og:description",
+        content: "Setup and feature guidance for the Adore Discord app.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/docs" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -75,7 +90,7 @@ function DocsPage() {
         title="From invite to indispensable."
         description="Practical guidance for setting up Adore and putting its core systems to work in your community."
       />
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-28">
+      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         {/* Live status bar with live ticking uptime */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-surface px-4 py-3 shadow-panel">
           <div className="flex items-center gap-2.5 text-xs">
@@ -108,7 +123,9 @@ function DocsPage() {
                 Explore the Complete Wiki &amp; Docs
               </h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                Comprehensive documentation covering Adore security, antinuke, tickets, role management, music, embed scripting, and configuration is hosted on our official wiki.
+                Comprehensive documentation covering Adore security, antinuke, tickets, role
+                management, music, embed scripting, and configuration is hosted on our official
+                wiki.
               </p>
             </div>
             <a
@@ -124,13 +141,19 @@ function DocsPage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {docs.map((doc) => (
-            <article key={doc.title} className="flex flex-col rounded-md border border-border bg-surface p-6 shadow-panel sm:p-8">
+            <article
+              key={doc.title}
+              className="flex flex-col rounded-md border border-border bg-surface p-6 shadow-panel sm:p-8"
+            >
               <doc.icon className="size-5" />
               <h2 className="mt-8 font-display text-xl font-bold">{doc.title}</h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">{doc.text}</p>
               <ol className="mt-6 grid gap-3">
                 {doc.steps.map((step, index) => (
-                  <li key={step} className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-3 text-xs leading-5">
+                  <li
+                    key={step}
+                    className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-3 text-xs leading-5"
+                  >
                     <span className="font-mono text-muted-foreground">0{index + 1}</span>
                     {step}
                   </li>
@@ -154,7 +177,9 @@ function DocsPage() {
           <div>
             <BookOpen className="size-5" />
             <h2 className="mt-5 font-display text-xl font-bold">Need a specific command?</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Search the categorized command catalogue.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Search the categorized command catalogue.
+            </p>
           </div>
           <Link
             to="/commands"

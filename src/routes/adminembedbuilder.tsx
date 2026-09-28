@@ -20,11 +20,7 @@ import {
 import { useId, useMemo, useState, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { EmbedFieldsEditor } from "@/components/embed-fields-editor";
-import {
-  Preview,
-  embedToCv2Blocks,
-  parseButtonsFromNote,
-} from "@/components/embed-preview";
+import { Preview, embedToCv2Blocks, parseButtonsFromNote } from "@/components/embed-preview";
 import { buildAdoreCode } from "@/lib/adore-code";
 import {
   parseEmbedMarkdown,
@@ -318,8 +314,7 @@ function AdminEmbedBuilderPage() {
     };
   }, [activeEmbed]);
 
-  const activeMode: Mode =
-    activeEmbed?.mode || (activeEmbed?.isCv2 ? "container" : "embed");
+  const activeMode: Mode = activeEmbed?.mode || (activeEmbed?.isCv2 ? "container" : "embed");
 
   const activeButtons = useMemo(() => {
     return parseButtonsFromNote(activeEmbed?.buttonsNote || "");

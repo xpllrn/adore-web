@@ -63,13 +63,17 @@ export const markdownComponents: Components = {
 const inlineMarkdownComponents: Components = {
   ...markdownComponents,
   p: ({ children }) => (
-    <span className="min-w-0 whitespace-pre-wrap break-words leading-5 inline">
-      {children}
-    </span>
+    <span className="min-w-0 whitespace-pre-wrap break-words leading-5 inline">{children}</span>
   ),
 };
 
-export function DiscordMarkdown({ value, className = "" }: { value?: string | undefined; className?: string }) {
+export function DiscordMarkdown({
+  value,
+  className = "",
+}: {
+  value?: string | undefined;
+  className?: string;
+}) {
   if (!value) return null;
   const rendered = renderVariables(value);
   const parts = rendered.split(/`?(<(?:a)?:[A-Za-z0-9_~-]+:\d+>)`?/);
@@ -119,11 +123,7 @@ export function DiscordMarkdown({ value, className = "" }: { value?: string | un
     }
   }
 
-  return (
-    <div className={`discord-markdown min-w-0 break-words ${className}`}>
-      {nodes}
-    </div>
-  );
+  return <div className={`discord-markdown min-w-0 break-words ${className}`}>{nodes}</div>;
 }
 
 export function MediaPlaceholder({ label, compact }: { label: string; compact?: boolean }) {
@@ -392,7 +392,10 @@ export function parseButtonsFromNote(note: string): MessageButton[] {
     }));
   }
 
-  const parts = note.split(/\s*(?:\+|\band\b|,|\|)\s*/i).map((s) => s.trim()).filter(Boolean);
+  const parts = note
+    .split(/\s*(?:\+|\band\b|,|\|)\s*/i)
+    .map((s) => s.trim())
+    .filter(Boolean);
   const buttons: MessageButton[] = [];
 
   for (let i = 0; i < parts.length; i++) {
@@ -490,4 +493,3 @@ export const DiscordMessagePreview = Preview;
 
 export type { Block, EmbedField, EmbedState, MessageButton, Mode } from "@/types/embed";
 export { initialEmbed } from "@/types/embed";
-
