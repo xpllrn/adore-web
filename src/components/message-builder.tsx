@@ -132,8 +132,9 @@ export function MessageBuilder() {
     else flash("Could not copy to clipboard", false);
   }
 
-  // Loading replaces the parsed mode's state instead of merging into what was there, and
-  // re-keys every item so ids from pasted code can't collide with the builder's own.
+  // Loading replaces the whole builder rather than merging into it: the other mode is reset
+  // too, so switching modes later can't resurrect content the loaded code never described.
+  // Every item is re-keyed so ids from pasted code can't collide with the builder's own.
   function loadCode() {
     const parsed = parseAdoreCode(shownCode);
     if (!parsed) {
@@ -148,7 +149,10 @@ export function MessageBuilder() {
         ...parsed.embed,
         fields: (parsed.embed?.fields ?? []).map((field) => ({ ...field, id: freshId() })),
       });
+      setBlocks([]);
+      setContainerColor(DEFAULT_COLOR);
     } else {
+      setEmbed(EMPTY_EMBED);
       setContainerColor(parsed.containerColor ?? DEFAULT_COLOR);
       setBlocks(
         (parsed.blocks ?? []).map((block) =>
