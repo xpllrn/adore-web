@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   MoreVertical,
   Download,
@@ -8,7 +8,7 @@ import {
   Printer,
   Share2,
   RefreshCw,
-} from 'lucide-react';
+} from "lucide-react";
 
 interface UsageHistoryItem {
   date: string;
@@ -28,30 +28,28 @@ interface CreditUsageCardProps {
   onViewAll?: () => void;
 }
 
-const PERIOD_OPTIONS = ['7 Days', '14 Days', '30 Days', '90 Days', '12 Months'];
+const PERIOD_OPTIONS = ["7 Days", "14 Days", "30 Days", "90 Days", "12 Months"];
 
 const popoverAnim = {
   initial: { opacity: 0, y: 6, scale: 0.97 },
   animate: { opacity: 1, y: 0, scale: 1 },
   exit: { opacity: 0, y: 6, scale: 0.97 },
-  transition: { type: 'spring' as const, stiffness: 400, damping: 28 },
+  transition: { type: "spring" as const, stiffness: 400, damping: 28 },
 } as const;
 
 export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
   usedCreditsPercent = 56.4,
-  totalCreditsLabel = '100M CREDITS',
-  creditsUsedLabel = '56.4M',
-  creditsLeftLabel = '43.6M',
+  totalCreditsLabel = "100M CREDITS",
+  creditsUsedLabel = "56.4M",
+  creditsLeftLabel = "43.6M",
   usageHistory = [],
   onAutoSwitchChange,
   onManagePlan,
   onViewAll,
 }) => {
   const [autoSwitch, setAutoSwitch] = useState(true);
-  const [activePopover, setActivePopover] = useState<'more' | 'period' | null>(
-    null,
-  );
-  const [selectedPeriod, setSelectedPeriod] = useState('30 Days');
+  const [activePopover, setActivePopover] = useState<"more" | "period" | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState("30 Days");
   const [downloadDone, setDownloadDone] = useState(false);
   const segments = 75;
 
@@ -66,14 +64,14 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
 
   const handleDownload = () => {
     // Simulate CSV export
-    const headers = ['Date', 'Model', 'Credits', 'Cost'];
+    const headers = ["Date", "Model", "Credits", "Cost"];
     const rows = usageHistory.map((r) => [r.date, r.model, r.credits, r.cost]);
-    const csv = [headers, ...rows].map((r) => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'credit-usage.csv';
+    a.download = "credit-usage.csv";
     a.click();
     URL.revokeObjectURL(url);
     setDownloadDone(true);
@@ -83,14 +81,14 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
-        setActivePopover((prev) => (prev === 'more' ? null : prev));
+        setActivePopover((prev) => (prev === "more" ? null : prev));
       }
       if (periodRef.current && !periodRef.current.contains(e.target as Node)) {
-        setActivePopover((prev) => (prev === 'period' ? null : prev));
+        setActivePopover((prev) => (prev === "period" ? null : prev));
       }
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   return (
@@ -116,14 +114,14 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
               onClick={handleToggleAutoSwitch}
               className={`relative flex h-4.75 w-10 shrink-0 items-center rounded-full border-[1.4px] p-0.5 transition-colors duration-200 ${
                 autoSwitch
-                  ? 'border-green-500/40 bg-[#E8F5E9] dark:border-green-400/40 dark:bg-[#182D1A]'
-                  : 'border-gray-300 bg-gray-200 dark:border-[#404040] dark:bg-[#333]'
+                  ? "border-green-500/40 bg-[#E8F5E9] dark:border-green-400/40 dark:bg-[#182D1A]"
+                  : "border-gray-300 bg-gray-200 dark:border-[#404040] dark:bg-[#333]"
               }`}
             >
               <motion.div
                 animate={{ x: autoSwitch ? 17 : 0 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                className={`h-3 w-4 ${autoSwitch ? 'bg-green-500 dark:bg-[#2FD340]' : 'bg-gray-400 dark:bg-[#595353]'} rounded-full shadow-sm`}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                className={`h-3 w-4 ${autoSwitch ? "bg-green-500 dark:bg-[#2FD340]" : "bg-gray-400 dark:bg-[#595353]"} rounded-full shadow-sm`}
               />
             </button>
           </div>
@@ -137,7 +135,7 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
               <div
                 key={i}
                 className={`flex-1 rounded-full transition-all duration-700 ${
-                  isFilled ? 'bg-[#FF7A3F]' : 'bg-gray-200 dark:bg-[#222]'
+                  isFilled ? "bg-[#FF7A3F]" : "bg-gray-200 dark:bg-[#222]"
                 }`}
                 style={{ opacity: isFilled ? 1 - i * 0.004 : 1 }}
               />
@@ -147,13 +145,11 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
 
         <div className="flex items-center justify-between bg-gray-50/50 px-4 py-4 text-[9px] font-bold sm:px-6 sm:text-[10px] md:px-8 dark:bg-[#171717]">
           <span className="text-slate-500 dark:text-[#BEBEBE]">
-            {creditsUsedLabel}{' '}
-            <span className="text-slate-400 dark:text-[#717171]">
-              / {totalCreditsLabel}
-            </span>
+            {creditsUsedLabel}{" "}
+            <span className="text-slate-400 dark:text-[#717171]">/ {totalCreditsLabel}</span>
           </span>
           <span className="text-slate-500 dark:text-[#BEBEBE]">
-            {creditsLeftLabel}{' '}
+            {creditsLeftLabel}{" "}
             <span className="xs:inline hidden text-slate-400 dark:text-[#717171]">
               CREDITS LEFT
             </span>
@@ -181,21 +177,17 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
           <div ref={periodRef} className="relative flex-shrink-0">
             <button
               title="period"
-              onClick={() =>
-                setActivePopover((prev) =>
-                  prev === 'period' ? null : 'period',
-                )
-              }
+              onClick={() => setActivePopover((prev) => (prev === "period" ? null : "period"))}
               className="flex items-center gap-1 rounded-xl border border-gray-300 px-2 py-1 text-[9px] whitespace-nowrap text-gray-500 transition-colors hover:bg-gray-100 sm:gap-2 dark:border-[#909090]/65 dark:text-[#909090] dark:hover:bg-[#1a1a1a]"
             >
-              {selectedPeriod}{' '}
+              {selectedPeriod}{" "}
               <ChevronDown
                 size={10}
-                className={`transition-transform ${activePopover === 'period' ? 'rotate-180' : ''}`}
+                className={`transition-transform ${activePopover === "period" ? "rotate-180" : ""}`}
               />
             </button>
             <AnimatePresence>
-              {activePopover === 'period' && (
+              {activePopover === "period" && (
                 <motion.div
                   {...popoverAnim}
                   className="absolute top-full right-0 z-50 mt-2 w-36 overflow-hidden rounded-2xl border border-gray-200 bg-white py-1.5 shadow-2xl dark:border-[#303030] dark:bg-[#1a1a1a]"
@@ -207,7 +199,7 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
                         setSelectedPeriod(opt);
                         setActivePopover(null);
                       }}
-                      className={`flex w-full items-center justify-between px-4 py-2 text-left text-[11px] transition-colors ${selectedPeriod === opt ? 'text-[#FF7A3F]' : 'text-gray-600 hover:bg-gray-50 dark:text-[#aaa] dark:hover:bg-[#222]'}`}
+                      className={`flex w-full items-center justify-between px-4 py-2 text-left text-[11px] transition-colors ${selectedPeriod === opt ? "text-[#FF7A3F]" : "text-gray-600 hover:bg-gray-50 dark:text-[#aaa] dark:hover:bg-[#222]"}`}
                     >
                       {opt}
                       {selectedPeriod === opt && <Check size={11} />}
@@ -257,9 +249,7 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
             <div ref={moreRef} className="relative flex items-center">
               <button
                 title="more"
-                onClick={() =>
-                  setActivePopover((prev) => (prev === 'more' ? null : 'more'))
-                }
+                onClick={() => setActivePopover((prev) => (prev === "more" ? null : "more"))}
                 className="flex items-center justify-center"
               >
                 <MoreVertical
@@ -268,19 +258,19 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
                 />
               </button>
               <AnimatePresence>
-                {activePopover === 'more' && (
+                {activePopover === "more" && (
                   <motion.div
                     {...popoverAnim}
                     className="absolute bottom-full left-0 z-50 mb-2 w-44 overflow-hidden rounded-2xl border border-gray-200 bg-white py-1.5 shadow-2xl dark:border-[#303030] dark:bg-[#1a1a1a]"
                   >
                     {[
                       {
-                        label: 'Export CSV',
+                        label: "Export CSV",
                         icon: <Download size={12} />,
                         action: handleDownload,
                       },
                       {
-                        label: 'Print',
+                        label: "Print",
                         icon: <Printer size={12} />,
                         action: () => {
                           window.print();
@@ -288,12 +278,12 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
                         },
                       },
                       {
-                        label: 'Share report',
+                        label: "Share report",
                         icon: <Share2 size={12} />,
                         action: () => setActivePopover(null),
                       },
                       {
-                        label: 'Refresh data',
+                        label: "Refresh data",
                         icon: <RefreshCw size={12} />,
                         action: () => setActivePopover(null),
                       },
@@ -303,9 +293,7 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
                         onClick={opt.action}
                         className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[12px] text-gray-600 transition-colors hover:bg-gray-50 dark:text-[#aaa] dark:hover:bg-[#222]"
                       >
-                        <span className="text-gray-400 dark:text-[#666]">
-                          {opt.icon}
-                        </span>
+                        <span className="text-gray-400 dark:text-[#666]">{opt.icon}</span>
                         {opt.label}
                       </button>
                     ))}
@@ -324,12 +312,12 @@ export const CreditUsageCard: React.FC<CreditUsageCardProps> = ({
             >
               <motion.div
                 animate={{ scale: downloadDone ? 1.15 : 1 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 className="flex items-center justify-center"
               >
                 <Download
                   size={16}
-                  className={`cursor-pointer transition-colors ${downloadDone ? 'text-green-500 dark:text-[#2FD340]' : 'hover:text-slate-900 dark:hover:text-white'}`}
+                  className={`cursor-pointer transition-colors ${downloadDone ? "text-green-500 dark:text-[#2FD340]" : "hover:text-slate-900 dark:hover:text-white"}`}
                 />
               </motion.div>
             </button>

@@ -3,10 +3,24 @@ import { Copy, Link2 } from "lucide-react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
-import { ADORE_AVATAR } from "./site-chrome";
 import { Button } from "@/components/ui/button";
-import type { Block, EmbedField, EmbedState, MessageButton, Mode } from "@/types/embed";
+import { ADORE_AVATAR, showFallbackAvatar } from "@/lib/links";
+import type { Block, EmbedState, MessageButton, Mode } from "@/types/embed";
 import { initialEmbed } from "@/types/embed";
+
+/** Discord renders an embed as soon as any of these is set, not only title/description. */
+function embedHasContent(embed: EmbedState) {
+  return Boolean(
+    embed.title ||
+    embed.description ||
+    embed.authorName ||
+    embed.thumbnail ||
+    embed.image ||
+    embed.footer ||
+    embed.timestamp ||
+    embed.fields.length,
+  );
+}
 
 export const panelClass = "rounded-md border border-border bg-surface shadow-panel";
 
@@ -129,7 +143,7 @@ export function DiscordMarkdown({
 export function MediaPlaceholder({ label, compact }: { label: string; compact?: boolean }) {
   return (
     <div
-      className={`grid shrink-0 place-items-center rounded-sm border border-dashed border-border text-[0.5625rem] text-muted-foreground ${
+      className={`grid shrink-0 place-items-center rounded-sm border border-dashed border-border text-[0.625rem] text-muted-foreground ${
         compact ? "size-16" : "aspect-video w-full"
       }`}
     >
@@ -184,7 +198,7 @@ export function EmbedPreview({ embed }: { embed: EmbedState }) {
         />
       )}
       {(embed.footer || embed.timestamp) && (
-        <div className="mt-4 flex items-center gap-2 text-[0.5625rem] text-muted-foreground">
+        <div className="mt-4 flex items-center gap-2 text-[0.625rem] text-muted-foreground">
           {embed.footerIcon && (
             <img src={embed.footerIcon} alt="" className="size-4 rounded-full object-cover" />
           )}
@@ -257,6 +271,9 @@ export function ContainerPreview({ blocks, color }: { blocks: Block[]; color: st
               ) : (
                 <a
                   href={block.url || undefined}
+                  // A new tab, so following a preview link can't navigate away from unsaved work.
+                  target={block.url ? "_blank" : undefined}
+                  rel="noreferrer"
                   className="shrink-0 rounded-sm border border-border bg-elevated px-3 py-2 text-[0.625rem] font-bold"
                 >
                   {block.label || "Open"}
@@ -291,15 +308,15 @@ export function Preview({
   onCopy,
   showHeader = true,
 }: DiscordMessagePreviewProps) {
-  const hasContent =
-    message || (mode === "embed" ? embed.title || embed.description : blocks.length);
+  const showEmbed = mode === "embed" && embedHasContent(embed);
+  const hasContent = Boolean(message) || showEmbed || (mode === "container" && blocks.length > 0);
   return (
     <section className={`${panelClass} p-4 sm:p-5`}>
       {showHeader && (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <h2 className="truncate font-display text-sm font-bold">Discord preview</h2>
-            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[0.5625rem] font-semibold uppercase text-emerald-500">
+            <span className="rounded-full bg-success/10 px-2 py-0.5 text-[0.625rem] font-semibold uppercase text-success">
               Live
             </span>
           </div>
@@ -320,15 +337,13 @@ export function Preview({
         <img
           src={ADORE_AVATAR}
           alt="Adore Bot"
-          onError={(e) => {
-            e.currentTarget.src = "/adore-profile.png";
-          }}
+          onError={showFallbackAvatar}
           className="size-10 shrink-0 rounded-full border border-border object-cover shadow-sm"
         />
         <div className="min-w-0 flex-1">
           <p className="text-xs">
             <strong>adore</strong>{" "}
-            <span className="rounded-sm bg-discord px-1 py-0.5 text-[0.5625rem] font-medium text-white">
+            <span className="rounded-sm bg-discord px-1 py-0.5 text-[0.625rem] font-medium text-white">
               APP
             </span>{" "}
             <span className="text-muted-foreground">Today at 10:53 AM</span>
@@ -339,7 +354,7 @@ export function Preview({
             </p>
           )}
           {message && <DiscordMarkdown value={message} className="mt-2 text-xs" />}
-          {mode === "embed" && (embed.title || embed.description) && <EmbedPreview embed={embed} />}
+          {showEmbed && <EmbedPreview embed={embed} />}
           {mode === "container" && blocks.length > 0 && (
             <ContainerPreview blocks={blocks} color={color} />
           )}

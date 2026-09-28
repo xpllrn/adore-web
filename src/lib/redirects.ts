@@ -49,7 +49,9 @@ export function matchRedirect(url: URL): Response | null {
   if (rule) {
     const target = new URL(rule.to, url.origin);
     if (rule.keepQuery && url.search) {
-      new URLSearchParams(url.search).forEach((value, key) => target.searchParams.append(key, value));
+      new URLSearchParams(url.search).forEach((value, key) =>
+        target.searchParams.append(key, value),
+      );
     }
     // Keep same-site redirects relative so they work on any host (preview, custom domain).
     const location =

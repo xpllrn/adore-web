@@ -1,4 +1,113 @@
-import type { Block, EmbedState, MessageButton, Mode } from "@/types/embed";
+import type { Block, EmbedField, EmbedState, MessageButton, Mode } from "@/types/embed";
+
+/** `0x9DD2A8`, `9DD2A8`, `#9dd2a8` -> `#9dd2a8`/`#9DD2A8`. Anything else is returned trimmed. */
+export function normalizeHexColor(value: string): string {
+  const bare = value.trim().replace(/^0x/i, "").replace(/^#/, "");
+  return /^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(bare) ? `#${bare}` : value.trim();
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+// Ids for items coming from pasted JSON; the builder re-keys them on load anyway.
+let coercedId = 50_000;
+
+function coerceEmbed(raw: Record<string, unknown>): Partial<EmbedState> {
+  const embed: Partial<EmbedState> = {};
+  const stringKeys = [
+    "title",
+    "description",
+    "authorName",
+    "authorIcon",
+    "authorUrl",
+    "thumbnail",
+    "image",
+    "footer",
+    "footerIcon",
+  ] as const;
+  for (const key of stringKeys) {
+    const value = asString(raw[key]);
+    if (value !== undefined) embed[key] = value;
+  }
+  const color = asString(raw["color"]);
+  if (color) embed.color = normalizeHexColor(color);
+  if (typeof raw["timestamp"] === "boolean") embed.timestamp = raw["timestamp"];
+  embed.fields = Array.isArray(raw["fields"])
+    ? raw["fields"].filter(isRecord).map((field): EmbedField => ({
+        id: ++coercedId,
+        name: asString(field["name"]) ?? "Field",
+        value: asString(field["value"]) ?? "",
+        inline: field["inline"] === true,
+      }))
+    : [];
+  return embed;
+}
+
+function coerceButtons(raw: unknown[]): MessageButton[] {
+  return raw.filter(isRecord).map((button) => {
+    const coerced: MessageButton = {
+      id: ++coercedId,
+      label: asString(button["label"]) ?? "Button",
+    };
+    const url = asString(button["url"]);
+    if (url !== undefined) coerced.url = url;
+    return coerced;
+  });
+}
+
+function coerceBlocks(raw: unknown[]): Block[] {
+  const blocks: Block[] = [];
+  for (const item of raw) {
+    if (!isRecord(item)) continue;
+    const text = asString(item["text"]) ?? "";
+    const url = asString(item["url"]) ?? "";
+    switch (item["type"]) {
+      case "text":
+        blocks.push({ id: ++coercedId, type: "text", text });
+        break;
+      case "separator":
+        blocks.push({ id: ++coercedId, type: "separator" });
+        break;
+      case "image":
+        blocks.push({
+          id: ++coercedId,
+          type: "image",
+          url,
+          description: asString(item["description"]) ?? "",
+        });
+        break;
+      case "section":
+        blocks.push({
+          id: ++coercedId,
+          type: "section",
+          text,
+          accessory: item["accessory"] === "button" ? "button" : "thumbnail",
+          url,
+          label: asString(item["label"]) ?? "Open",
+        });
+        break;
+      case "gallery":
+        blocks.push({
+          id: ++coercedId,
+          type: "gallery",
+          images: (Array.isArray(item["images"]) ? item["images"] : [])
+            .filter(isRecord)
+            .map((image) => ({
+              id: ++coercedId,
+              url: asString(image["url"]) ?? "",
+              description: asString(image["description"]) ?? "",
+            })),
+        });
+        break;
+    }
+  }
+  return blocks;
+}
 
 export function buildAdoreCode(
   mode: Mode,
@@ -124,37 +233,26 @@ export function parseAdoreCode(code: string): {
   const isEmbed = /^\{embed\}/i.test(raw);
 
   if (!isContainer && !isEmbed) {
+    let data: unknown;
     try {
-      const data = JSON.parse(raw) as Record<string, unknown>;
-      if (data["mode"] === "embed" || data["mode"] === "container") {
-        return {
-          mode: data["mode"],
-          message: typeof data["content"] === "string" ? data["content"] : undefined,
-          embed:
-            data["embed"] && typeof data["embed"] === "object"
-              ? (data["embed"] as Partial<EmbedState>)
-              : undefined,
-          containerColor:
-            data["container"] &&
-            typeof data["container"] === "object" &&
-            typeof (data["container"] as { color?: unknown }).color === "string"
-              ? (data["container"] as { color: string }).color
-              : undefined,
-          blocks:
-            data["container"] &&
-            typeof data["container"] === "object" &&
-            Array.isArray((data["container"] as { components?: unknown }).components)
-              ? (data["container"] as { components: Block[] }).components
-              : undefined,
-          buttons: Array.isArray(data["buttons"])
-            ? (data["buttons"] as MessageButton[])
-            : undefined,
-        };
-      }
+      data = JSON.parse(raw);
     } catch {
       return null;
     }
-    return null;
+    if (!isRecord(data) || (data["mode"] !== "embed" && data["mode"] !== "container")) return null;
+    // Pasted JSON is untrusted: coerce every value so a wrong type can't crash the preview.
+    const container = isRecord(data["container"]) ? data["container"] : undefined;
+    const containerColor = asString(container?.["color"]);
+    const components: unknown = container?.["components"];
+    const buttons: unknown = data["buttons"];
+    return {
+      mode: data["mode"],
+      message: typeof data["content"] === "string" ? data["content"] : undefined,
+      embed: isRecord(data["embed"]) ? coerceEmbed(data["embed"]) : undefined,
+      containerColor: containerColor ? normalizeHexColor(containerColor) : undefined,
+      blocks: Array.isArray(components) ? coerceBlocks(components) : undefined,
+      buttons: Array.isArray(buttons) ? coerceButtons(buttons) : undefined,
+    };
   }
 
   const mode: Mode = isContainer ? "container" : "embed";
@@ -179,7 +277,7 @@ export function parseAdoreCode(code: string): {
     if (key === "content" || key === "message") {
       message = val;
     } else if (key === "color") {
-      const hex = val.startsWith("#") ? val : `#${val}`;
+      const hex = normalizeHexColor(val);
       if (mode === "container") containerColor = hex;
       else newEmbed.color = hex;
     } else if (key === "button") {

@@ -12,20 +12,31 @@ import {
   Star,
   UsersRound,
   Wrench,
+  X,
 } from "lucide-react";
-import { useEffect, useMemo, useState, type ComponentType } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
 import { PageIntro } from "@/components/site-chrome";
 import { Button } from "@/components/ui/button";
+import { copyText } from "@/lib/clipboard";
 
 type CommandEntry = [name: string, text: string, args: string, perms: string, premium?: boolean];
 
+// One chip per argument: bracketed groups like "(case id)" or "(`message` or `dm`)" stay whole,
+// everything else splits on whitespace.
+const ARG_PATTERN = /\([^)]*\)|\[[^\]]*\]|<[^>]*>|`[^`]*`|[^\s()[\]<>`]+/g;
+
 const tokenize = (value: string) =>
-  value
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((token) => token.replace(/^[<[(\[]+|[>)\]]+$/g, ""));
+  (value.match(ARG_PATTERN) ?? [])
+    .map((token) => ({
+      // Bracketed tokens are placeholders ("(user)"); bare or `quoted` words are literal keywords.
+      placeholder: /^[([<]/.test(token),
+      text: token
+        .replace(/^[([<]|[)\]>]$/g, "")
+        .replace(/`/g, "")
+        .trim(),
+    }))
+    .filter((token) => token.text);
 
 type CommandGroup = { name: string; commands: CommandEntry[] };
 
@@ -66,12 +77,15 @@ function CommandsPage() {
   const [category, setCategory] = useState("All");
   const [commandGroups, setCommandGroups] = useState<CommandGroup[]>([]);
   const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const [copiedCommand, setCopiedCommand] = useState<string | null>(null);
+  const [copyState, setCopyState] = useState<{ name: string; ok: boolean } | null>(null);
+  const copyTimer = useRef<number | undefined>(undefined);
   const [displayCount, setDisplayCount] = useState(60);
 
   useEffect(() => {
     setMounted(true);
+    return () => window.clearTimeout(copyTimer.current);
   }, []);
 
   useEffect(() => {
@@ -79,6 +93,7 @@ function CommandsPage() {
   }, [category, query]);
 
   useEffect(() => {
+    setLoadError(false);
     const controller = new AbortController();
     fetch(new URL("commands.json", window.location.origin), { signal: controller.signal })
       .then((response) => {
@@ -91,7 +106,7 @@ function CommandsPage() {
         setLoadError(true);
       });
     return () => controller.abort();
-  }, []);
+  }, [loadAttempt]);
 
   const totalAllCommands = useMemo(
     () => commandGroups.reduce((acc, group) => acc + group.commands.length, 0),
@@ -133,12 +148,11 @@ function CommandsPage() {
     return allFilteredCommands.slice(0, displayCount);
   }, [allFilteredCommands, displayCount, query]);
 
-  function copyCommand(name: string) {
-    if (navigator.clipboard) {
-      void navigator.clipboard.writeText(`,${name}`);
-      setCopiedCommand(name);
-      setTimeout(() => setCopiedCommand(null), 1500);
-    }
+  async function copyCommand(name: string) {
+    const ok = await copyText(`,${name}`);
+    window.clearTimeout(copyTimer.current);
+    setCopyState({ name, ok });
+    copyTimer.current = window.setTimeout(() => setCopyState(null), 1500);
   }
 
   const desktopSidebar = (
@@ -207,170 +221,180 @@ function CommandsPage() {
       {mounted ? createPortal(desktopSidebar, document.body) : desktopSidebar}
       {/* Leave room for the fixed sidebar until the centered content clears it on its own. */}
       <div className="lg:max-2xl:pointer-fine:pl-20">
-      <PageIntro
-        eyebrow={`${totalAllCommands || "710+"} ways to work`}
-        title="Every command. One search."
-        description="Find the tools your staff and members need, from anti-raid controls to music, analytics, and ranked games."
-      />
-      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
-        {/* Touch & small-screen categories and search bar */}
-        <div className="sticky top-20 z-20 rounded-md border border-border bg-nav/95 p-1.5 shadow-nav backdrop-blur-xl lg:pointer-fine:hidden">
-          <div className="no-scrollbar flex min-w-0 items-center gap-1 overflow-x-auto">
-            <label className="flex h-10 min-w-32 shrink-0 items-center gap-2 rounded-sm px-2.5 focus-within:bg-elevated sm:min-w-48">
-              <Search className="size-4 shrink-0 text-muted-foreground" />
-              <span className="sr-only">Search commands</span>
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search..."
-                className="h-10 min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
-              />
-            </label>
-            <div className="h-6 w-px shrink-0 bg-border" />
-            {categories.map((name) => {
-              const Icon = name === "All" ? Boxes : (groupIcons[name] ?? Boxes);
-              const count = categoryCounts[name] ?? 0;
-              return (
-                <Button
-                  key={name}
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setCategory(name)}
-                  className={`h-10 shrink-0 touch-pan-x gap-1.5 rounded-full px-3.5 transition-colors ${category === name ? "bg-foreground text-background hover:bg-foreground hover:text-background" : "text-muted-foreground hover:bg-elevated hover:text-foreground"}`}
-                  aria-label={`${name} commands`}
-                >
-                  <Icon className="size-4 shrink-0" />
-                  <span className="text-xs">{name}</span>
-                  <span className="text-[0.625rem] opacity-75 font-mono">({count})</span>
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Category & results header */}
-        {!!allFilteredCommands.length && (
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-[0.875rem] text-muted-foreground">
-            <p>
-              Showing <strong className="text-foreground">{visibleCommands.length}</strong> of{" "}
-              <strong className="text-foreground">{allFilteredCommands.length}</strong> commands in{" "}
-              <span className="font-semibold text-foreground">{category}</span>
-              {query && ` matching "${query}"`}
-            </p>
-          </div>
-        )}
-
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {visibleCommands.map(({ group, command: [name, text, args, perms, premium] }) => (
-            <article
-              key={`${group}-${name}`}
-              className="flex flex-col rounded-md border border-border bg-surface p-6 shadow-panel"
-            >
-              <div className="flex items-center gap-2">
-                {premium && (
-                  <Star
-                    className="size-4 shrink-0 fill-foreground text-foreground"
-                    aria-label="Premium command"
-                  />
-                )}
-                <h2 className="break-all font-display text-base font-bold text-foreground">
-                  {name}
-                </h2>
-                <button
-                  type="button"
-                  onClick={() => copyCommand(name)}
-                  className="ml-auto shrink-0 rounded-sm p-1.5 text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
-                  aria-label={`Copy ,${name}`}
-                  title="Copy command"
-                >
-                  {copiedCommand === name ? (
-                    <Check className="size-4 text-success" />
-                  ) : (
-                    <Copy className="size-4" />
-                  )}
-                </button>
-              </div>
-              <p className="mt-2 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
-                {text}
-              </p>
-              <div className="mt-5 grid flex-1 content-start gap-4 border-t border-border pt-4">
-                <div className="grid gap-1.5">
-                  <span className="text-sm text-muted-foreground">arguments</span>
-                  {args && args !== "none" ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {tokenize(args).map((token) => (
-                        <code
-                          key={token}
-                          className="rounded-sm bg-elevated px-2.5 py-1 text-xs italic text-foreground"
-                        >
-                          {token}
-                        </code>
-                      ))}
-                    </div>
-                  ) : (
-                    <code className="text-sm text-muted-foreground">none</code>
-                  )}
-                </div>
-                <div className="grid gap-1.5">
-                  <span className="text-sm text-muted-foreground">permissions</span>
-                  {perms && perms !== "none" ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      <code className="rounded-sm bg-elevated px-2.5 py-1 text-xs font-bold text-foreground">
-                        {perms}
-                      </code>
-                    </div>
-                  ) : (
-                    <code className="text-sm text-muted-foreground">none</code>
-                  )}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        {/* Load more controls when there are remaining commands */}
-        {allFilteredCommands.length > visibleCommands.length && (
-          <div className="mt-10 flex flex-col items-center gap-3">
-            <p className="text-[0.875rem] text-muted-foreground">
-              Showing {visibleCommands.length} of {allFilteredCommands.length} commands
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDisplayCount((prev) => prev + 60)}
-                className="h-10 px-6 font-semibold"
-              >
-                Load 60 more
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setDisplayCount(allFilteredCommands.length)}
-                className="h-10 px-6 font-semibold"
-              >
-                Show all ({allFilteredCommands.length})
-              </Button>
+        <PageIntro
+          eyebrow={`${totalAllCommands || "710+"} ways to work`}
+          title="Every command. One search."
+          description="Find the tools your staff and members need, from anti-raid controls to music, analytics, and ranked games."
+        />
+        <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
+          {/* Touch & small-screen categories and search bar */}
+          <div className="sticky top-20 z-20 rounded-md border border-border bg-nav/95 p-1.5 shadow-nav backdrop-blur-xl lg:pointer-fine:hidden">
+            <div className="no-scrollbar flex min-w-0 items-center gap-1 overflow-x-auto">
+              <label className="flex h-10 min-w-32 shrink-0 items-center gap-2 rounded-sm px-2.5 focus-within:bg-elevated sm:min-w-48">
+                <Search className="size-4 shrink-0 text-muted-foreground" />
+                <span className="sr-only">Search commands</span>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search..."
+                  className="h-10 min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
+                />
+              </label>
+              <div className="h-6 w-px shrink-0 bg-border" />
+              {categories.map((name) => {
+                const Icon = name === "All" ? Boxes : (groupIcons[name] ?? Boxes);
+                const count = categoryCounts[name] ?? 0;
+                return (
+                  <Button
+                    key={name}
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setCategory(name)}
+                    className={`h-10 shrink-0 touch-pan-x gap-1.5 rounded-full px-3.5 transition-colors ${category === name ? "bg-foreground text-background hover:bg-foreground hover:text-background" : "text-muted-foreground hover:bg-elevated hover:text-foreground"}`}
+                    aria-label={`${name} commands`}
+                  >
+                    <Icon className="size-4 shrink-0" />
+                    <span className="text-xs">{name}</span>
+                    <span className="text-[0.625rem] opacity-75 font-mono">({count})</span>
+                  </Button>
+                );
+              })}
             </div>
           </div>
-        )}
 
-        {!commandGroups.length && !loadError && (
-          <p className="flex items-center justify-center gap-2 py-24 text-sm text-muted-foreground">
-            <LoaderCircle className="size-4 animate-spin" /> Loading commands
+          {/* Category & results header */}
+          {!!allFilteredCommands.length && (
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-[0.875rem] text-muted-foreground">
+              <p>
+                Showing <strong className="text-foreground">{visibleCommands.length}</strong> of{" "}
+                <strong className="text-foreground">{allFilteredCommands.length}</strong> commands
+                in <span className="font-semibold text-foreground">{category}</span>
+                {query && ` matching "${query}"`}
+              </p>
+            </div>
+          )}
+
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {visibleCommands.map(({ group, command: [name, text, args, perms, premium] }) => (
+              <article
+                key={`${group}-${name}`}
+                className="flex flex-col rounded-md border border-border bg-surface p-6 shadow-panel"
+              >
+                <div className="flex items-center gap-2">
+                  {premium && (
+                    <Star
+                      className="size-4 shrink-0 fill-foreground text-foreground"
+                      aria-label="Premium command"
+                    />
+                  )}
+                  <h2 className="break-all font-display text-base font-bold text-foreground">
+                    {name}
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => void copyCommand(name)}
+                    className="ml-auto shrink-0 rounded-sm p-1.5 text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+                    aria-label={`Copy ,${name}`}
+                    title="Copy command"
+                  >
+                    {copyState?.name === name ? (
+                      copyState.ok ? (
+                        <Check className="size-4 text-success" />
+                      ) : (
+                        <X className="size-4 text-destructive" />
+                      )
+                    ) : (
+                      <Copy className="size-4" />
+                    )}
+                  </button>
+                </div>
+                <p className="mt-2 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
+                  {text}
+                </p>
+                <div className="mt-5 grid flex-1 content-start gap-4 border-t border-border pt-4">
+                  <div className="grid gap-1.5">
+                    <span className="text-sm text-muted-foreground">arguments</span>
+                    {args && args !== "none" ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {tokenize(args).map((token, index) => (
+                          <code
+                            key={`${index}-${token.text}`}
+                            className={`rounded-sm bg-elevated px-2.5 py-1 text-xs text-foreground ${token.placeholder ? "italic" : "font-semibold"}`}
+                          >
+                            {token.text}
+                          </code>
+                        ))}
+                      </div>
+                    ) : (
+                      <code className="text-sm text-muted-foreground">none</code>
+                    )}
+                  </div>
+                  <div className="grid gap-1.5">
+                    <span className="text-sm text-muted-foreground">permissions</span>
+                    {perms && perms !== "none" ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        <code className="rounded-sm bg-elevated px-2.5 py-1 text-xs font-bold text-foreground">
+                          {perms}
+                        </code>
+                      </div>
+                    ) : (
+                      <code className="text-sm text-muted-foreground">none</code>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* Load more controls when there are remaining commands */}
+          {allFilteredCommands.length > visibleCommands.length && (
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <p className="text-[0.875rem] text-muted-foreground">
+                Showing {visibleCommands.length} of {allFilteredCommands.length} commands
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setDisplayCount((prev) => prev + 60)}
+                  className="h-10 px-6 font-semibold"
+                >
+                  Load 60 more
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setDisplayCount(allFilteredCommands.length)}
+                  className="h-10 px-6 font-semibold"
+                >
+                  Show all ({allFilteredCommands.length})
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {!commandGroups.length && !loadError && (
+            <p className="flex items-center justify-center gap-2 py-24 text-sm text-muted-foreground">
+              <LoaderCircle className="size-4 animate-spin" /> Loading commands
+            </p>
+          )}
+          {loadError && (
+            <div className="flex flex-col items-center gap-4 py-24 text-center text-sm text-muted-foreground">
+              <p>Commands could not be loaded.</p>
+              <Button type="button" variant="outline" onClick={() => setLoadAttempt((n) => n + 1)}>
+                Try again
+              </Button>
+            </div>
+          )}
+          {!!commandGroups.length && !filtered.length && (
+            <p className="py-24 text-center text-sm text-muted-foreground">
+              No commands match “{query}”.
+            </p>
+          )}
+          <p className="sr-only" aria-live="polite">
+            {copyState ? (copyState.ok ? `Copied ,${copyState.name}` : "Copy failed") : ""}
           </p>
-        )}
-        {loadError && (
-          <p className="py-24 text-center text-sm text-muted-foreground">
-            Commands could not be loaded.
-          </p>
-        )}
-        {!!commandGroups.length && !filtered.length && (
-          <p className="py-24 text-center text-sm text-muted-foreground">
-            No commands match “{query}”.
-          </p>
-        )}
-      </section>
+        </section>
       </div>
     </>
   );

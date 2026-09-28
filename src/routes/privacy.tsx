@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageIntro, supportUrl } from "@/components/site-chrome";
+import { PageIntro } from "@/components/site-chrome";
+import { supportUrl } from "@/lib/links";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({

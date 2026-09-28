@@ -8,6 +8,14 @@ export const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${DISCO
 
 export const supportUrl = "https://discord.gg/hbv97y5uxM";
 
+export const FALLBACK_AVATAR = "/adore-profile.png";
+
+/** `<img onError>` handler: swap a broken remote avatar for the bundled copy, once (no retry loop). */
+export function showFallbackAvatar(event: { currentTarget: HTMLImageElement }) {
+  const img = event.currentTarget;
+  if (!img.src.endsWith(FALLBACK_AVATAR)) img.src = FALLBACK_AVATAR;
+}
+
 export const DOCS_URL = "https://wiki.adore.rest";
 
 export const DASHBOARD_URL = "https://dash.adore.rest";

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   Check,
   Copy,
@@ -8,12 +8,15 @@ import {
   ListMusic,
   Music2,
   Radio,
+  RotateCcw,
   ShieldCheck,
-  Sparkles,
   Trophy,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { PageIntro, supportUrl } from "@/components/site-chrome";
+import { useEffect, useRef, useState } from "react";
+import { PageIntro } from "@/components/site-chrome";
+import { extractAuthParam } from "@/lib/auth-params";
+import { copyText } from "@/lib/clipboard";
+import { supportUrl } from "@/lib/links";
 
 type LastfmSearch = {
   token?: string | undefined;
@@ -49,75 +52,44 @@ export const Route = createFileRoute("/lastfm")({
 
 function LastfmPage() {
   const search = Route.useSearch();
+  const navigate = useNavigate();
   const [token, setToken] = useState<string>(() => search.token ?? "");
   const [manualInput, setManualInput] = useState<string>("");
-  const [copiedToken, setCopiedToken] = useState(false);
-  const [copiedCommand, setCopiedCommand] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<{ target: "token" | "command"; ok: boolean } | null>(
+    null,
+  );
+  const copyTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
 
   useEffect(() => {
-    if (search.token) {
-      setToken(search.token);
-    } else if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const urlToken = params.get("token");
-      if (urlToken) {
-        setToken(urlToken);
-      }
-    }
+    if (search.token) setToken(search.token);
   }, [search.token]);
 
   const activeToken = token.trim();
   const botCommand = `,lastfm login ${activeToken}`;
+  const copiedToken = copyStatus?.target === "token" && copyStatus.ok;
+  const copiedCommand = copyStatus?.target === "command" && copyStatus.ok;
+  const copyFailed = copyStatus !== null && !copyStatus.ok;
 
-  const copyToClipboard = async (text: string, type: "token" | "command") => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-      } else {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.left = "-9999px";
-        textarea.style.top = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        document.execCommand("copy");
-        textarea.remove();
-      }
-
-      if (type === "token") {
-        setCopiedToken(true);
-        setTimeout(() => setCopiedToken(false), 2000);
-      } else {
-        setCopiedCommand(true);
-        setTimeout(() => setCopiedCommand(false), 2000);
-      }
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
+  const copyToClipboard = async (text: string, target: "token" | "command") => {
+    const ok = await copyText(text);
+    window.clearTimeout(copyTimer.current);
+    setCopyStatus({ target, ok });
+    copyTimer.current = window.setTimeout(() => setCopyStatus(null), ok ? 2000 : 5000);
   };
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!manualInput.trim()) return;
+    setToken(extractAuthParam(manualInput, "token").value);
+  };
 
-    try {
-      if (manualInput.includes("token=")) {
-        const parsed = new URL(
-          manualInput.startsWith("http") ? manualInput : `https://${manualInput}`,
-        );
-        const extracted = parsed.searchParams.get("token");
-        if (extracted) {
-          setToken(extracted);
-          return;
-        }
-      }
-    } catch {
-      // Treat as raw token if not a valid URL
-    }
-
-    setToken(manualInput.trim());
+  const startOver = () => {
+    setToken("");
+    setManualInput("");
+    setCopyStatus(null);
+    void navigate({ to: "/lastfm", search: {}, replace: true });
   };
 
   return (
@@ -151,12 +123,9 @@ function LastfmPage() {
 
               <div className="mt-6">
                 <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="token-box"
-                    className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-                  >
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Your Authorization Token
-                  </label>
+                  </p>
                   <span className="hidden text-[0.6875rem] text-muted-foreground sm:inline">
                     Click to select all
                   </span>
@@ -171,17 +140,17 @@ function LastfmPage() {
                   <div className="mt-3 sm:absolute sm:right-2 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2">
                     <button
                       type="button"
-                      onClick={() => copyToClipboard(activeToken, "token")}
+                      onClick={() => void copyToClipboard(activeToken, "token")}
                       className={`inline-flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all sm:w-auto ${
                         copiedToken
-                          ? "bg-success text-success-foreground shadow-md"
+                          ? "bg-success text-background shadow-panel"
                           : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
                       }`}
                     >
                       {copiedToken ? (
                         <>
                           <Check className="size-4 stroke-[2.5]" />
-                          <span>Copied!</span>
+                          <span>Copied</span>
                         </>
                       ) : (
                         <>
@@ -202,7 +171,7 @@ function LastfmPage() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => copyToClipboard(botCommand, "command")}
+                    onClick={() => void copyToClipboard(botCommand, "command")}
                     className="inline-flex items-center gap-1.5 text-xs font-medium text-foreground transition-colors hover:text-primary"
                   >
                     {copiedCommand ? (
@@ -223,17 +192,32 @@ function LastfmPage() {
                 </pre>
               </div>
 
-              <div className="mt-6 hidden items-start gap-3 rounded-lg border border-border/60 bg-elevated/40 p-4 text-xs leading-5 text-muted-foreground sm:flex">
+              {copyFailed ? (
+                <p role="alert" className="mt-3 text-xs text-destructive">
+                  Couldn't copy automatically. Select the token or command and copy it manually.
+                </p>
+              ) : null}
+
+              {/* Shown on every screen size: anyone who sends this token first can link it. */}
+              <div className="mt-6 flex items-start gap-3 rounded-lg border border-border/60 bg-elevated/40 p-4 text-xs leading-5 text-muted-foreground">
                 <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
                 <p>
-                  This token allows Adore to authenticate with your Last.fm account. Only share or
-                  send this token directly to Adore in Discord.
+                  This token links your Last.fm account. Send it to Adore in a{" "}
+                  <strong className="text-foreground">direct message</strong>, not in a server
+                  channel, and don't share it with anyone else.
                 </p>
               </div>
 
               {/* Mobile Support Link */}
-              <div className="mt-6 flex items-center justify-between border-t border-border pt-6 sm:hidden">
-                <p className="text-xs text-muted-foreground">Need help?</p>
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6 sm:hidden">
+                <button
+                  type="button"
+                  onClick={startOver}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+                >
+                  <RotateCcw className="size-3.5" />
+                  <span>Use a different token</span>
+                </button>
                 <a
                   href={supportUrl}
                   target="_blank"
@@ -266,10 +250,11 @@ function LastfmPage() {
                   <div className="flex size-7 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
                     2
                   </div>
-                  <h3 className="mt-3 font-display text-xs font-bold sm:text-sm">Open Discord</h3>
+                  <h3 className="mt-3 font-display text-xs font-bold sm:text-sm">
+                    Open your DMs with Adore
+                  </h3>
                   <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
-                    Go to any Discord server where Adore is active, or message Adore in direct
-                    messages.
+                    Message Adore directly in Discord. Keep the token out of server channels.
                   </p>
                 </div>
 
@@ -283,7 +268,7 @@ function LastfmPage() {
                     <code className="break-all rounded bg-elevated px-1 py-0.5 font-mono text-[0.6875rem] text-foreground">
                       {botCommand}
                     </code>{" "}
-                    in chat to finalize the link.
+                    in that DM to finish linking.
                   </p>
                 </div>
               </div>
@@ -345,15 +330,25 @@ function LastfmPage() {
                 <p className="text-xs text-muted-foreground">
                   Need help or having trouble connecting?
                 </p>
-                <a
-                  href={supportUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-elevated px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-                >
-                  <span>Adore Support</span>
-                  <ExternalLink className="size-3.5" />
-                </a>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={startOver}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-xs font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+                  >
+                    <RotateCcw className="size-3.5" />
+                    <span>Use a different token</span>
+                  </button>
+                  <a
+                    href={supportUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-elevated px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+                  >
+                    <span>Adore Support</span>
+                    <ExternalLink className="size-3.5" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -376,40 +371,46 @@ function LastfmPage() {
                 command in Discord.
               </p>
 
-              {/* 3-step walkthrough - visible on desktop, hidden on phone to avoid clutter */}
-              <div className="mt-8 hidden gap-4 text-left sm:grid sm:grid-cols-3">
-                <div className="rounded-lg border border-border bg-background/50 p-4">
-                  <div className="flex size-6 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
+              {/* 3-step walkthrough (same layout as the Spotify page) */}
+              <div className="mx-auto mt-8 flex max-w-sm flex-col gap-3 text-left">
+                <div className="flex items-center gap-4 rounded-lg border border-border bg-background/50 p-3">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated font-mono text-sm font-bold text-foreground">
                     1
                   </div>
-                  <h3 className="mt-2.5 text-xs font-bold">Start in Discord</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Type{" "}
-                    <code className="rounded bg-elevated px-1 font-mono text-[0.625rem]">
-                      ,lastfm login
-                    </code>{" "}
-                    in chat.
-                  </p>
+                  <div>
+                    <h3 className="text-sm font-semibold">Start in Discord</h3>
+                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
+                      Type{" "}
+                      <code className="rounded-sm bg-elevated px-1 font-mono text-[0.6875rem]">
+                        ,lastfm login
+                      </code>{" "}
+                      in chat.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="rounded-lg border border-border bg-background/50 p-4">
-                  <div className="flex size-6 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
+                <div className="flex items-center gap-4 rounded-lg border border-border bg-background/50 p-3">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated font-mono text-sm font-bold text-foreground">
                     2
                   </div>
-                  <h3 className="mt-2.5 text-xs font-bold">Authorize on Last.fm</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Click the authorization link generated by Adore.
-                  </p>
+                  <div>
+                    <h3 className="text-sm font-semibold">Authorize on Last.fm</h3>
+                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
+                      Click the link Adore sends you.
+                    </p>
+                  </div>
                 </div>
 
-                <div className="rounded-lg border border-border bg-background/50 p-4">
-                  <div className="flex size-6 items-center justify-center rounded-full bg-elevated font-mono text-xs font-bold text-foreground">
+                <div className="flex items-center gap-4 rounded-lg border border-border bg-background/50 p-3">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-elevated font-mono text-sm font-bold text-foreground">
                     3
                   </div>
-                  <h3 className="mt-2.5 text-xs font-bold">Return with Token</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Last.fm will redirect you back here with your token.
-                  </p>
+                  <div>
+                    <h3 className="text-sm font-semibold">Return with Token</h3>
+                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
+                      Last.fm will redirect you back here.
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -427,6 +428,9 @@ function LastfmPage() {
                     value={manualInput}
                     onChange={(e) => setManualInput(e.target.value)}
                     placeholder="Paste token or https://adore.rest/lastfm?token=..."
+                    aria-label="Authorization token or callback URL"
+                    autoComplete="off"
+                    spellCheck={false}
                     className="h-10 flex-1 rounded-md border border-input bg-background px-3 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                   <button

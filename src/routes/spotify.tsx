@@ -1,18 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   AlertCircle,
   Check,
   Copy,
   ExternalLink,
-  Flame,
   KeyRound,
   ListMusic,
   Music2,
+  Pause,
+  Play,
   Radio,
-  Trophy,
+  RotateCcw,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { PageIntro, supportUrl } from "@/components/site-chrome";
+import { useEffect, useRef, useState } from "react";
+import { PageIntro } from "@/components/site-chrome";
+import { extractAuthParam } from "@/lib/auth-params";
+import { copyText } from "@/lib/clipboard";
+import { supportUrl } from "@/lib/links";
 
 type SpotifySearch = {
   code?: string | undefined;
@@ -49,85 +53,69 @@ export const Route = createFileRoute("/spotify")({
 
 function SpotifyPage() {
   const search = Route.useSearch();
+  const navigate = useNavigate();
   const [code, setCode] = useState<string>(() => search.code ?? "");
+  const [authState, setAuthState] = useState<string | undefined>(() => search.state);
   const [error, setError] = useState<string>(() => search.error ?? "");
   const [manualInput, setManualInput] = useState<string>("");
-  const [copiedCode, setCopiedCode] = useState(false);
-  const [copiedUrl, setCopiedUrl] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<{ target: "code" | "url"; ok: boolean } | null>(
+    null,
+  );
+  const copyTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
 
   useEffect(() => {
     if (search.code) {
       setCode(search.code);
-    } else if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const urlCode = params.get("code");
-      if (urlCode) {
-        setCode(urlCode);
-      } else if (window.location.hash.includes("code=")) {
-        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, "?"));
-        const hashCode = hashParams.get("code");
-        if (hashCode) setCode(hashCode);
-      }
-
-      const urlError = params.get("error");
-      if (urlError) {
-        setError(urlError);
-      }
+      setAuthState(search.state);
+    } else if (window.location.hash.includes("code=")) {
+      // Some clients hand the code back in the fragment instead of the query string.
+      const fromHash = extractAuthParam(window.location.hash, "code");
+      setCode(fromHash.value);
+      setAuthState(fromHash.state);
     }
-  }, [search.code]);
+    if (search.error) setError(search.error);
+  }, [search.code, search.state, search.error]);
 
   const activeCode = code.trim();
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+  const copiedCode = copyStatus?.target === "code" && copyStatus.ok;
+  const copiedUrl = copyStatus?.target === "url" && copyStatus.ok;
+  const copyFailed = copyStatus !== null && !copyStatus.ok;
 
-  const copyToClipboard = async (text: string, type: "code" | "url") => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-      } else {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.left = "-9999px";
-        textarea.style.top = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        document.execCommand("copy");
-        textarea.remove();
-      }
+  // The bot accepts the whole redirect URL, so rebuild it with the code even when the code
+  // arrived through the hash or the paste form (the address bar then has no ?code=).
+  const redirectUrl = () => {
+    const current = new URL(window.location.href);
+    if (current.searchParams.get("code") === activeCode) return current.toString();
+    const url = new URL("/spotify", window.location.origin);
+    url.searchParams.set("code", activeCode);
+    if (authState) url.searchParams.set("state", authState);
+    return url.toString();
+  };
 
-      if (type === "code") {
-        setCopiedCode(true);
-        setTimeout(() => setCopiedCode(false), 2000);
-      } else {
-        setCopiedUrl(true);
-        setTimeout(() => setCopiedUrl(false), 2000);
-      }
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
+  const copyToClipboard = async (text: string, target: "code" | "url") => {
+    const ok = await copyText(text);
+    window.clearTimeout(copyTimer.current);
+    setCopyStatus({ target, ok });
+    copyTimer.current = window.setTimeout(() => setCopyStatus(null), ok ? 2000 : 5000);
   };
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!manualInput.trim()) return;
+    const parsed = extractAuthParam(manualInput, "code");
+    setCode(parsed.value);
+    setAuthState(parsed.state);
+    setError("");
+  };
 
-    try {
-      if (manualInput.includes("code=")) {
-        const parsed = new URL(
-          manualInput.startsWith("http") ? manualInput : `https://${manualInput}`,
-        );
-        const extracted = parsed.searchParams.get("code");
-        if (extracted) {
-          setCode(extracted);
-          return;
-        }
-      }
-    } catch {
-      // Treat as raw code if not a valid URL
-    }
-
-    setCode(manualInput.trim());
+  const startOver = () => {
+    setCode("");
+    setAuthState(undefined);
+    setManualInput("");
+    setCopyStatus(null);
+    void navigate({ to: "/spotify", search: {}, replace: true });
   };
 
   return (
@@ -161,12 +149,12 @@ function SpotifyPage() {
 
               <div className="mt-6">
                 <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="code-box"
-                    className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                  <p
+                    id="code-box-label"
+                    className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                   >
                     Your Authorization Code
-                  </label>
+                  </p>
                   <span className="hidden text-[0.6875rem] text-muted-foreground sm:inline">
                     Click to select all
                   </span>
@@ -181,10 +169,10 @@ function SpotifyPage() {
                   <div className="mt-3 sm:absolute sm:right-2 sm:top-1/2 sm:mt-0 sm:-translate-y-1/2">
                     <button
                       type="button"
-                      onClick={() => copyToClipboard(activeCode, "code")}
+                      onClick={() => void copyToClipboard(activeCode, "code")}
                       className={`inline-flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all sm:w-auto ${
                         copiedCode
-                          ? "bg-success text-success-foreground shadow-md"
+                          ? "bg-success text-background shadow-panel"
                           : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
                       }`}
                     >
@@ -202,6 +190,11 @@ function SpotifyPage() {
                     </button>
                   </div>
                 </div>
+                {copyFailed ? (
+                  <p role="alert" className="mt-2 text-xs text-destructive">
+                    Couldn't copy automatically. Select the code above and copy it manually.
+                  </p>
+                ) : null}
               </div>
 
               {/* Bot Instructions / Full Redirect URL Box */}
@@ -212,7 +205,7 @@ function SpotifyPage() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => copyToClipboard(currentUrl || activeCode, "url")}
+                    onClick={() => void copyToClipboard(redirectUrl(), "url")}
                     className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
                   >
                     {copiedUrl ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
@@ -240,7 +233,7 @@ function SpotifyPage() {
                 </h3>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <div className="flex items-center gap-3 rounded-lg border border-border/70 bg-elevated/40 p-3">
-                    <Radio className="size-4 shrink-0 text-muted-foreground" />
+                    <Play className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify play
@@ -251,7 +244,7 @@ function SpotifyPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 rounded-lg border border-border/70 bg-elevated/40 p-3">
-                    <ListMusic className="size-4 shrink-0 text-muted-foreground" />
+                    <Pause className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify pause
@@ -262,7 +255,7 @@ function SpotifyPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 rounded-lg border border-border/70 bg-elevated/40 p-3">
-                    <Flame className="size-4 shrink-0 text-muted-foreground" />
+                    <ListMusic className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify toptracks
@@ -273,7 +266,7 @@ function SpotifyPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3 rounded-lg border border-border/70 bg-elevated/40 p-3">
-                    <Trophy className="size-4 shrink-0 text-muted-foreground" />
+                    <Radio className="size-4 shrink-0 text-muted-foreground" />
                     <div>
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify vc
@@ -290,15 +283,25 @@ function SpotifyPage() {
                 <p className="text-xs text-muted-foreground">
                   Need help or having trouble connecting?
                 </p>
-                <a
-                  href={supportUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-elevated px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-                >
-                  <span>Adore Support</span>
-                  <ExternalLink className="size-3.5" />
-                </a>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={startOver}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-xs font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+                  >
+                    <RotateCcw className="size-3.5" />
+                    <span>Use a different code</span>
+                  </button>
+                  <a
+                    href={supportUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-md border border-border bg-elevated px-4 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+                  >
+                    <span>Adore Support</span>
+                    <ExternalLink className="size-3.5" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -335,10 +338,10 @@ function SpotifyPage() {
                     1
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold">Start in Discord</h3>
-                    <p className="mt-0.5 text-[0.6875rem] text-muted-foreground">
+                    <h3 className="text-sm font-semibold">Start in Discord</h3>
+                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
                       Type{" "}
-                      <code className="rounded bg-elevated px-1 font-mono text-[0.625rem]">
+                      <code className="rounded-sm bg-elevated px-1 font-mono text-[0.6875rem]">
                         ,spotify login
                       </code>{" "}
                       in chat.
@@ -351,8 +354,8 @@ function SpotifyPage() {
                     2
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold">Authorize on Spotify</h3>
-                    <p className="mt-0.5 text-[0.6875rem] text-muted-foreground">
+                    <h3 className="text-sm font-semibold">Authorize on Spotify</h3>
+                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
                       Click the link generated in your DMs.
                     </p>
                   </div>
@@ -363,8 +366,8 @@ function SpotifyPage() {
                     3
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold">Return with Code</h3>
-                    <p className="mt-0.5 text-[0.6875rem] text-muted-foreground">
+                    <h3 className="text-sm font-semibold">Return with Code</h3>
+                    <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
                       Spotify will redirect you back here.
                     </p>
                   </div>
@@ -385,6 +388,9 @@ function SpotifyPage() {
                     value={manualInput}
                     onChange={(e) => setManualInput(e.target.value)}
                     placeholder="Paste code or https://adore.rest/spotify?code=..."
+                    aria-label="Authorization code or callback URL"
+                    autoComplete="off"
+                    spellCheck={false}
                     className="h-10 flex-1 rounded-md border border-input bg-background px-3 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                   <button

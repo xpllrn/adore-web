@@ -85,6 +85,14 @@ export const smallFeatures = [
   },
 ];
 
+// One place for the headline numbers so the home page, status page, and meta copy agree.
+// public/commands.json currently lists 712 commands.
+export const siteStats = {
+  servers: "1,195",
+  users: "232,375",
+  commands: "710+",
+} as const;
+
 export const integrations = [
   "Last.fm",
   "Spotify",

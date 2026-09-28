@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AdaptiveSlider } from "@/components/ui/adaptive-slider";
 import { WaveformScrub } from "@/components/ui/waveform-scrub-base";
 import {
   Activity,
@@ -16,8 +15,9 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useState } from "react";
-import { inviteUrl, SectionLabel, supportUrl } from "@/components/site-chrome";
-import { integrations, smallFeatures } from "@/lib/site-data";
+import { SectionLabel } from "@/components/site-chrome";
+import { inviteUrl, supportUrl } from "@/lib/links";
+import { integrations, siteStats, smallFeatures } from "@/lib/site-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,17 +39,13 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// Royalty-free demo tracks (CodeSkulptor public assets). Swap in your own hosted audio as needed.
+// Demo tracks hotlinked from CodeSkulptor's public course assets. Their licensing isn't verified
+// (one comes from the Sounddogs library), so replace them with audio you host and have rights to.
 const demoTracks = [
   {
     title: "The Neverwritten Role Playing Game",
     artist: "Kangaroo MusiQue",
     src: "https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3",
-  },
-  {
-    title: "&nbsp;",
-    artist: "Sevish",
-    src: "https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3",
   },
   {
     title: "Galaxy Invaders",
@@ -139,9 +135,9 @@ function Index() {
             </div>
             <div className="grid grid-cols-3">
               {[
-                ["1,195", "servers"],
-                ["232,371", "users"],
-                ["1,600+", "commands"],
+                [siteStats.servers, "servers"],
+                [siteStats.users, "users"],
+                [siteStats.commands, "commands"],
               ].map(([value, label], index) => (
                 <div
                   key={label}
@@ -150,7 +146,7 @@ function Index() {
                   <strong className="block truncate font-display text-base font-bold sm:text-xl">
                     {value}
                   </strong>
-                  <p className="mt-2 truncate font-mono text-[0.5rem] uppercase text-muted-foreground sm:text-[0.625rem]">
+                  <p className="mt-2 truncate font-mono text-[0.625rem] uppercase text-muted-foreground">
                     {label}
                   </p>
                 </div>
@@ -203,7 +199,9 @@ function Index() {
                   >
                     <span className="size-1.5 rounded-full bg-success" />
                     <span className="truncate text-xs">{item}</span>
-                    <span className="font-mono text-[0.5625rem] text-muted-foreground">{index + 1}s</span>
+                    <span className="font-mono text-[0.625rem] text-muted-foreground">
+                      {index + 1}s
+                    </span>
                   </div>
                 ))}
               </div>
@@ -228,7 +226,7 @@ function Index() {
               </div>
               <div className="mt-4 flex items-center justify-between">
                 <strong className="font-display text-xl">12,842 actions</strong>
-                <span className="font-mono text-[0.5625rem] uppercase text-muted-foreground">
+                <span className="font-mono text-[0.625rem] uppercase text-muted-foreground">
                   Last 24 hours
                 </span>
               </div>
@@ -253,13 +251,13 @@ function Index() {
                   type="button"
                   onClick={prevSong}
                   aria-label="Previous track"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground focus-visible:outline-2"
                 >
                   <SkipBack className="size-4 fill-current" />
                 </button>
                 <div className="min-w-0 text-center">
                   <p className="truncate text-xs text-muted-foreground">{currentSong.artist}</p>
-                  <p className="mt-1 font-mono text-[0.5625rem] uppercase text-muted-foreground">
+                  <p className="mt-1 font-mono text-[0.625rem] uppercase text-muted-foreground">
                     Track {currentSongIndex + 1} of {demoTracks.length}
                   </p>
                 </div>
@@ -267,7 +265,7 @@ function Index() {
                   type="button"
                   onClick={nextSong}
                   aria-label="Next track"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground focus-visible:outline-2"
                 >
                   <SkipForward className="size-4 fill-current" />
                 </button>
@@ -288,7 +286,7 @@ function Index() {
                 ].map(([value, label]) => (
                   <div key={label} className="min-w-0 py-3">
                     <strong className="font-display text-lg">{value}</strong>
-                    <p className="mt-1 truncate font-mono text-[0.5rem] uppercase text-muted-foreground">
+                    <p className="mt-1 truncate font-mono text-[0.625rem] uppercase text-muted-foreground">
                       {label}
                     </p>
                   </div>

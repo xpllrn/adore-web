@@ -2,10 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Box,
   Check,
-  ChevronDown,
   ChevronRight,
-  Clipboard,
-  Code2,
+  CircleAlert,
   Copy,
   Download,
   FileCode,
@@ -17,11 +15,12 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
-import { useId, useMemo, useState, type ChangeEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { EmbedFieldsEditor } from "@/components/embed-fields-editor";
 import { Preview, embedToCv2Blocks, parseButtonsFromNote } from "@/components/embed-preview";
 import { buildAdoreCode } from "@/lib/adore-code";
+import { copyText } from "@/lib/clipboard";
 import {
   parseEmbedMarkdown,
   serializeEmbeds,
@@ -113,23 +112,28 @@ function AdminEmbedBuilderPage() {
     skippedCount: number;
     skippedSections: string[];
   } | null>(null);
-  const [notice, setNotice] = useState<string>("");
+  const [notice, setNotice] = useState<{ text: string; ok: boolean } | null>(null);
+  const noticeTimer = useRef<number | undefined>(undefined);
   const [showImportPanel, setShowImportPanel] = useState<boolean>(true);
   const fileInputId = useId();
 
-  function flash(text: string) {
-    setNotice(text);
-    window.setTimeout(() => setNotice(""), 2500);
+  useEffect(() => () => window.clearTimeout(noticeTimer.current), []);
+
+  function flash(text: string, ok = true) {
+    // Clear the previous timer so a new message isn't dismissed early by an old one.
+    window.clearTimeout(noticeTimer.current);
+    setNotice({ text, ok });
+    noticeTimer.current = window.setTimeout(() => setNotice(null), 2500);
   }
 
   function handleImportText(text: string, filename?: string) {
     if (!text.trim()) {
-      flash("Please provide markdown content to import");
+      flash("Please provide markdown content to import", false);
       return;
     }
     const result = parseEmbedMarkdown(text);
     if (result.embeds.length === 0) {
-      flash("No parseable embed sections found in markdown");
+      flash("No parseable embed sections found in markdown", false);
       setImportStats({
         parsedCount: 0,
         skippedCount: result.skippedCount,
@@ -150,6 +154,9 @@ function AdminEmbedBuilderPage() {
 
     setEmbeds(editableList);
     setSelectedIndex(0);
+    // A fresh import shouldn't look empty because of a search or filter left from before.
+    setSearchQuery("");
+    setFilterType("all");
     setOriginalMarkdown(text);
     if (filename) setImportedFileName(filename);
     setImportStats({
@@ -168,7 +175,7 @@ function AdminEmbedBuilderPage() {
       const text = await response.text();
       handleImportText(text, "cupi-economy-embeds.md");
     } catch {
-      flash("Failed to load Cupi economy template");
+      flash("Failed to load Cupi economy template", false);
     }
   }
 
@@ -236,43 +243,13 @@ function AdminEmbedBuilderPage() {
   }
 
   async function copyToClipboard(text: string, label: string) {
-    let success = false;
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        success = true;
-      }
-    } catch {
-      // Fallback below
-    }
-
-    if (!success) {
-      try {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.top = "-9999px";
-        textarea.style.left = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        success = document.execCommand("copy");
-        document.body.removeChild(textarea);
-      } catch {
-        success = false;
-      }
-    }
-
-    if (success) {
-      flash(`${label} copied to clipboard!`);
-    } else {
-      flash("Could not copy to clipboard");
-    }
+    if (await copyText(text)) flash(`${label} copied to clipboard`);
+    else flash("Could not copy to clipboard", false);
   }
 
   function downloadMarkdown() {
     if (embeds.length === 0) {
-      flash("No embeds to export");
+      flash("No embeds to export", false);
       return;
     }
     const outputMd = serializeEmbeds(embeds, {
@@ -287,8 +264,9 @@ function AdminEmbedBuilderPage() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    flash("Downloaded markdown file!");
+    // Revoking in the same tick can cancel the download in some browsers.
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    flash("Downloaded markdown file");
   }
 
   const activeEmbedState: EmbedState | null = useMemo(() => {
@@ -372,7 +350,7 @@ function AdminEmbedBuilderPage() {
             <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
               Internal Admin Tool
             </span>
-            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[0.5625rem] font-semibold uppercase text-emerald-500">
+            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[0.625rem] font-semibold uppercase text-emerald-500">
               Live Editor
             </span>
           </div>
@@ -461,18 +439,19 @@ function AdminEmbedBuilderPage() {
                 <p className="mt-1 text-xs text-muted-foreground">
                   Select a Markdown file containing embed reference sections
                 </p>
+              </div>
+              {/* The input stays in the tab order (sr-only, not display:none) so keyboards can open it. */}
+              <label
+                htmlFor={fileInputId}
+                className="inline-flex h-9 cursor-pointer items-center justify-center rounded-md bg-foreground px-4 text-xs font-bold text-background shadow-panel transition-opacity hover:opacity-90 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background"
+              >
                 <input
                   id={fileInputId}
                   type="file"
                   accept=".md,.markdown,text/markdown,text/plain"
                   onChange={handleFileUpload}
-                  className="hidden"
+                  className="sr-only"
                 />
-              </div>
-              <label
-                htmlFor={fileInputId}
-                className="inline-flex h-9 cursor-pointer items-center justify-center rounded-md bg-foreground px-4 text-xs font-bold text-background shadow-panel transition-opacity hover:opacity-90"
-              >
                 Browse Markdown File
               </label>
             </div>
@@ -666,16 +645,16 @@ function AdminEmbedBuilderPage() {
                       </p>
                       <div className="mt-1 flex items-center gap-1.5">
                         {isItemCv2 ? (
-                          <span className="rounded bg-indigo-500/20 px-1 py-0.2 text-[0.5625rem] font-bold text-indigo-400">
+                          <span className="rounded bg-indigo-500/20 px-1 py-0.5 text-[0.625rem] font-bold text-indigo-400">
                             CV2
                           </span>
                         ) : (
-                          <span className="rounded bg-emerald-500/20 px-1 py-0.2 text-[0.5625rem] font-bold text-emerald-400">
+                          <span className="rounded bg-emerald-500/20 px-1 py-0.5 text-[0.625rem] font-bold text-emerald-400">
                             EMBED
                           </span>
                         )}
                         {emb.fields.length > 0 && (
-                          <span className="rounded-xs bg-background/80 px-1 py-0.2 text-[0.5625rem] text-muted-foreground">
+                          <span className="rounded-xs bg-background/80 px-1 py-0.5 text-[0.625rem] text-muted-foreground">
                             {emb.fields.length} {emb.fields.length === 1 ? "field" : "fields"}
                           </span>
                         )}
@@ -956,7 +935,7 @@ function AdminEmbedBuilderPage() {
                             : "Adore Embed Code"}
                         </h3>
                         <span
-                          className={`rounded px-1.5 py-0.2 text-[0.5625rem] font-bold ${
+                          className={`rounded px-1.5 py-0.5 text-[0.625rem] font-bold ${
                             activeMode === "container"
                               ? "bg-indigo-500/20 text-indigo-400"
                               : "bg-emerald-500/20 text-emerald-400"
@@ -965,7 +944,7 @@ function AdminEmbedBuilderPage() {
                           {activeMode === "container" ? "CV2" : "EMBED"}
                         </span>
                       </div>
-                      <p className="mt-0.5 text-[0.5625rem] uppercase text-muted-foreground">
+                      <p className="mt-0.5 text-[0.625rem] uppercase text-muted-foreground">
                         Active Item: {activeEmbed.name}
                       </p>
                     </div>
@@ -1008,11 +987,15 @@ function AdminEmbedBuilderPage() {
       {/* Floating Status Notification */}
       {notice && (
         <div
-          role="status"
+          role={notice.ok ? "status" : "alert"}
           className="fixed bottom-5 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-nav px-4 py-2 text-xs shadow-nav"
         >
-          <Check className="size-3.5 shrink-0 text-emerald-500" />
-          <span>{notice}</span>
+          {notice.ok ? (
+            <Check className="size-3.5 shrink-0 text-success" />
+          ) : (
+            <CircleAlert className="size-3.5 shrink-0 text-destructive" />
+          )}
+          <span>{notice.text}</span>
         </div>
       )}
     </div>

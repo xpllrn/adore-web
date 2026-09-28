@@ -45,7 +45,8 @@ export function formatLocalTimestamp(date: Date): string {
 }
 
 export function useLiveStatus() {
-  const [uptime, setUptime] = useState("22h 49m 49s");
+  // Placeholder until the first client tick, so the server render doesn't flash a stale value.
+  const [uptime, setUptime] = useState("—");
   const [localTime, setLocalTime] = useState("");
 
   useEffect(() => {

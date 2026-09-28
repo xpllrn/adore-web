@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, ExternalLink, ShieldCheck, Sparkles, Zap } from "lucide-react";
-import { inviteUrl, PageIntro, supportUrl } from "@/components/site-chrome";
+import { PageIntro } from "@/components/site-chrome";
+import { inviteUrl, supportUrl } from "@/lib/links";
 
 export const Route = createFileRoute("/premium")({
   head: () => ({
@@ -38,7 +39,7 @@ function PremiumPage() {
         title="More control. Less compromise."
         description="Unlock the deeper tools that help ambitious communities stay safe, active, and easy to run."
       />
-      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 pb-20 sm:px-6 sm:pb-28 lg:grid-cols-[1fr_1.25fr]">
+      <section className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 pb-4 sm:px-6 lg:grid-cols-[1fr_1.25fr]">
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-1">
           {[
             {

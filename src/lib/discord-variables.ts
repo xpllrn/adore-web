@@ -233,7 +233,7 @@ export function renderVariables(value: string): string {
   });
 
   // 5. Number formatted with commas: {cost:,}, {total_earnings:,}, etc.
-  text = text.replace(/\{([A-Za-z0-9_.'\[\]]+):,\}/g, (_m, expr) => {
+  text = text.replace(/\{([A-Za-z0-9_.'[\]]+):,\}/g, (_m, expr) => {
     const key = expr.trim().toLowerCase();
     if (key.includes("invested")) return "1,000,000";
     if (key.includes("refund_total")) return "800,000";
@@ -262,7 +262,7 @@ export function renderVariables(value: string): string {
   });
 
   // 6. Formatted floats: {pct * 100:.1f}, {impact_pct:.1f}, etc.
-  text = text.replace(/\{([A-Za-z0-9_.* '\[\]]+):\.\d+f\}/g, (_m, expr) => {
+  text = text.replace(/\{([A-Za-z0-9_.* '[\]]+):\.\d+f\}/g, (_m, expr) => {
     const key = expr.trim().toLowerCase();
     if (key.includes("impact")) return "2.4";
     if (key.includes("pl")) return "18.2";
@@ -272,7 +272,7 @@ export function renderVariables(value: string): string {
   });
 
   // 7. General fallback for remaining {identifiers}
-  text = text.replace(/\{([A-Za-z0-9_.'\[\]]+)\}/g, (match, expr) => {
+  text = text.replace(/\{([A-Za-z0-9_.'[\]]+)\}/g, (match, expr) => {
     const key = expr.trim().toLowerCase();
     if (key.includes("mention")) return "@stella";
     if (key.includes("name") || key.includes("title")) return "Starlight Cafe";

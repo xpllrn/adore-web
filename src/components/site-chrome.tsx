@@ -1,7 +1,14 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { ExternalLink, Menu, Settings, X } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import profileAsset from "@/assets/adore-profile.png.asset.json";
+import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { ADORE_AVATAR, DOCS_URL, showFallbackAvatar } from "@/lib/links";
+
+type InternalPath = "/" | "/commands" | "/premium" | "/embed" | "/status";
+
+/** True for clicks the browser should handle itself (new tab, new window, download). */
+function isModifiedClick(event: MouseEvent) {
+  return event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey;
+}
 
 const inspectorMessage = `
 
@@ -29,11 +36,9 @@ const inspectorMessage = `
 
 `;
 
-export { ADORE_AVATAR, DOCS_URL, inviteUrl, supportUrl } from "@/lib/links";
-
 export function SiteChrome({ children }: { children: ReactNode }) {
   const navItems: Array<{
-    to?: "/" | "/commands" | "/premium" | "/embed" | "/status";
+    to?: InternalPath;
     href?: string;
     label: string;
     mobile: boolean;
@@ -54,18 +59,23 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const shellRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const [pendingRoute, setPendingRoute] = useState<
-    "/" | "/commands" | "/premium" | "/embed" | "/docs" | "/status" | null
-  >(null);
+  const [pendingRoute, setPendingRoute] = useState<InternalPath | null>(null);
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  function navigateKeepingScroll(
-    to: "/" | "/commands" | "/premium" | "/embed" | "/docs" | "/status",
-  ) {
+  function navigateKeepingScroll(to: InternalPath) {
     setTapped(true);
     if (pathname !== to) setPendingRoute(to);
   }
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Nav entries are real links (crawlable, open-in-new-tab works); plain clicks are
+  // intercepted so the page-out transition can finish before the route changes.
+  function onNavClick(event: MouseEvent<HTMLAnchorElement>, to: InternalPath) {
+    if (isModifiedClick(event)) return;
+    event.preventDefault();
+    setMenuOpen(false);
+    navigateKeepingScroll(to);
+  }
 
   useEffect(() => {
     setPendingRoute(null);
@@ -133,21 +143,20 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             }}
             className={`island-nav ${popped ? "" : "animate-island-pop"} pointer-events-auto flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full border border-border bg-nav/90 p-1.5 shadow-nav backdrop-blur-xl sm:gap-1 [scrollbar-width:none] ${tapped ? "animate-island-bounce" : ""}`}
           >
-            <button
-              type="button"
-              onClick={() => navigateKeepingScroll("/")}
-              aria-label="Home"
+            <Link
+              to="/"
+              activeOptions={{ exact: true }}
+              onClick={(event) => onNavClick(event, "/")}
+              aria-label="Adore home"
               className="shrink-0 rounded-full border border-border bg-elevated p-1 shadow-panel transition-colors hover:bg-secondary"
             >
               <img
                 src={ADORE_AVATAR}
-                onError={(e) => {
-                  e.currentTarget.src = "/adore-profile.png";
-                }}
-                alt="Adore"
+                onError={showFallbackAvatar}
+                alt=""
                 className="size-7 rounded-full object-cover"
               />
-            </button>
+            </Link>
             {navItems.map((item) =>
               item.href ? (
                 <a
@@ -155,40 +164,38 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                   href={item.href}
                   target="_blank"
                   rel="noreferrer"
-                  className={`${item.mobile ? "" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs`}
+                  className={`${item.mobile ? "inline-flex" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs`}
                 >
                   {item.label}
                 </a>
-              ) : (
-                <button
+              ) : item.to ? (
+                <Link
                   key={item.label}
-                  type="button"
-                  onClick={() => item.to && navigateKeepingScroll(item.to)}
-                  aria-current={pathname === item.to ? "page" : undefined}
-                  className={`${item.mobile ? "" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs ${pathname === item.to ? "bg-elevated text-foreground shadow-panel" : ""}`}
+                  to={item.to}
+                  onClick={(event) => item.to && onNavClick(event, item.to)}
+                  className={`${item.mobile ? "inline-flex" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs ${pathname === item.to ? "bg-elevated text-foreground shadow-panel" : ""}`}
                 >
                   {item.label}
-                </button>
-              ),
+                </Link>
+              ) : null,
             )}
-            <button
-              type="button"
-              onClick={() => navigateKeepingScroll("/status")}
-              aria-current={pathname === "/status" ? "page" : undefined}
-              className={`shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:hidden ${pathname === "/status" ? "bg-elevated text-foreground shadow-panel" : ""}`}
+            <Link
+              to="/status"
+              onClick={(event) => onNavClick(event, "/status")}
+              className={`inline-flex shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:hidden ${pathname === "/status" ? "bg-elevated text-foreground shadow-panel" : ""}`}
             >
               Status
-            </button>
+            </Link>
             <span className="mx-1 h-5 w-px shrink-0 bg-border" aria-hidden="true" />
-            <button
-              type="button"
-              onClick={() => navigateKeepingScroll("/status")}
-              aria-label="Status and settings"
-              title="Status"
+            <Link
+              to="/status"
+              onClick={(event) => onNavClick(event, "/status")}
+              aria-label="System status"
+              title="System status"
               className={`hidden shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:inline-flex ${pathname === "/status" ? "bg-elevated text-foreground shadow-panel" : ""}`}
             >
               <Settings className="size-4" />
-            </button>
+            </Link>
             <button
               ref={menuButtonRef}
               type="button"
@@ -224,19 +231,15 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                         {item.label}
                         <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
                       </a>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMenuOpen(false);
-                          if (item.to) navigateKeepingScroll(item.to);
-                        }}
-                        aria-current={pathname === item.to ? "page" : undefined}
+                    ) : item.to ? (
+                      <Link
+                        to={item.to}
+                        onClick={(event) => item.to && onNavClick(event, item.to)}
                         className={`${itemClass} ${pathname === item.to ? "bg-elevated text-foreground shadow-panel" : ""}`}
                       >
                         {item.label}
-                      </button>
-                    )}
+                      </Link>
+                    ) : null}
                   </li>
                 );
               })}
@@ -322,7 +325,7 @@ export function PageIntro({
       <h1 className="mt-4 max-w-4xl break-words font-display text-3xl font-black leading-tight sm:text-5xl lg:text-7xl">
         {title}
       </h1>
-      <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:mt-6 sm:leading-7 lg:text-base">
+      <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground sm:mt-6 sm:text-base">
         {description}
       </p>
     </section>

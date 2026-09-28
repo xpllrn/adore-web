@@ -1,11 +1,11 @@
 import {
   ArrowDown,
   ArrowUp,
+  CircleAlert,
   Check,
-  ChevronRight,
-  Clipboard,
   Code2,
   Copy,
+  Images,
   ImageIcon,
   Link2,
   Plus,
@@ -15,22 +15,29 @@ import {
   Type,
   X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { Block, EmbedField, EmbedState, MessageButton, Mode } from "@/types/embed";
+import type { Block, EmbedState, MessageButton, Mode } from "@/types/embed";
 import { initialEmbed } from "@/types/embed";
 import { buildAdoreCode, parseAdoreCode } from "@/lib/adore-code";
-import {
-  ContainerPreview,
-  DiscordMarkdown,
-  DiscordMessagePreview,
-  EmbedPreview,
-  Preview,
-  renderVariables,
-  sampleVariables,
-  variableGroups,
-} from "@/components/embed-preview";
-import { EmbedFieldListEditor, EmbedFieldsEditor } from "@/components/embed-fields-editor";
+import { copyText } from "@/lib/clipboard";
+import { Preview, variableGroups } from "@/components/embed-preview";
+import { EmbedFieldsEditor } from "@/components/embed-fields-editor";
+
+type InsertTarget = "message" | "title" | "description" | "footer";
+
+const DEFAULT_COLOR = "#8b8d92";
+// "Clear builder" should leave an empty embed, not the sample content from initialEmbed.
+const EMPTY_EMBED: EmbedState = { ...initialEmbed, title: "", description: "", footer: "" };
+
+/** `<input type="color">` only accepts #rrggbb; anything else would warn and show black. */
+function toColorInputValue(value: string) {
+  const hex = value.trim().replace(/^0x/i, "#");
+  if (/^#[0-9a-f]{6}$/i.test(hex)) return hex;
+  const short = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+  if (short) return `#${short[1]}${short[1]}${short[2]}${short[2]}${short[3]}${short[3]}`;
+  return DEFAULT_COLOR;
+}
 
 // Re-export core types and extracted utilities for consumers
 export type { Block, EmbedField, EmbedState, MessageButton, Mode } from "@/types/embed";
@@ -60,49 +67,53 @@ export function MessageBuilder() {
     { id: 1, type: "text", text: "Welcome to **{guild.name}**." },
   ]);
   const [buttons, setButtons] = useState<MessageButton[]>([]);
-  const [webhook, setWebhook] = useState("");
-  const [containerColor, setContainerColor] = useState("#8b8d92");
-  const [activeTarget, setActiveTarget] = useState<"message" | "title" | "description" | "footer">(
-    "description",
-  );
+  const [containerColor, setContainerColor] = useState(DEFAULT_COLOR);
+  const [activeTarget, setActiveTarget] = useState<InsertTarget>("description");
   const [variableSearch, setVariableSearch] = useState("");
   const [codeDraft, setCodeDraft] = useState("");
   const [codeDirty, setCodeDirty] = useState(false);
-  const [notice, setNotice] = useState("");
-  const [nextId, setNextId] = useState(10);
+  const [notice, setNotice] = useState<{ text: string; ok: boolean } | null>(null);
+  const noticeTimer = useRef<number | undefined>(undefined);
+  // A ref (not state) so several ids requested in one event are still unique.
+  const nextId = useRef(1000);
+
+  useEffect(() => () => window.clearTimeout(noticeTimer.current), []);
 
   const generatedCode = useMemo(
     () => buildAdoreCode(mode, message, embed, containerColor, blocks, buttons),
     [mode, message, embed, containerColor, blocks, buttons],
   );
   const shownCode = codeDirty ? codeDraft : generatedCode;
+  // Container mode hides the embed fields, so variables go into the message content there.
+  const insertTarget: InsertTarget = mode === "container" ? "message" : activeTarget;
 
-  function flash(text: string) {
-    setNotice(text);
-    window.setTimeout(() => setNotice(""), 2200);
+  function flash(text: string, ok = true) {
+    window.clearTimeout(noticeTimer.current);
+    setNotice({ text, ok });
+    noticeTimer.current = window.setTimeout(() => setNotice(null), 2200);
   }
   function freshId() {
-    const id = nextId;
-    setNextId((value) => value + 1);
-    return id;
+    nextId.current += 1;
+    return nextId.current;
   }
   function updateEmbed<K extends keyof EmbedState>(key: K, value: EmbedState[K]) {
     setEmbed((current) => ({ ...current, [key]: value }));
   }
   function clearAll() {
     setMessage("");
-    setEmbed({ ...initialEmbed, fields: [] });
+    setEmbed(EMPTY_EMBED);
     setBlocks([]);
     setButtons([]);
-    setWebhook("");
+    setContainerColor(DEFAULT_COLOR);
     setCodeDirty(false);
     flash("Builder cleared");
   }
   function insertVariable(variable: string) {
-    if (activeTarget === "message") setMessage((value) => value + variable);
-    else if (activeTarget === "title") updateEmbed("title", embed.title + variable);
-    else if (activeTarget === "footer") updateEmbed("footer", embed.footer + variable);
-    else updateEmbed("description", embed.description + variable);
+    if (insertTarget === "message") {
+      setMessage((value) => value + variable);
+      return;
+    }
+    setEmbed((current) => ({ ...current, [insertTarget]: current[insertTarget] + variable }));
   }
   function moveItem<T>(items: T[], index: number, direction: -1 | 1) {
     const target = index + direction;
@@ -117,60 +128,43 @@ export function MessageBuilder() {
   }
 
   async function copyToClipboard(text: string, label: string) {
-    let success = false;
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        success = true;
-      }
-    } catch {
-      // Fallback below
-    }
-
-    if (!success) {
-      try {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.top = "-9999px";
-        textarea.style.left = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        success = document.execCommand("copy");
-        document.body.removeChild(textarea);
-      } catch {
-        success = false;
-      }
-    }
-
-    if (success) {
-      flash(`${label} copied to clipboard!`);
-    } else {
-      flash("Could not copy to clipboard");
-    }
+    if (await copyText(text)) flash(`${label} copied to clipboard`);
+    else flash("Could not copy to clipboard", false);
   }
 
+  // Loading replaces the parsed mode's state instead of merging into what was there, and
+  // re-keys every item so ids from pasted code can't collide with the builder's own.
   function loadCode() {
     const parsed = parseAdoreCode(shownCode);
     if (!parsed) {
-      flash("Code could not be parsed");
+      flash("Code could not be parsed", false);
       return;
     }
     setMode(parsed.mode);
-    if (parsed.message !== undefined) setMessage(parsed.message);
-    if (parsed.embed) {
-      setEmbed((current) => ({
-        ...current,
+    setMessage(parsed.message ?? "");
+    if (parsed.mode === "embed") {
+      setEmbed({
+        ...EMPTY_EMBED,
         ...parsed.embed,
-        fields: parsed.embed?.fields || current.fields,
-      }));
+        fields: (parsed.embed?.fields ?? []).map((field) => ({ ...field, id: freshId() })),
+      });
+    } else {
+      setContainerColor(parsed.containerColor ?? DEFAULT_COLOR);
+      setBlocks(
+        (parsed.blocks ?? []).map((block) =>
+          block.type === "gallery"
+            ? {
+                ...block,
+                id: freshId(),
+                images: block.images.map((image) => ({ ...image, id: freshId() })),
+              }
+            : { ...block, id: freshId() },
+        ),
+      );
     }
-    if (parsed.containerColor) setContainerColor(parsed.containerColor);
-    if (parsed.blocks && parsed.blocks.length > 0) setBlocks(parsed.blocks);
-    if (parsed.buttons) setButtons(parsed.buttons);
+    setButtons((parsed.buttons ?? []).map((button) => ({ ...button, id: freshId() })));
     setCodeDirty(false);
-    flash("Code loaded into builder!");
+    flash("Code loaded into builder");
   }
 
   return (
@@ -267,7 +261,7 @@ export function MessageBuilder() {
                   />
                   <input
                     aria-label={`Button ${index + 1} URL`}
-                    value={button.url}
+                    value={button.url ?? ""}
                     onChange={(event) =>
                       setButtons((items) =>
                         items.map((item) =>
@@ -279,7 +273,7 @@ export function MessageBuilder() {
                     className={`${inputClass} h-10`}
                   />
                   <IconButton
-                    label="Remove button"
+                    label={`Remove button ${index + 1}`}
                     onClick={() =>
                       setButtons((items) => items.filter((item) => item.id !== button.id))
                     }
@@ -294,36 +288,19 @@ export function MessageBuilder() {
               size="sm"
               variant="outline"
               disabled={buttons.length >= 5}
-              onClick={() =>
+              onClick={() => {
+                // Take the id outside the updater: updaters must stay pure.
+                const id = freshId();
                 setButtons((items) => [
                   ...items,
-                  { id: freshId(), label: "Visit Adore website", url: "https://adore.rest" },
-                ])
-              }
+                  { id, label: "Visit Adore website", url: "https://adore.rest" },
+                ]);
+              }}
               className="mt-3"
             >
               <Plus /> Add button
             </Button>
           </EditorSection>
-
-          <details className={panelClass}>
-            <summary className="flex cursor-pointer list-none items-center gap-2 p-4 text-xs font-bold">
-              <ChevronRight className="size-4 [[open]>&]:rotate-90" />
-              Send to a webhook
-              <span className="ml-auto font-normal text-muted-foreground">optional</span>
-            </summary>
-            <div className="border-t border-border p-4">
-              <Field
-                label="Webhook URL"
-                value={webhook}
-                onChange={setWebhook}
-                placeholder="https://discord.com/api/webhooks/..."
-              />
-              <p className="mt-2 text-[0.625rem] leading-4 text-muted-foreground">
-                Saved only in this browser session. This preview does not send the message.
-              </p>
-            </div>
-          </details>
         </div>
 
         <aside className="grid min-w-0 grid-cols-1 gap-4 lg:sticky lg:top-28">
@@ -342,7 +319,9 @@ export function MessageBuilder() {
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
               <div className="min-w-0">
                 <h2 className="truncate font-display text-sm font-bold">Adore Code</h2>
-                <p className="mt-1 text-[0.5625rem] uppercase text-muted-foreground">{mode} format</p>
+                <p className="mt-1 text-[0.625rem] uppercase text-muted-foreground">
+                  {mode} format{codeDirty ? " · edited" : ""}
+                </p>
               </div>
               <div className="flex flex-wrap shrink-0 gap-2">
                 <Button
@@ -353,7 +332,7 @@ export function MessageBuilder() {
                     copyToClipboard(shownCode, mode === "embed" ? "Embed code" : "Container code")
                   }
                 >
-                  <Copy className="size-3.5" /> Copy Embed
+                  <Copy className="size-3.5" /> Copy {mode === "embed" ? "Embed" : "Container"}
                 </Button>
                 <Button
                   type="button"
@@ -377,6 +356,23 @@ export function MessageBuilder() {
               spellCheck={false}
               className={`${inputClass} mt-4 w-full resize-y p-3 font-mono text-xs leading-5`}
             />
+            {codeDirty && (
+              // Once the code is hand-edited, builder changes stop flowing into it; say so.
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-elevated px-3 py-2 text-xs text-muted-foreground">
+                <span>
+                  Showing your edited code. Press Load to apply it, or reset to the builder.
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 px-2"
+                  onClick={() => setCodeDirty(false)}
+                >
+                  <RotateCcw className="size-3.5" /> Reset
+                </Button>
+              </div>
+            )}
             <p className="mt-3 text-[0.625rem] leading-5 text-muted-foreground">
               Paste into <code className="text-foreground">,createembed</code>. Works directly with
               Adore&apos;s embed parser.
@@ -386,17 +382,21 @@ export function MessageBuilder() {
             search={variableSearch}
             setSearch={setVariableSearch}
             insert={insertVariable}
-            activeTarget={activeTarget}
+            activeTarget={insertTarget}
           />
         </aside>
       </div>
       {notice && (
         <div
-          role="status"
+          role={notice.ok ? "status" : "alert"}
           className="fixed bottom-5 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-nav px-4 py-2 text-xs shadow-nav"
         >
-          <Check className="size-3.5 shrink-0" />
-          {notice}
+          {notice.ok ? (
+            <Check className="size-3.5 shrink-0 text-success" />
+          ) : (
+            <CircleAlert className="size-3.5 shrink-0 text-destructive" />
+          )}
+          {notice.text}
         </div>
       )}
     </div>
@@ -539,7 +539,10 @@ function ContainerEditor({
     setBlocks((items) => [...items, block]);
   }
   return (
-    <EditorSection title="Container" count={`${blocks.length} components`}>
+    <EditorSection
+      title="Container"
+      count={`${blocks.length} ${blocks.length === 1 ? "component" : "components"}`}
+    >
       <ColorField label="Accent colour" value={color} onChange={setColor} />
       <div className="mt-5 grid gap-3">
         {blocks.map((block, index) => (
@@ -558,6 +561,7 @@ function ContainerEditor({
             </div>
             {block.type === "text" && (
               <textarea
+                aria-label={`Text component ${index + 1}`}
                 value={block.text}
                 onChange={(event) => updateBlock(block.id, { text: event.target.value })}
                 rows={4}
@@ -567,6 +571,7 @@ function ContainerEditor({
             {block.type === "section" && (
               <div className="mt-3 grid gap-3">
                 <textarea
+                  aria-label={`Section component ${index + 1} text`}
                   value={block.text}
                   onChange={(event) => updateBlock(block.id, { text: event.target.value })}
                   rows={4}
@@ -653,7 +658,7 @@ function ContainerEditor({
                       />
                     </div>
                     <IconButton
-                      label="Remove gallery image"
+                      label={`Remove gallery image ${imageIndex + 1}`}
                       onClick={() =>
                         updateBlock(block.id, {
                           images: block.images.filter((item) => item.id !== image.id),
@@ -668,11 +673,12 @@ function ContainerEditor({
                   type="button"
                   size="sm"
                   variant="outline"
-                  onClick={() =>
+                  onClick={() => {
+                    const id = freshId();
                     updateBlock(block.id, {
-                      images: [...block.images, { id: freshId(), url: "", description: "" }],
-                    })
-                  }
+                      images: [...block.images, { id, url: "", description: "" }],
+                    });
+                  }}
                 >
                   <Plus /> Add image
                 </Button>
@@ -695,7 +701,7 @@ function ContainerEditor({
           onClick={() => addBlock("separator")}
         />
         <AddBlock icon={<ImageIcon />} label="Image" onClick={() => addBlock("image")} />
-        <AddBlock icon={<ImageIcon />} label="Gallery" onClick={() => addBlock("gallery")} />
+        <AddBlock icon={<Images />} label="Gallery" onClick={() => addBlock("gallery")} />
       </div>
     </EditorSection>
   );
@@ -726,7 +732,7 @@ function VariableBrowser({
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <div className="min-w-0">
           <h2 className="truncate font-display text-sm font-bold">Variables</h2>
-          <p className="mt-1 text-[0.5625rem] text-muted-foreground">Insert into {activeTarget}</p>
+          <p className="mt-1 text-[0.625rem] text-muted-foreground">Insert into {activeTarget}</p>
         </div>
         <input
           aria-label="Search variables"
@@ -737,8 +743,14 @@ function VariableBrowser({
         />
       </div>
       <div className="mt-4 grid gap-2">
+        {groups.length === 0 && (
+          <p className="py-4 text-center text-xs text-muted-foreground">
+            No variables match &ldquo;{search}&rdquo;.
+          </p>
+        )}
         {groups.map(([name, variables], index) => (
-          <details key={name} open={index === 0}>
+          // Keyed by the search so the first match group opens again when results change.
+          <details key={`${name}-${search ? "search" : "all"}`} open={index === 0 || !!search}>
             <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-center py-2 text-[0.625rem] font-bold uppercase">
               <span className="truncate">{name}</span>
               <span className="text-muted-foreground">{variables.length}</span>
@@ -751,7 +763,7 @@ function VariableBrowser({
                   size="sm"
                   variant="secondary"
                   onClick={() => insert(variable)}
-                  className="h-7 px-2 font-mono text-[0.5625rem]"
+                  className="h-7 px-2 font-mono text-[0.625rem]"
                 >
                   {variable}
                 </Button>
@@ -777,7 +789,7 @@ function EditorSection({
     <section className={`${panelClass} @container p-4 sm:p-5`}>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <h2 className="truncate font-display text-sm font-bold">{title}</h2>
-        {count && <span className="shrink-0 text-[0.5625rem] text-muted-foreground">{count}</span>}
+        {count && <span className="shrink-0 text-[0.625rem] text-muted-foreground">{count}</span>}
       </div>
       <div className="mt-4">{children}</div>
     </section>
@@ -880,15 +892,15 @@ function ColorField({
           onChange={(event) => onChange(event.target.value)}
           className={`${inputClass} h-10 normal-case`}
         />
-        <span className="relative grid size-10 cursor-pointer place-items-center rounded-md border border-border bg-background shadow-panel">
+        <span className="relative grid size-10 cursor-pointer place-items-center rounded-md border border-border bg-background shadow-panel focus-within:ring-2 focus-within:ring-ring">
           <span
             className="size-5 rounded-sm border border-border"
-            style={{ backgroundColor: value }}
+            style={{ backgroundColor: toColorInputValue(value) }}
           />
           <input
             type="color"
             aria-label={`${label} picker`}
-            value={value}
+            value={toColorInputValue(value)}
             onChange={(event) => onChange(event.target.value)}
             className="absolute inset-0 size-full cursor-pointer opacity-0"
           />

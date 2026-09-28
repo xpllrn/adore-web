@@ -1,8 +1,10 @@
-'use client';
+"use client";
 
-import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { type FC } from 'react';
+import { motion } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { type FC, type ReactNode } from "react";
+
+// Theme-token variant of CarouselNavigator: follows the site's palette.
 
 type ThemeConfig = {
   button: string;
@@ -21,28 +23,13 @@ interface CarouselNavigatorProps {
 const DEFAULT_TOTAL_SLIDES = 4;
 const DEFAULT_AUTO_DELAY = 5000;
 
-const DEFAULT_THEMES: ThemeConfig[] = [
-  {
-    button: 'bg-primary text-primary-foreground',
-    dot: 'bg-secondary',
-    progress: 'bg-secondary',
-  },
-  {
-    button: 'bg-primary text-primary-foreground',
-    dot: 'bg-secondary',
-    progress: 'bg-secondary',
-  },
-  {
-    button: 'bg-primary text-primary-foreground',
-    dot: 'bg-secondary',
-    progress: 'bg-secondary',
-  },
-  {
-    button: 'bg-primary text-primary-foreground',
-    dot: 'bg-secondary',
-    progress: 'bg-secondary',
-  },
-];
+const TOKEN_THEME: ThemeConfig = {
+  button: "bg-primary text-primary-foreground",
+  dot: "bg-secondary",
+  progress: "bg-secondary",
+};
+
+const DEFAULT_THEMES: ThemeConfig[] = [TOKEN_THEME, TOKEN_THEME, TOKEN_THEME, TOKEN_THEME];
 
 export const CarouselNavigator: FC<CarouselNavigatorProps> = ({
   totalSlides = DEFAULT_TOTAL_SLIDES,
@@ -51,18 +38,15 @@ export const CarouselNavigator: FC<CarouselNavigatorProps> = ({
   currentIndex,
   onIndexChange,
 }) => {
-  const theme = themes[currentIndex];
+  const theme = themes[currentIndex] ?? themes[0] ?? TOKEN_THEME;
 
-  const goPrev = () =>
-    onIndexChange((currentIndex - 1 + totalSlides) % totalSlides);
-
+  const goPrev = () => onIndexChange((currentIndex - 1 + totalSlides) % totalSlides);
   const goNext = () => onIndexChange((currentIndex + 1) % totalSlides);
 
   return (
-    <motion.div
-      className="theme-injected flex items-center justify-center gap-1 rounded-4xl border border-border bg-card px-4 py-3 font-sans transition-colors duration-300"
-    >
+    <motion.div className="flex items-center justify-center gap-1 rounded-4xl border border-border bg-card px-4 py-3 font-sans transition-colors duration-300">
       <ArrowButton
+        label="Previous slide"
         onClick={goPrev}
         themeColor={theme.button}
         disabled={currentIndex === 0}
@@ -74,6 +58,7 @@ export const CarouselNavigator: FC<CarouselNavigatorProps> = ({
         {Array.from({ length: totalSlides }).map((_, i) => (
           <Indicator
             key={i}
+            index={i}
             isActive={i === currentIndex}
             theme={theme}
             autoDelay={autoDelay}
@@ -82,20 +67,34 @@ export const CarouselNavigator: FC<CarouselNavigatorProps> = ({
         ))}
       </div>
 
-      <ArrowButton onClick={goNext} themeColor={theme.button}>
+      <ArrowButton label="Next slide" onClick={goNext} themeColor={theme.button}>
         <ChevronRight size={24} strokeWidth={3} />
       </ArrowButton>
     </motion.div>
   );
 };
 
-const ArrowButton = ({ children, onClick, themeColor, disabled }: any) => {
+const ArrowButton = ({
+  children,
+  label,
+  onClick,
+  themeColor,
+  disabled = false,
+}: {
+  children: ReactNode;
+  label: string;
+  onClick: () => void;
+  themeColor: string;
+  disabled?: boolean;
+}) => {
   return (
     <motion.button
+      type="button"
+      aria-label={label}
       onClick={onClick}
       whileTap={{ scale: 0.9 }}
       disabled={disabled}
-      className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-4xl font-sans shadow-sm transition-colors duration-300 ${disabled ? 'cursor-not-allowed bg-input text-muted-foreground opacity-60' : `${themeColor} hover:brightness-95`}`}
+      className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-4xl font-sans shadow-sm transition-colors duration-300 ${disabled ? "cursor-not-allowed bg-input text-muted-foreground opacity-60" : `${themeColor} hover:brightness-95`}`}
     >
       {children}
     </motion.button>
@@ -103,11 +102,13 @@ const ArrowButton = ({ children, onClick, themeColor, disabled }: any) => {
 };
 
 const Indicator = ({
+  index,
   isActive,
   theme,
   autoDelay,
   onClick,
 }: {
+  index: number;
   isActive: boolean;
   theme: ThemeConfig;
   autoDelay: number;
@@ -116,18 +117,20 @@ const Indicator = ({
   return (
     <motion.button
       type="button"
+      aria-label={`Go to slide ${index + 1}`}
+      aria-current={isActive ? "true" : undefined}
       onClick={onClick}
       layout
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
       style={{ borderRadius: 24 }}
-      className={`relative h-3 cursor-pointer focus:outline-none ${isActive ? `w-12 ${theme.progress}` : `w-3 ${theme.dot}`} transition-colors duration-300`}
+      className={`relative h-3 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${isActive ? `w-12 ${theme.progress}` : `w-3 ${theme.dot}`} transition-colors duration-300`}
     >
       {isActive && (
         <motion.div
-          initial={{ width: '0%' }}
-          animate={{ width: '100%' }}
-          transition={{ duration: autoDelay / 1000, ease: 'linear' }}
-          className="absolute inset-0 rounded-4xl bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.4)]"
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: autoDelay / 1000, ease: "linear" }}
+          className="absolute inset-0 rounded-4xl bg-primary shadow-[0_0_8px_color-mix(in_oklab,var(--primary)_40%,transparent)]"
         />
       )}
     </motion.button>
