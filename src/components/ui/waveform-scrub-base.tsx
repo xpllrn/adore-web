@@ -68,11 +68,11 @@ export const WaveformScrub: React.FC<WaveformScrubProps> = ({
                   )}
                 </motion.button>
               </AnimatePresence>
-              <span className="text-muted-foreground truncate text-[17px] font-normal tracking-tight transition-colors sm:text-[19px]">
+              <span className="text-muted-foreground truncate text-[1.0625rem] font-normal tracking-tight transition-colors sm:text-[1.1875rem]">
                 {fileName}
               </span>
             </div>
-            <span className="text-muted-foreground shrink-0 text-[18px] font-semibold tabular-nums transition-colors sm:text-[20px]">
+            <span className="text-muted-foreground shrink-0 text-[1.125rem] font-semibold tabular-nums transition-colors sm:text-[1.25rem]">
               {p.displayTime}s
             </span>
           </div>
@@ -100,7 +100,7 @@ export const WaveformScrub: React.FC<WaveformScrubProps> = ({
                   <div
                     key={i}
                     className="bg-muted-foreground/50 w-1 shrink-0 rounded-lg transition-colors sm:w-0.75"
-                    style={{ height: h * 1.6 }}
+                    style={{ height: `${h * 0.1}rem` }}
                   />
                 ))}
               </div>
@@ -117,7 +117,7 @@ export const WaveformScrub: React.FC<WaveformScrubProps> = ({
                     <div
                       key={i}
                       className="bg-foreground w-1 shrink-0 rounded-lg transition-colors sm:w-0.75"
-                      style={{ height: h * 1.6 }}
+                      style={{ height: `${h * 0.1}rem` }}
                     />
                   ))}
                 </div>

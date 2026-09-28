@@ -143,7 +143,7 @@ function CommandsPage() {
 
   const desktopSidebar = (
     <aside
-      className="group fixed left-4 top-1/2 z-30 hidden h-[29.5rem] w-16 -translate-y-1/2 overflow-hidden rounded-md border border-border bg-nav/95 p-2 shadow-nav backdrop-blur-xl transition-[width] duration-300 ease-out hover:w-64 focus-within:w-64 lg:block"
+      className="group fixed left-4 top-1/2 z-30 hidden h-[min(29.5rem,calc(100dvh-8rem))] w-16 -translate-y-1/2 overflow-hidden rounded-md border border-border bg-nav/95 p-2 shadow-nav backdrop-blur-xl transition-[width] duration-300 ease-out hover:w-64 focus-within:w-64 lg:pointer-fine:block"
       aria-label="Command tools"
     >
       <div className="flex h-full w-60 flex-col gap-1">
@@ -188,7 +188,7 @@ function CommandsPage() {
                   >
                     <span className="truncate">{name}</span>
                     <span
-                      className={`font-mono text-[10px] ${active ? "text-background/80" : "text-muted-foreground"}`}
+                      className={`font-mono text-[0.625rem] ${active ? "text-background/80" : "text-muted-foreground"}`}
                     >
                       {count}
                     </span>
@@ -205,14 +205,16 @@ function CommandsPage() {
   return (
     <>
       {mounted ? createPortal(desktopSidebar, document.body) : desktopSidebar}
+      {/* Leave room for the fixed sidebar until the centered content clears it on its own. */}
+      <div className="lg:max-2xl:pointer-fine:pl-20">
       <PageIntro
         eyebrow={`${totalAllCommands || "710+"} ways to work`}
         title="Every command. One search."
         description="Find the tools your staff and members need, from anti-raid controls to music, analytics, and ranked games."
       />
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
-        {/* Mobile categories & search bar */}
-        <div className="sticky top-20 z-20 rounded-md border border-border bg-nav/95 p-1.5 shadow-nav backdrop-blur-xl lg:hidden">
+        {/* Touch & small-screen categories and search bar */}
+        <div className="sticky top-20 z-20 rounded-md border border-border bg-nav/95 p-1.5 shadow-nav backdrop-blur-xl lg:pointer-fine:hidden">
           <div className="no-scrollbar flex min-w-0 items-center gap-1 overflow-x-auto">
             <label className="flex h-10 min-w-32 shrink-0 items-center gap-2 rounded-sm px-2.5 focus-within:bg-elevated sm:min-w-48">
               <Search className="size-4 shrink-0 text-muted-foreground" />
@@ -239,7 +241,7 @@ function CommandsPage() {
                 >
                   <Icon className="size-4 shrink-0" />
                   <span className="text-xs">{name}</span>
-                  <span className="text-[10px] opacity-75 font-mono">({count})</span>
+                  <span className="text-[0.625rem] opacity-75 font-mono">({count})</span>
                 </Button>
               );
             })}
@@ -248,7 +250,7 @@ function CommandsPage() {
 
         {/* Category & results header */}
         {!!allFilteredCommands.length && (
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-[14px] text-muted-foreground">
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-[0.875rem] text-muted-foreground">
             <p>
               Showing <strong className="text-foreground">{visibleCommands.length}</strong> of{" "}
               <strong className="text-foreground">{allFilteredCommands.length}</strong> commands in{" "}
@@ -258,7 +260,7 @@ function CommandsPage() {
           </div>
         )}
 
-        <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {visibleCommands.map(({ group, command: [name, text, args, perms, premium] }) => (
             <article
               key={`${group}-${name}`}
@@ -288,7 +290,7 @@ function CommandsPage() {
                   )}
                 </button>
               </div>
-              <p className="mt-2 text-[15px] leading-relaxed text-balance text-muted-foreground">
+              <p className="mt-2 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
                 {text}
               </p>
               <div className="mt-5 grid flex-1 content-start gap-4 border-t border-border pt-4">
@@ -329,10 +331,10 @@ function CommandsPage() {
         {/* Load more controls when there are remaining commands */}
         {allFilteredCommands.length > visibleCommands.length && (
           <div className="mt-10 flex flex-col items-center gap-3">
-            <p className="text-[14px] text-muted-foreground">
+            <p className="text-[0.875rem] text-muted-foreground">
               Showing {visibleCommands.length} of {allFilteredCommands.length} commands
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-2">
               <Button
                 type="button"
                 variant="outline"
@@ -369,6 +371,7 @@ function CommandsPage() {
           </p>
         )}
       </section>
+      </div>
     </>
   );
 }

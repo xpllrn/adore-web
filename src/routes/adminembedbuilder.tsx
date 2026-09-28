@@ -364,7 +364,7 @@ function AdminEmbedBuilderPage() {
   }, [embeds, searchQuery, filterType]);
 
   return (
-    <div className="mx-auto max-w-[1700px] px-3 pb-24 pt-28 sm:px-6 sm:pb-32 sm:pt-36">
+    <div className="mx-auto max-w-[106.25rem] px-3 pb-24 pt-28 sm:px-6 sm:pb-32 sm:pt-36 short:pt-24">
       {/* Top Header & Global Actions */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
         <div>
@@ -372,7 +372,7 @@ function AdminEmbedBuilderPage() {
             <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
               Internal Admin Tool
             </span>
-            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold uppercase text-emerald-500">
+            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[0.5625rem] font-semibold uppercase text-emerald-500">
               Live Editor
             </span>
           </div>
@@ -419,7 +419,7 @@ function AdminEmbedBuilderPage() {
                 Import Reference Markdown
               </h2>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 type="button"
                 size="sm"
@@ -450,7 +450,7 @@ function AdminEmbedBuilderPage() {
             </div>
           </div>
 
-          <div className="mt-4 grid gap-6 md:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* File Upload Dropzone */}
             <div className="flex flex-col justify-between rounded-md border border-dashed border-border bg-background p-5 text-center">
               <div className="my-auto py-4">
@@ -518,7 +518,7 @@ function AdminEmbedBuilderPage() {
                 <span>{importStats.skippedCount} non-embed sections skipped</span>
               </div>
               {importStats.skippedSections.length > 0 && (
-                <span className="truncate text-[10px] text-muted-foreground/80">
+                <span className="truncate text-[0.625rem] text-muted-foreground/80">
                   (Skipped: {importStats.skippedSections.join(", ")})
                 </span>
               )}
@@ -529,18 +529,18 @@ function AdminEmbedBuilderPage() {
 
       {/* Main Workspace: (2) Sidebar + (3) Editor + (4) Preview */}
       {embeds.length === 0 ? (
-        <div className={`${panelClass} p-12 text-center`}>
+        <div className={`${panelClass} p-6 text-center sm:p-12`}>
           <FileText className="mx-auto size-12 text-muted-foreground/50" />
           <h2 className="mt-4 font-display text-lg font-bold">No Embeds Loaded</h2>
           <p className="mx-auto mt-2 max-w-md text-xs leading-5 text-muted-foreground">
             Import an existing Markdown reference file, paste markdown content above, or click below
             to load a sample template to start editing.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             <Button
               type="button"
               onClick={loadCupiEconomyTemplate}
-              className="gap-2 bg-foreground font-bold text-background hover:opacity-90 shadow-panel"
+              className="h-auto min-h-9 gap-2 whitespace-normal bg-foreground font-bold text-background hover:opacity-90 shadow-panel"
             >
               <Sparkles className="size-4 text-amber-400" /> Load Cupi Economy Reference
             </Button>
@@ -548,23 +548,28 @@ function AdminEmbedBuilderPage() {
               type="button"
               variant="outline"
               onClick={() => handleImportText(SAMPLE_MARKDOWN, "sample-embeds.md")}
-              className="gap-2"
+              className="h-auto min-h-9 gap-2 whitespace-normal"
             >
               Load Sample Template
             </Button>
-            <Button type="button" variant="outline" onClick={addNewEmbed} className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addNewEmbed}
+              className="h-auto min-h-9 gap-2 whitespace-normal"
+            >
               <Plus className="size-4" /> Create Blank Embed
             </Button>
           </div>
         </div>
       ) : (
-        <div className="grid items-start gap-4 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[18.75rem_minmax(0,1fr)]">
           {/* (2) Sidebar: Listing every parsed embed */}
           <aside className={`${panelClass} flex flex-col p-4`}>
             <div className="flex items-center justify-between gap-2 border-b border-border pb-3">
               <div>
                 <h2 className="font-display text-sm font-bold">Parsed Embeds</h2>
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-[0.625rem] text-muted-foreground">
                   {embeds.length} total • #{selectedIndex + 1} active
                 </span>
               </div>
@@ -581,7 +586,7 @@ function AdminEmbedBuilderPage() {
             </div>
 
             {/* Filter Pills */}
-            <div className="mt-3 grid grid-cols-3 gap-1 rounded-md border border-border bg-background p-1 text-[11px] font-semibold">
+            <div className="mt-3 grid grid-cols-3 gap-1 rounded-md border border-border bg-background p-1 text-[0.6875rem] font-semibold">
               <button
                 type="button"
                 onClick={() => setFilterType("all")}
@@ -631,7 +636,7 @@ function AdminEmbedBuilderPage() {
             {/* Embed List */}
             <nav
               aria-label="Embed sections"
-              className="mt-3 flex max-h-[70vh] flex-col gap-1.5 overflow-y-auto pr-1"
+              className="mt-3 flex max-h-72 flex-col gap-1.5 overflow-y-auto pr-1 lg:max-h-[70vh]"
             >
               {filteredEmbeds.map((emb) => {
                 const originalIndex = embeds.findIndex((e) => e.id === emb.id);
@@ -656,21 +661,21 @@ function AdminEmbedBuilderPage() {
                       <p className="truncate leading-tight font-medium text-foreground">
                         {emb.name || "Untitled Section"}
                       </p>
-                      <p className="truncate text-[10px] text-muted-foreground">
+                      <p className="truncate text-[0.625rem] text-muted-foreground">
                         {emb.title || emb.description || "Empty embed"}
                       </p>
                       <div className="mt-1 flex items-center gap-1.5">
                         {isItemCv2 ? (
-                          <span className="rounded bg-indigo-500/20 px-1 py-0.2 text-[9px] font-bold text-indigo-400">
+                          <span className="rounded bg-indigo-500/20 px-1 py-0.2 text-[0.5625rem] font-bold text-indigo-400">
                             CV2
                           </span>
                         ) : (
-                          <span className="rounded bg-emerald-500/20 px-1 py-0.2 text-[9px] font-bold text-emerald-400">
+                          <span className="rounded bg-emerald-500/20 px-1 py-0.2 text-[0.5625rem] font-bold text-emerald-400">
                             EMBED
                           </span>
                         )}
                         {emb.fields.length > 0 && (
-                          <span className="rounded-xs bg-background/80 px-1 py-0.2 text-[9px] text-muted-foreground">
+                          <span className="rounded-xs bg-background/80 px-1 py-0.2 text-[0.5625rem] text-muted-foreground">
                             {emb.fields.length} {emb.fields.length === 1 ? "field" : "fields"}
                           </span>
                         )}
@@ -693,15 +698,15 @@ function AdminEmbedBuilderPage() {
 
           {/* Main Editing & Preview Columns */}
           {activeEmbed && activeEmbedState ? (
-            <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(26rem,.95fr)]">
+            <div className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(26rem,.95fr)]">
               {/* (3) Editor Panel */}
-              <div className="grid min-w-0 gap-4">
+              <div className="grid min-w-0 grid-cols-1 gap-4">
                 <section className={`${panelClass} p-4 sm:p-5`}>
                   <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0 flex-1">
                       <label
                         htmlFor="section-heading-input"
-                        className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+                        className="block text-[0.625rem] font-bold uppercase tracking-wider text-muted-foreground"
                       >
                         Section Heading
                       </label>
@@ -757,7 +762,7 @@ function AdminEmbedBuilderPage() {
 
                   <div className="mt-4 grid gap-4">
                     {/* Title */}
-                    <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                    <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                       Title
                       <input
                         value={activeEmbed.title}
@@ -769,7 +774,7 @@ function AdminEmbedBuilderPage() {
                     </label>
 
                     {/* Description */}
-                    <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                    <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                       Description
                       <textarea
                         value={activeEmbed.description}
@@ -782,7 +787,7 @@ function AdminEmbedBuilderPage() {
                     </label>
 
                     {/* Color Picker + Hex Input */}
-                    <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                    <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                       Accent Colour
                       <div className="grid grid-cols-[minmax(0,1fr)_2.5rem] gap-2">
                         <input
@@ -803,7 +808,7 @@ function AdminEmbedBuilderPage() {
                               activeEmbed.color.startsWith("#") ? activeEmbed.color : "#8b8d92"
                             }
                             onChange={(e) => updateActiveEmbed({ color: e.target.value })}
-                            className="absolute inset-0 cursor-pointer opacity-0"
+                            className="absolute inset-0 size-full cursor-pointer opacity-0"
                           />
                         </div>
                       </div>
@@ -811,10 +816,10 @@ function AdminEmbedBuilderPage() {
 
                     {/* Author Fields */}
                     <fieldset className="grid grid-cols-1 gap-3 border-t border-border pt-4 sm:grid-cols-2">
-                      <legend className="mb-2 text-[10px] font-bold uppercase text-muted-foreground">
+                      <legend className="mb-2 text-[0.625rem] font-bold uppercase text-muted-foreground">
                         Author
                       </legend>
-                      <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                      <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                         Author Name
                         <input
                           value={activeEmbed.authorName}
@@ -823,7 +828,7 @@ function AdminEmbedBuilderPage() {
                           className={`${inputClass} h-10 normal-case`}
                         />
                       </label>
-                      <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                      <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                         Author Icon URL
                         <input
                           value={activeEmbed.authorIcon || ""}
@@ -836,10 +841,10 @@ function AdminEmbedBuilderPage() {
 
                     {/* Media: Thumbnail / Image */}
                     <fieldset className="grid grid-cols-1 gap-3 border-t border-border pt-4 sm:grid-cols-2">
-                      <legend className="mb-2 text-[10px] font-bold uppercase text-muted-foreground">
+                      <legend className="mb-2 text-[0.625rem] font-bold uppercase text-muted-foreground">
                         Media Assets
                       </legend>
-                      <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                      <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                         Thumbnail URL
                         <input
                           value={activeEmbed.thumbnail}
@@ -848,7 +853,7 @@ function AdminEmbedBuilderPage() {
                           className={`${inputClass} h-10 normal-case`}
                         />
                       </label>
-                      <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                      <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                         Image URL
                         <input
                           value={activeEmbed.image}
@@ -861,10 +866,10 @@ function AdminEmbedBuilderPage() {
 
                     {/* Footer */}
                     <fieldset className="grid grid-cols-1 gap-3 border-t border-border pt-4 sm:grid-cols-2">
-                      <legend className="mb-2 text-[10px] font-bold uppercase text-muted-foreground">
+                      <legend className="mb-2 text-[0.625rem] font-bold uppercase text-muted-foreground">
                         Footer
                       </legend>
-                      <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                      <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                         Footer Text
                         <input
                           value={activeEmbed.footer}
@@ -873,7 +878,7 @@ function AdminEmbedBuilderPage() {
                           className={`${inputClass} h-10 normal-case`}
                         />
                       </label>
-                      <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                      <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                         Footer Icon URL
                         <input
                           value={activeEmbed.footerIcon || ""}
@@ -903,7 +908,7 @@ function AdminEmbedBuilderPage() {
 
                     {/* Buttons / View (Read-only Note) */}
                     <div className="border-t border-border pt-4">
-                      <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                      <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                         <span>Buttons / View Note (Readonly)</span>
                         <div
                           className={`${inputClass} flex min-h-10 items-center bg-elevated/40 text-xs text-muted-foreground`}
@@ -919,7 +924,7 @@ function AdminEmbedBuilderPage() {
                           )}
                         </div>
                       </label>
-                      <p className="mt-1 text-[10px] text-muted-foreground">
+                      <p className="mt-1 text-[0.625rem] text-muted-foreground">
                         From <code className="text-foreground">- Buttons/View:</code> line in the
                         reference markdown document.
                       </p>
@@ -929,7 +934,7 @@ function AdminEmbedBuilderPage() {
               </div>
 
               {/* (4) Live Discord-Style Preview & (5) Code Export */}
-              <aside className="grid min-w-0 gap-4 xl:sticky xl:top-28">
+              <aside className="grid min-w-0 grid-cols-1 gap-4 xl:sticky xl:top-28">
                 {/* Live Preview */}
                 <Preview
                   mode={activeMode}
@@ -951,7 +956,7 @@ function AdminEmbedBuilderPage() {
                             : "Adore Embed Code"}
                         </h3>
                         <span
-                          className={`rounded px-1.5 py-0.2 text-[9px] font-bold ${
+                          className={`rounded px-1.5 py-0.2 text-[0.5625rem] font-bold ${
                             activeMode === "container"
                               ? "bg-indigo-500/20 text-indigo-400"
                               : "bg-emerald-500/20 text-emerald-400"
@@ -960,7 +965,7 @@ function AdminEmbedBuilderPage() {
                           {activeMode === "container" ? "CV2" : "EMBED"}
                         </span>
                       </div>
-                      <p className="mt-0.5 text-[9px] uppercase text-muted-foreground">
+                      <p className="mt-0.5 text-[0.5625rem] uppercase text-muted-foreground">
                         Active Item: {activeEmbed.name}
                       </p>
                     </div>
@@ -989,7 +994,7 @@ function AdminEmbedBuilderPage() {
                     spellCheck={false}
                     className={`${inputClass} mt-4 w-full resize-y p-3 font-mono text-xs leading-5`}
                   />
-                  <p className="mt-2 text-[10px] text-muted-foreground">
+                  <p className="mt-2 text-[0.625rem] text-muted-foreground">
                     Generated using <code className="text-foreground">buildAdoreCode</code>. Ready
                     to paste into Discord.
                   </p>
@@ -1004,9 +1009,9 @@ function AdminEmbedBuilderPage() {
       {notice && (
         <div
           role="status"
-          className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-nav px-4 py-2 text-xs shadow-nav"
+          className="fixed bottom-5 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-nav px-4 py-2 text-xs shadow-nav"
         >
-          <Check className="size-3.5 text-emerald-500" />
+          <Check className="size-3.5 shrink-0 text-emerald-500" />
           <span>{notice}</span>
         </div>
       )}

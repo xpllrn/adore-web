@@ -167,7 +167,7 @@ function SpotifyPage() {
                   >
                     Your Authorization Code
                   </label>
-                  <span className="hidden text-[11px] text-muted-foreground sm:inline">
+                  <span className="hidden text-[0.6875rem] text-muted-foreground sm:inline">
                     Click to select all
                   </span>
                 </div>
@@ -206,7 +206,7 @@ function SpotifyPage() {
 
               {/* Bot Instructions / Full Redirect URL Box */}
               <div className="mt-6 rounded-lg border border-border bg-elevated/50 p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Next Step in Discord
                   </span>
@@ -245,7 +245,7 @@ function SpotifyPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify play
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         Play any track, album, or playlist on Spotify
                       </p>
                     </div>
@@ -256,7 +256,7 @@ function SpotifyPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify pause
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         Toggle pause and resume on your active device
                       </p>
                     </div>
@@ -267,7 +267,7 @@ function SpotifyPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify toptracks
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         View your top 50 Spotify tracks
                       </p>
                     </div>
@@ -278,7 +278,7 @@ function SpotifyPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,spotify vc
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         Stream your active Spotify music in your voice channel
                       </p>
                     </div>
@@ -336,9 +336,9 @@ function SpotifyPage() {
                   </div>
                   <div>
                     <h3 className="text-xs font-bold">Start in Discord</h3>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    <p className="mt-0.5 text-[0.6875rem] text-muted-foreground">
                       Type{" "}
-                      <code className="rounded bg-elevated px-1 font-mono text-[10px]">
+                      <code className="rounded bg-elevated px-1 font-mono text-[0.625rem]">
                         ,spotify login
                       </code>{" "}
                       in chat.
@@ -352,7 +352,7 @@ function SpotifyPage() {
                   </div>
                   <div>
                     <h3 className="text-xs font-bold">Authorize on Spotify</h3>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    <p className="mt-0.5 text-[0.6875rem] text-muted-foreground">
                       Click the link generated in your DMs.
                     </p>
                   </div>
@@ -364,7 +364,7 @@ function SpotifyPage() {
                   </div>
                   <div>
                     <h3 className="text-xs font-bold">Return with Code</h3>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    <p className="mt-0.5 text-[0.6875rem] text-muted-foreground">
                       Spotify will redirect you back here.
                     </p>
                   </div>

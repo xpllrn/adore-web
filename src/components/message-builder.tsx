@@ -174,7 +174,7 @@ export function MessageBuilder() {
   }
 
   return (
-    <div className="mx-auto max-w-[1500px] px-3 pb-20 sm:px-6 sm:pb-28">
+    <div className="mx-auto max-w-[93.75rem] px-3 pb-20 sm:px-6 sm:pb-28">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex min-w-0 items-center gap-1 rounded-md border border-border bg-surface p-1 shadow-panel">
@@ -213,8 +213,8 @@ export function MessageBuilder() {
         </Button>
       </div>
 
-      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(26rem,.95fr)]">
-        <div className="grid min-w-0 gap-4">
+      <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.9fr)] xl:grid-cols-[minmax(0,1.05fr)_minmax(26rem,.95fr)]">
+        <div className="grid min-w-0 grid-cols-1 gap-4">
           <EditorSection title="Message" count={`${message.length} / 2000`}>
             <TextArea
               label="Content above the rich message"
@@ -319,14 +319,14 @@ export function MessageBuilder() {
                 onChange={setWebhook}
                 placeholder="https://discord.com/api/webhooks/..."
               />
-              <p className="mt-2 text-[10px] leading-4 text-muted-foreground">
+              <p className="mt-2 text-[0.625rem] leading-4 text-muted-foreground">
                 Saved only in this browser session. This preview does not send the message.
               </p>
             </div>
           </details>
         </div>
 
-        <aside className="grid min-w-0 gap-4 xl:sticky xl:top-28">
+        <aside className="grid min-w-0 grid-cols-1 gap-4 lg:sticky lg:top-28">
           <Preview
             mode={mode}
             message={message}
@@ -342,7 +342,7 @@ export function MessageBuilder() {
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
               <div className="min-w-0">
                 <h2 className="truncate font-display text-sm font-bold">Adore Code</h2>
-                <p className="mt-1 text-[9px] uppercase text-muted-foreground">{mode} format</p>
+                <p className="mt-1 text-[0.5625rem] uppercase text-muted-foreground">{mode} format</p>
               </div>
               <div className="flex flex-wrap shrink-0 gap-2">
                 <Button
@@ -377,7 +377,7 @@ export function MessageBuilder() {
               spellCheck={false}
               className={`${inputClass} mt-4 w-full resize-y p-3 font-mono text-xs leading-5`}
             />
-            <p className="mt-3 text-[10px] leading-5 text-muted-foreground">
+            <p className="mt-3 text-[0.625rem] leading-5 text-muted-foreground">
               Paste into <code className="text-foreground">,createembed</code>. Works directly with
               Adore&apos;s embed parser.
             </p>
@@ -393,9 +393,9 @@ export function MessageBuilder() {
       {notice && (
         <div
           role="status"
-          className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-nav px-4 py-2 text-xs shadow-nav"
+          className="fixed bottom-5 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-border bg-nav px-4 py-2 text-xs shadow-nav"
         >
-          <Check className="size-3.5" />
+          <Check className="size-3.5 shrink-0" />
           {notice}
         </div>
       )}
@@ -545,7 +545,7 @@ function ContainerEditor({
         {blocks.map((block, index) => (
           <div key={block.id} className="rounded-md border border-border bg-background p-3">
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-              <p className="truncate text-[10px] font-bold uppercase text-muted-foreground">
+              <p className="truncate text-[0.625rem] font-bold uppercase text-muted-foreground">
                 {block.type}
               </p>
               <MoveControls
@@ -572,7 +572,7 @@ function ContainerEditor({
                   rows={4}
                   className={`${inputClass} resize-y p-3`}
                 />
-                <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+                <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
                   Accessory
                   <select
                     value={block.accessory}
@@ -686,7 +686,7 @@ function ContainerEditor({
           Add a component to begin your container.
         </p>
       )}
-      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div className="mt-4 grid grid-cols-2 gap-2 @sm:grid-cols-3 @lg:grid-cols-5">
         <AddBlock icon={<Type />} label="Text" onClick={() => addBlock("text")} />
         <AddBlock icon={<Link2 />} label="Section" onClick={() => addBlock("section")} />
         <AddBlock
@@ -726,7 +726,7 @@ function VariableBrowser({
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <div className="min-w-0">
           <h2 className="truncate font-display text-sm font-bold">Variables</h2>
-          <p className="mt-1 text-[9px] text-muted-foreground">Insert into {activeTarget}</p>
+          <p className="mt-1 text-[0.5625rem] text-muted-foreground">Insert into {activeTarget}</p>
         </div>
         <input
           aria-label="Search variables"
@@ -739,7 +739,7 @@ function VariableBrowser({
       <div className="mt-4 grid gap-2">
         {groups.map(([name, variables], index) => (
           <details key={name} open={index === 0}>
-            <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-center py-2 text-[10px] font-bold uppercase">
+            <summary className="grid cursor-pointer list-none grid-cols-[minmax(0,1fr)_auto] items-center py-2 text-[0.625rem] font-bold uppercase">
               <span className="truncate">{name}</span>
               <span className="text-muted-foreground">{variables.length}</span>
             </summary>
@@ -751,7 +751,7 @@ function VariableBrowser({
                   size="sm"
                   variant="secondary"
                   onClick={() => insert(variable)}
-                  className="h-7 px-2 font-mono text-[9px]"
+                  className="h-7 px-2 font-mono text-[0.5625rem]"
                 >
                   {variable}
                 </Button>
@@ -774,10 +774,10 @@ function EditorSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className={`${panelClass} p-4 sm:p-5`}>
+    <section className={`${panelClass} @container p-4 sm:p-5`}>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <h2 className="truncate font-display text-sm font-bold">{title}</h2>
-        {count && <span className="shrink-0 text-[9px] text-muted-foreground">{count}</span>}
+        {count && <span className="shrink-0 text-[0.5625rem] text-muted-foreground">{count}</span>}
       </div>
       <div className="mt-4">{children}</div>
     </section>
@@ -787,7 +787,7 @@ function EditorSection({
 function FieldGrid({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <fieldset className="grid grid-cols-1 gap-3 border-t border-border pt-4 sm:grid-cols-2">
-      <legend className="mb-3 text-[10px] font-bold uppercase text-muted-foreground">
+      <legend className="mb-3 text-[0.625rem] font-bold uppercase text-muted-foreground">
         {title}
       </legend>
       {children}
@@ -814,7 +814,7 @@ function Field({
 }) {
   return (
     <label
-      className={`grid min-w-0 gap-1.5 text-[10px] uppercase text-muted-foreground ${wide ? "sm:col-span-2" : ""}`}
+      className={`grid min-w-0 gap-1.5 text-[0.625rem] uppercase text-muted-foreground ${wide ? "sm:col-span-2" : ""}`}
     >
       {label}
       <input
@@ -847,7 +847,7 @@ function TextArea({
   onFocus?: () => void;
 }) {
   return (
-    <label className="grid min-w-0 gap-1.5 text-[10px] uppercase text-muted-foreground">
+    <label className="grid min-w-0 gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
       {label}
       <textarea
         value={value}
@@ -872,7 +872,7 @@ function ColorField({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="grid gap-1.5 text-[10px] uppercase text-muted-foreground">
+    <label className="grid gap-1.5 text-[0.625rem] uppercase text-muted-foreground">
       {label}
       <span className="grid grid-cols-[minmax(0,1fr)_2.5rem] gap-2">
         <input
@@ -890,7 +890,7 @@ function ColorField({
             aria-label={`${label} picker`}
             value={value}
             onChange={(event) => onChange(event.target.value)}
-            className="absolute inset-0 cursor-pointer opacity-0"
+            className="absolute inset-0 size-full cursor-pointer opacity-0"
           />
         </span>
       </span>

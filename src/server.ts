@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { isApiPath, matchRedirect, proxyApi } from "./lib/redirects";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -46,6 +47,13 @@ function isH3SwallowedErrorBody(body: string): boolean {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    // Shortlinks and the API proxy run before the app (public/_redirects is not applied
+    // to worker-handled routes on Cloudflare Pages).
+    const url = new URL(request.url);
+    const redirect = matchRedirect(url);
+    if (redirect) return redirect;
+    if (isApiPath(url.pathname)) return proxyApi(request, url);
+
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

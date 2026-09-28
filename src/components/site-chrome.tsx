@@ -29,14 +29,7 @@ const inspectorMessage = `
 
 `;
 
-export const ADORE_AVATAR =
-  "https://cdn.discordapp.com/avatars/1510215071559847946/a2026a29a580b7c34f0b9ab736021aab.png?size=256";
-
-export const inviteUrl =
-  "https://discord.com/oauth2/authorize?client_id=1510215071559847946&permissions=8&integration_type=0&scope=bot";
-export const supportUrl = "https://discord.gg/hbv97y5uxM";
-
-export const DOCS_URL = "https://wiki.adore.rest";
+export { ADORE_AVATAR, DOCS_URL, inviteUrl, supportUrl } from "@/lib/links";
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const navItems: Array<{

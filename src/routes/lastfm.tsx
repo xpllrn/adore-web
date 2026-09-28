@@ -157,7 +157,7 @@ function LastfmPage() {
                   >
                     Your Authorization Token
                   </label>
-                  <span className="hidden text-[11px] text-muted-foreground sm:inline">
+                  <span className="hidden text-[0.6875rem] text-muted-foreground sm:inline">
                     Click to select all
                   </span>
                 </div>
@@ -196,7 +196,7 @@ function LastfmPage() {
 
               {/* Bot Command Box */}
               <div className="mt-6 rounded-lg border border-border/80 bg-elevated/60 p-4">
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                   <span className="text-xs font-medium text-muted-foreground">
                     Quick Command (Run in Discord)
                   </span>
@@ -280,7 +280,7 @@ function LastfmPage() {
                   <h3 className="mt-3 font-display text-xs font-bold sm:text-sm">Paste & Send</h3>
                   <p className="mt-1.5 text-xs leading-5 text-muted-foreground">
                     Send{" "}
-                    <code className="rounded bg-elevated px-1 py-0.5 font-mono text-[11px] text-foreground">
+                    <code className="break-all rounded bg-elevated px-1 py-0.5 font-mono text-[0.6875rem] text-foreground">
                       {botCommand}
                     </code>{" "}
                     in chat to finalize the link.
@@ -300,7 +300,7 @@ function LastfmPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,lastfm now
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         Displays your currently playing track
                       </p>
                     </div>
@@ -311,7 +311,7 @@ function LastfmPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,lastfm recent
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         Lists your recent scrobbles
                       </p>
                     </div>
@@ -322,7 +322,7 @@ function LastfmPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,lastfm topartists
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         Shows your top artists across timeframes
                       </p>
                     </div>
@@ -333,7 +333,7 @@ function LastfmPage() {
                       <code className="font-mono text-xs font-bold text-foreground">
                         ,lastfm crowns
                       </code>
-                      <p className="text-[11px] text-muted-foreground">
+                      <p className="text-[0.6875rem] text-muted-foreground">
                         Compete for crowns with other members
                       </p>
                     </div>
@@ -385,7 +385,7 @@ function LastfmPage() {
                   <h3 className="mt-2.5 text-xs font-bold">Start in Discord</h3>
                   <p className="mt-1 text-xs text-muted-foreground">
                     Type{" "}
-                    <code className="rounded bg-elevated px-1 font-mono text-[10px]">
+                    <code className="rounded bg-elevated px-1 font-mono text-[0.625rem]">
                       ,lastfm login
                     </code>{" "}
                     in chat.

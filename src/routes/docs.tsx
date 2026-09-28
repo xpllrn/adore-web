@@ -93,11 +93,15 @@ function DocsPage() {
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         {/* Live status bar with live ticking uptime */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-surface px-4 py-3 shadow-panel">
-          <div className="flex items-center gap-2.5 text-xs">
-            <span className="size-2 rounded-full bg-success" />
-            <span className="font-semibold text-foreground">All systems operational</span>
-            <span className="text-muted-foreground">•</span>
-            <span className="text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs">
+            <span className="flex items-center gap-2.5 whitespace-nowrap">
+              <span className="size-2 rounded-full bg-success" />
+              <span className="font-semibold text-foreground">All systems operational</span>
+            </span>
+            <span className="hidden text-muted-foreground sm:inline" aria-hidden="true">
+              •
+            </span>
+            <span className="whitespace-nowrap text-muted-foreground">
               Uptime: <strong className="font-mono text-foreground">{uptime}</strong>
             </span>
           </div>
@@ -122,7 +126,7 @@ function DocsPage() {
               <h2 className="mt-2 font-display text-2xl font-bold sm:text-3xl">
                 Explore the Complete Wiki &amp; Docs
               </h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-balance text-muted-foreground">
+              <p className="mt-2 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
                 Comprehensive documentation covering Adore security, antinuke, tickets, role
                 management, music, embed scripting, and configuration is hosted on our official
                 wiki.
@@ -139,7 +143,7 @@ function DocsPage() {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {docs.map((doc) => (
             <article
               key={doc.title}
@@ -147,7 +151,7 @@ function DocsPage() {
             >
               <doc.icon className="size-5" />
               <h2 className="mt-8 font-display text-xl font-bold">{doc.title}</h2>
-              <p className="mt-3 text-[15px] leading-relaxed text-balance text-muted-foreground">
+              <p className="mt-3 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
                 {doc.text}
               </p>
               <ol className="mt-6 grid gap-3">

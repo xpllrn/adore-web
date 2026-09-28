@@ -94,30 +94,31 @@ function Index() {
 
   return (
     <>
-      <section className="relative flex min-h-svh items-center overflow-hidden px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
-        <div className="relative mx-auto w-full max-w-7xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 text-center lg:text-left">
+      <section className="relative flex min-h-svh items-center overflow-hidden px-4 py-20 sm:px-6 sm:py-28 lg:py-32 short:pb-16 short:pt-24">
+        <div className="relative mx-auto w-full max-w-7xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 short:gap-8 text-center lg:text-left">
           <div className="lg:max-w-2xl mx-auto lg:mx-0">
-            <h1 className="font-mono text-[clamp(4rem,15vw,8rem)] font-black tracking-[0.14em] leading-none uppercase text-foreground">
+            {/* Height-aware so the wordmark doesn't swallow landscape phone screens. */}
+            <h1 className="font-mono text-[clamp(4rem,min(15vw,20svh),8rem)] font-black tracking-[0.14em] leading-none uppercase text-foreground">
               Adore<span className="sr-only">, the all-in-one Discord app</span>
             </h1>
-            <p className="mx-auto lg:mx-0 mt-5 max-w-xl text-[15px] sm:text-[17px] leading-relaxed text-balance text-muted-foreground sm:mt-6">
+            <p className="mx-auto lg:mx-0 mt-5 max-w-xl text-[0.9375rem] sm:text-[1.0625rem] leading-relaxed text-balance text-muted-foreground sm:mt-6">
               Powerful moderation, security, integrations, music, and community tools, brought
               together in one focused app.
             </p>
           </div>
-          <div className="flex flex-col gap-8 w-full lg:max-w-md">
+          <div className="mx-auto flex w-full max-w-lg flex-col gap-8 lg:mx-0 lg:max-w-md">
             <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
               <a
                 href={inviteUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md bg-foreground px-3 text-[14px] font-bold text-background sm:px-5 sm:text-[15px]"
+                className="inline-flex h-11 w-full items-center justify-center gap-1.5 whitespace-nowrap min-[360px]:gap-2 rounded-md bg-foreground px-2 text-[0.8125rem] min-[360px]:px-3 min-[360px]:text-[0.875rem] font-bold text-background sm:px-5 sm:text-[0.9375rem]"
               >
                 <Plus className="size-4 shrink-0" /> Add to Discord
               </a>
               <Link
                 to="/status"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[14px] shadow-panel hover:bg-elevated sm:px-5 sm:text-[15px]"
+                className="inline-flex h-11 w-full items-center justify-center gap-1.5 whitespace-nowrap min-[360px]:gap-2 rounded-md border border-border bg-surface px-2 text-[0.8125rem] min-[360px]:px-3 min-[360px]:text-[0.875rem] shadow-panel hover:bg-elevated sm:px-5 sm:text-[0.9375rem]"
               >
                 <Gauge className="size-4 shrink-0" /> System status
               </Link>
@@ -125,13 +126,13 @@ function Index() {
                 href={supportUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[14px] shadow-panel hover:bg-elevated sm:px-5 sm:text-[15px]"
+                className="inline-flex h-11 w-full items-center justify-center gap-1.5 whitespace-nowrap min-[360px]:gap-2 rounded-md border border-border bg-surface px-2 text-[0.8125rem] min-[360px]:px-3 min-[360px]:text-[0.875rem] shadow-panel hover:bg-elevated sm:px-5 sm:text-[0.9375rem]"
               >
                 <MessageCircle className="size-4 shrink-0" /> Support server
               </a>
               <Link
                 to="/commands"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[14px] shadow-panel hover:bg-elevated sm:px-5 sm:text-[15px]"
+                className="inline-flex h-11 w-full items-center justify-center gap-1.5 whitespace-nowrap min-[360px]:gap-2 rounded-md border border-border bg-surface px-2 text-[0.8125rem] min-[360px]:px-3 min-[360px]:text-[0.875rem] shadow-panel hover:bg-elevated sm:px-5 sm:text-[0.9375rem]"
               >
                 View commands <ArrowRight className="size-4 shrink-0" />
               </Link>
@@ -149,7 +150,7 @@ function Index() {
                   <strong className="block truncate font-display text-base font-bold sm:text-xl">
                     {value}
                   </strong>
-                  <p className="mt-2 truncate font-mono text-[8px] uppercase text-muted-foreground sm:text-[10px]">
+                  <p className="mt-2 truncate font-mono text-[0.5rem] uppercase text-muted-foreground sm:text-[0.625rem]">
                     {label}
                   </p>
                 </div>
@@ -164,22 +165,22 @@ function Index() {
 
       <section className="scroll-reveal py-16 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
             <div>
               <SectionLabel>One bot, no compromises</SectionLabel>
               <h2 className="mt-4 font-display text-2xl font-black leading-tight sm:text-4xl lg:text-5xl">
                 Built for every moment in your server.
               </h2>
             </div>
-            <p className="max-w-xl text-[15px] leading-relaxed text-balance text-muted-foreground lg:justify-self-end">
+            <p className="max-w-xl text-[0.9375rem] leading-relaxed text-balance text-muted-foreground lg:justify-self-end">
               From the first suspicious join to the song everyone queues at midnight, Adore keeps
               the essential tools close and the noise out.
             </p>
           </div>
-          <div className="mt-10 grid auto-rows-[minmax(14rem,auto)] gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid auto-rows-[minmax(14rem,auto)] grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
             <article className="relative overflow-hidden rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 md:row-span-2 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
+                <span className="font-mono text-[0.625rem] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Protection
                 </span>
                 <ShieldCheck className="size-5" />
@@ -187,7 +188,7 @@ function Index() {
               <h3 className="mt-10 max-w-xs font-display text-2xl font-black sm:mt-14 sm:text-3xl">
                 Your server stays yours.
               </h3>
-              <p className="mt-4 text-[15px] leading-relaxed text-balance text-muted-foreground">
+              <p className="mt-4 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
                 Anti-nuke and anti-raid controls react before damage spreads.
               </p>
               <div className="mt-10 space-y-1">
@@ -202,14 +203,14 @@ function Index() {
                   >
                     <span className="size-1.5 rounded-full bg-success" />
                     <span className="truncate text-xs">{item}</span>
-                    <span className="font-mono text-[9px] text-muted-foreground">{index + 1}s</span>
+                    <span className="font-mono text-[0.5625rem] text-muted-foreground">{index + 1}s</span>
                   </div>
                 ))}
               </div>
             </article>
             <article className="rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 lg:col-span-2 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
+                <span className="font-mono text-[0.625rem] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Live activity
                 </span>
                 <Activity className="size-5" />
@@ -227,14 +228,14 @@ function Index() {
               </div>
               <div className="mt-4 flex items-center justify-between">
                 <strong className="font-display text-xl">12,842 actions</strong>
-                <span className="font-mono text-[9px] uppercase text-muted-foreground">
+                <span className="font-mono text-[0.5625rem] uppercase text-muted-foreground">
                   Last 24 hours
                 </span>
               </div>
             </article>
             <article className="flex flex-col justify-between rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
+                <span className="font-mono text-[0.625rem] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Now playing
                 </span>
                 <Headphones className="size-5" />
@@ -258,7 +259,7 @@ function Index() {
                 </button>
                 <div className="min-w-0 text-center">
                   <p className="truncate text-xs text-muted-foreground">{currentSong.artist}</p>
-                  <p className="mt-1 font-mono text-[9px] uppercase text-muted-foreground">
+                  <p className="mt-1 font-mono text-[0.5625rem] uppercase text-muted-foreground">
                     Track {currentSongIndex + 1} of {demoTracks.length}
                   </p>
                 </div>
@@ -274,7 +275,7 @@ function Index() {
             </article>
             <article className="rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
+                <span className="font-mono text-[0.625rem] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Community
                 </span>
                 <Sparkles className="size-5" />
@@ -287,13 +288,13 @@ function Index() {
                 ].map(([value, label]) => (
                   <div key={label} className="min-w-0 py-3">
                     <strong className="font-display text-lg">{value}</strong>
-                    <p className="mt-1 truncate font-mono text-[8px] uppercase text-muted-foreground">
+                    <p className="mt-1 truncate font-mono text-[0.5rem] uppercase text-muted-foreground">
                       {label}
                     </p>
                   </div>
                 ))}
               </div>
-              <p className="mt-5 text-[15px] leading-relaxed text-balance text-muted-foreground">
+              <p className="mt-5 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
                 Levels, games, giveaways, and rewards keep everyone involved.
               </p>
             </article>
@@ -328,13 +329,13 @@ function Index() {
       <section className="scroll-reveal py-16 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="overflow-hidden rounded-md border border-border bg-surface shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20">
-            <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
               <div className="p-6 sm:p-9 lg:p-12">
                 <SectionLabel>Control center</SectionLabel>
                 <h2 className="mt-5 font-display text-2xl font-black leading-tight sm:text-4xl">
                   Powerful tools that still feel simple.
                 </h2>
-                <p className="mt-5 text-[15px] leading-relaxed text-balance text-muted-foreground">
+                <p className="mt-5 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
                   Turn protection on, tune the limits, and let Adore handle the routine work while
                   your team stays in control.
                 </p>
@@ -342,7 +343,7 @@ function Index() {
                   {["Anti-nuke", "AutoMod", "Join gate", "Fake permissions"].map((item) => (
                     <span
                       key={item}
-                      className="rounded-full border border-border px-3 py-2 text-[10px] text-muted-foreground"
+                      className="rounded-full border border-border px-3 py-2 text-[0.625rem] text-muted-foreground"
                     >
                       {item}
                     </span>
@@ -380,7 +381,7 @@ function Index() {
       <section className="scroll-reveal py-16 sm:py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <SectionLabel>Countless more features</SectionLabel>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3">
             {smallFeatures.map((feature) => (
               <article
                 key={feature.title}
@@ -390,7 +391,7 @@ function Index() {
                 <h3 className="mt-10 font-display text-lg font-bold sm:mt-14 sm:text-xl lg:mt-16">
                   {feature.title}
                 </h3>
-                <p className="mt-3 text-[15px] leading-relaxed text-balance text-muted-foreground">
+                <p className="mt-3 text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
                   {feature.text}
                 </p>
               </article>
@@ -401,7 +402,7 @@ function Index() {
             className="mt-4 grid min-h-28 grid-cols-[minmax(0,1fr)_auto] items-center gap-5 rounded-md border border-border bg-surface p-5 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 hover:bg-elevated sm:min-h-32 sm:p-6"
           >
             <div className="min-w-0">
-              <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
+              <span className="font-mono text-[0.625rem] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                 Library
               </span>
               <h3 className="mt-2 font-display text-xl font-bold sm:text-2xl">Over 710 commands</h3>
@@ -411,13 +412,13 @@ function Index() {
         </div>
       </section>
 
-      <section className="scroll-reveal py-20 sm:py-28 lg:py-36">
+      <section className="scroll-reveal py-20 sm:py-28 lg:py-36 short:py-16">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
           <SectionLabel>Ready when you are</SectionLabel>
           <h2 className="mt-5 font-display text-3xl font-black sm:mt-6 sm:text-5xl lg:text-6xl">
             Get Adore in your server today.
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-balance text-muted-foreground">
+          <p className="mx-auto mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-balance text-muted-foreground">
             Join communities using one focused app for daily operations and everything members
             enjoy.
           </p>

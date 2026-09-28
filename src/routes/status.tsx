@@ -53,7 +53,7 @@ function StatusPage() {
           <span className="size-2 shrink-0 rounded-full bg-success" />
           <div>
             <strong className="text-sm">All systems operational</strong>
-            <p className="mt-1 font-mono text-[9px] text-muted-foreground sm:text-[10px]">
+            <p className="mt-1 font-mono text-[0.5625rem] text-muted-foreground sm:text-[0.625rem]">
               {localTime || "12:24 PM 19-Sep 2026"}
             </p>
           </div>
@@ -66,11 +66,11 @@ function StatusPage() {
             >
               <stat.icon className="size-5 shrink-0 text-muted-foreground" />
               <div className="min-w-0">
-                <p className="text-[10px] text-muted-foreground sm:text-xs">{stat.label}</p>
+                <p className="text-[0.625rem] text-muted-foreground sm:text-xs">{stat.label}</p>
                 <p className="mt-1 break-words font-display text-sm font-bold sm:text-xl">
                   {stat.value}
                   {stat.suffix && (
-                    <span className="ml-1 text-[9px] text-muted-foreground sm:text-xs">
+                    <span className="ml-1 text-[0.5625rem] text-muted-foreground sm:text-xs">
                       {stat.suffix}
                     </span>
                   )}
@@ -142,7 +142,7 @@ function MetricChart({
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <h2 className="text-center font-display text-xs font-bold sm:text-sm">{title}</h2>
         {lines.length > 1 && (
-          <div className="flex gap-3 font-mono text-[8px] uppercase text-muted-foreground">
+          <div className="flex gap-3 font-mono text-[0.5rem] uppercase text-muted-foreground">
             {lines.map((line, index) => (
               <span key={line.key} className="flex items-center gap-1.5">
                 <span className={`size-1.5 rounded-full ${index ? "bg-chart-2" : "bg-chart-1"}`} />

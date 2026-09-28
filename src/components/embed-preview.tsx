@@ -51,7 +51,7 @@ export const markdownComponents: Components = {
     </code>
   ),
   pre: ({ children }) => (
-    <pre className="my-2 max-w-full overflow-x-auto rounded-sm bg-background p-3 font-mono text-[10px] leading-4">
+    <pre className="my-2 max-w-full overflow-x-auto rounded-sm bg-background p-3 font-mono text-[0.625rem] leading-4">
       {children}
     </pre>
   ),
@@ -129,7 +129,7 @@ export function DiscordMarkdown({
 export function MediaPlaceholder({ label, compact }: { label: string; compact?: boolean }) {
   return (
     <div
-      className={`grid shrink-0 place-items-center rounded-sm border border-dashed border-border text-[9px] text-muted-foreground ${
+      className={`grid shrink-0 place-items-center rounded-sm border border-dashed border-border text-[0.5625rem] text-muted-foreground ${
         compact ? "size-16" : "aspect-video w-full"
       }`}
     >
@@ -149,7 +149,7 @@ export function EmbedPreview({ embed }: { embed: EmbedState }) {
           {embed.authorIcon && (
             <img src={embed.authorIcon} alt="" className="size-5 rounded-full object-cover" />
           )}
-          <DiscordMarkdown value={embed.authorName} className="text-[10px] font-bold inline" />
+          <DiscordMarkdown value={embed.authorName} className="text-[0.625rem] font-bold inline" />
         </div>
       )}
       {embed.thumbnail && (
@@ -167,10 +167,10 @@ export function EmbedPreview({ embed }: { embed: EmbedState }) {
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {embed.fields.map((field) => (
             <div key={field.id} className={field.inline ? "min-w-0" : "min-w-0 sm:col-span-2"}>
-              <DiscordMarkdown value={field.name} className="text-[10px] font-bold" />
+              <DiscordMarkdown value={field.name} className="text-[0.625rem] font-bold" />
               <DiscordMarkdown
                 value={field.value}
-                className="mt-1 text-[10px] text-muted-foreground"
+                className="mt-1 text-[0.625rem] text-muted-foreground"
               />
             </div>
           ))}
@@ -184,7 +184,7 @@ export function EmbedPreview({ embed }: { embed: EmbedState }) {
         />
       )}
       {(embed.footer || embed.timestamp) && (
-        <div className="mt-4 flex items-center gap-2 text-[9px] text-muted-foreground">
+        <div className="mt-4 flex items-center gap-2 text-[0.5625rem] text-muted-foreground">
           {embed.footerIcon && (
             <img src={embed.footerIcon} alt="" className="size-4 rounded-full object-cover" />
           )}
@@ -257,7 +257,7 @@ export function ContainerPreview({ blocks, color }: { blocks: Block[]; color: st
               ) : (
                 <a
                   href={block.url || undefined}
-                  className="shrink-0 rounded-sm border border-border bg-elevated px-3 py-2 text-[10px] font-bold"
+                  className="shrink-0 rounded-sm border border-border bg-elevated px-3 py-2 text-[0.625rem] font-bold"
                 >
                   {block.label || "Open"}
                 </a>
@@ -296,10 +296,10 @@ export function Preview({
   return (
     <section className={`${panelClass} p-4 sm:p-5`}>
       {showHeader && (
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
             <h2 className="truncate font-display text-sm font-bold">Discord preview</h2>
-            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold uppercase text-emerald-500">
+            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[0.5625rem] font-semibold uppercase text-emerald-500">
               Live
             </span>
           </div>
@@ -328,7 +328,7 @@ export function Preview({
         <div className="min-w-0 flex-1">
           <p className="text-xs">
             <strong>adore</strong>{" "}
-            <span className="rounded-sm bg-discord px-1 py-0.5 text-[9px] font-medium text-white">
+            <span className="rounded-sm bg-discord px-1 py-0.5 text-[0.5625rem] font-medium text-white">
               APP
             </span>{" "}
             <span className="text-muted-foreground">Today at 10:53 AM</span>
@@ -363,7 +363,7 @@ export function Preview({
                     href={button.url || undefined}
                     target={button.url ? "_blank" : undefined}
                     rel="noreferrer"
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-sm border px-3 text-[10px] font-bold transition-colors ${styleClasses}`}
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-sm border px-3 text-[0.625rem] font-bold transition-colors ${styleClasses}`}
                   >
                     {button.emoji && <DiscordMarkdown value={button.emoji} className="inline" />}
                     <DiscordMarkdown value={button.label || "Button"} className="inline" />

@@ -58,7 +58,7 @@ export function EmbedFieldsEditor({
     <div className={`border-t border-border pt-4 ${className}`.trim()}>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center">
         <h3 className="text-xs font-bold">Fields</h3>
-        <span className="text-[10px] text-muted-foreground">
+        <span className="text-[0.625rem] text-muted-foreground">
           {fields.length} / {maxFields}
         </span>
       </div>
@@ -121,7 +121,7 @@ export function EmbedFieldsEditor({
                 </Button>
               </div>
             </div>
-            <label className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground">
+            <label className="mt-2 flex items-center gap-2 text-[0.625rem] text-muted-foreground">
               <input
                 type="checkbox"
                 checked={field.inline}
