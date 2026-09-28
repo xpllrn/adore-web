@@ -50,7 +50,9 @@ function PrivacyPage() {
           ].map(([title, text]) => (
             <article key={title} className="grid gap-3 py-8 sm:grid-cols-[11rem_minmax(0,1fr)]">
               <h2 className="font-display text-sm font-bold">{title}</h2>
-              <p className="text-sm leading-7 text-muted-foreground">{text}</p>
+              <p className="text-[15px] leading-relaxed text-balance text-muted-foreground">
+                {text}
+              </p>
             </article>
           ))}
         </div>

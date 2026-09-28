@@ -63,14 +63,16 @@ function PremiumPage() {
             >
               <item.icon className="size-5" />
               <h2 className="mt-8 font-display text-lg font-bold">{item.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.text}</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-balance text-muted-foreground">
+                {item.text}
+              </p>
             </article>
           ))}
         </div>
         <article className="rounded-md border border-strong bg-elevated p-6 shadow-panel sm:p-9">
           <p className="font-mono text-xs uppercase text-muted-foreground">For your server</p>
           <h2 className="mt-4 font-display text-3xl font-black">Adore Premium</h2>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          <p className="mt-3 text-[15px] leading-relaxed text-balance text-muted-foreground">
             <strong className="text-foreground">$10 / month.</strong> Perks follow your user account
             across servers. Checkout is handled through Adore’s official Discord community.
           </p>
@@ -107,7 +109,7 @@ function PremiumPage() {
           <div>
             <p className="font-mono text-xs uppercase text-muted-foreground">Custom instance</p>
             <h2 className="mt-4 font-display text-2xl font-black sm:text-3xl">Your own Adore.</h2>
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className="mt-3 text-[15px] leading-relaxed text-balance text-muted-foreground">
               <strong className="text-foreground">$25</strong> for your own custom instance.
             </p>
             <a

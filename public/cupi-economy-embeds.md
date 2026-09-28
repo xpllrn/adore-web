@@ -145,8 +145,10 @@ _(fill in)_
 
 - Title: `Economy Leaderboard`
 - Description: `1. stella - 1,250,000 coins
+
 2. alex - 890,000 coins
 3. jordan - 640,000 coins`
+
 - Color: None
 - Fields: none
 - Footer: `Page 1/3 (24 entries)`
@@ -1815,7 +1817,7 @@ _(fill in)_
   - `Market Cap` -> `1,250,000 coins` (inline)
   - `Raised from Investors` -> `350,000 coins`
   - `Equity Structure` -> `Owner: **80.0%** (8,000 sh)
-  Float: **20.0%** (2,000 sh)`
+Float: **20.0%** (2,000 sh)`
   - `Your Position` -> `250 shares`
   - `Avg Buy Price` -> `120 coins/share` (inline)
   - `Your P/L` -> `+1,250 coins (+4.2%)` (inline)

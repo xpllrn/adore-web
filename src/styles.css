@@ -4,6 +4,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Short viewports: landscape phones and small browser windows. */
+@custom-variant short (@media (max-height: 30rem));
+
 /*
  * Design system definition.
  *
@@ -19,9 +22,9 @@
  */
 
 @theme inline {
-  --font-sans: "IBM Plex Mono", monospace;
+  --font-sans: "Inter", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
-  --font-display: "Space Mono", monospace;
+  --font-display: var(--font-sans);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -159,6 +162,19 @@
     border-color: var(--color-border);
   }
 
+  /*
+   * Fluid scaling for large displays. Everything is sized in rem, so growing the
+   * root font size scales the whole layout together. Below 96rem (1536px) the
+   * browser default is used; above it the site grows smoothly to 125% at 2560px
+   * and stops there, so wide monitors get proportionate content instead of a
+   * small island in the middle of the screen.
+   */
+  @media (min-width: 96rem) {
+    html {
+      font-size: clamp(100%, 0.390625vw + 62.5%, 125%);
+    }
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -288,10 +304,41 @@
   animation: screen-in 420ms ease-out both;
 }
 
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-menu-in {
+  animation: menu-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: top center;
+}
+
+/*
+ * iOS Safari zooms the whole page when a focused field's text is smaller than
+ * 16px. Keep form controls at 16px on touch-only screens so tapping into a
+ * search box or the embed builder never zooms the layout.
+ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]),
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+}
+
 .scroll-reveal {
   opacity: 0;
   transform: translateY(22px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -317,8 +364,6 @@
     display: none;
   }
 }
-
-
 
 @media (prefers-reduced-motion: reduce) {
   *,

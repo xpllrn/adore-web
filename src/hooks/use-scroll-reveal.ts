@@ -16,7 +16,7 @@ export function useScrollReveal() {
       {
         threshold: 0.1,
         rootMargin: "0px 0px -50px 0px",
-      }
+      },
     );
 
     // Give a small delay to ensure DOM is ready after route change

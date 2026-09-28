@@ -1,6 +1,6 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Settings } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { ExternalLink, Menu, Settings, X } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import profileAsset from "@/assets/adore-profile.png.asset.json";
 
 const inspectorMessage = `
@@ -51,9 +51,16 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     { href: DOCS_URL, label: "Docs", mobile: false },
   ];
 
+  // Phones only have room for a couple of links in the island, so every page is
+  // also listed in a compact menu that opens below it.
+  const menuItems = [...navItems, { to: "/status" as const, label: "Status", mobile: true }];
+
   const [scrolled, setScrolled] = useState(false);
   const [tapped, setTapped] = useState(false);
   const [popped, setPopped] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [pendingRoute, setPendingRoute] = useState<
     "/" | "/commands" | "/premium" | "/embed" | "/docs" | "/status" | null
   >(null);
@@ -69,7 +76,34 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setPendingRoute(null);
+    setMenuOpen(false);
   }, [pathname]);
+
+  // Close the mobile menu on Escape, on a tap outside the island, or once the
+  // screen is wide enough to show every link inline.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMenuOpen(false);
+      menuButtonRef.current?.focus();
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (!shellRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    };
+    const wide = window.matchMedia("(min-width: 40rem)");
+    const onWide = () => {
+      if (wide.matches) setMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    wide.addEventListener("change", onWide);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+      wide.removeEventListener("change", onWide);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48);
@@ -91,11 +125,12 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen overflow-x-clip bg-background text-foreground">
       <header className="fixed inset-x-0 top-0 z-50 pointer-events-none">
         <div
+          ref={shellRef}
           data-scrolled={scrolled}
-          className="island-shell mx-auto flex h-24 items-center justify-center px-3 sm:px-6"
+          className="island-shell relative mx-auto flex h-24 items-center justify-center px-3 sm:px-6"
         >
           <nav
             aria-label="Main navigation"
@@ -127,7 +162,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                   href={item.href}
                   target="_blank"
                   rel="noreferrer"
-                  className={`${item.mobile ? "" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs`}
+                  className={`${item.mobile ? "" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs`}
                 >
                   {item.label}
                 </a>
@@ -136,7 +171,8 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                   key={item.label}
                   type="button"
                   onClick={() => item.to && navigateKeepingScroll(item.to)}
-                  className={`${item.mobile ? "" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs ${pathname === item.to ? "bg-elevated text-foreground shadow-panel" : ""}`}
+                  aria-current={pathname === item.to ? "page" : undefined}
+                  className={`${item.mobile ? "" : "hidden sm:inline-flex"} shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:px-4 sm:text-xs ${pathname === item.to ? "bg-elevated text-foreground shadow-panel" : ""}`}
                 >
                   {item.label}
                 </button>
@@ -145,7 +181,8 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() => navigateKeepingScroll("/status")}
-              className={`shrink-0 rounded-full px-3 py-2 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:hidden ${pathname === "/status" ? "bg-elevated text-foreground shadow-panel" : ""}`}
+              aria-current={pathname === "/status" ? "page" : undefined}
+              className={`shrink-0 rounded-full px-3 py-2 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:hidden ${pathname === "/status" ? "bg-elevated text-foreground shadow-panel" : ""}`}
             >
               Status
             </button>
@@ -155,10 +192,62 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               onClick={() => navigateKeepingScroll("/status")}
               aria-label="Status and settings"
               title="Status"
-              className={`shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground ${pathname === "/status" ? "bg-elevated text-foreground shadow-panel" : ""}`}
+              className={`hidden shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:inline-flex ${pathname === "/status" ? "bg-elevated text-foreground shadow-panel" : ""}`}
             >
               <Settings className="size-4" />
             </button>
+            <button
+              ref={menuButtonRef}
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-expanded={menuOpen}
+              aria-controls="site-menu"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              className={`shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground sm:hidden ${menuOpen ? "bg-elevated text-foreground shadow-panel" : ""}`}
+            >
+              {menuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+            </button>
+          </nav>
+          <nav
+            id="site-menu"
+            aria-label="Site menu"
+            hidden={!menuOpen}
+            className="animate-menu-in pointer-events-auto absolute inset-x-0 top-20 mx-auto w-[min(18rem,calc(100%-1.5rem))] rounded-3xl border border-border bg-nav/95 p-2 shadow-nav backdrop-blur-xl sm:hidden"
+          >
+            <ul className="grid gap-1">
+              {menuItems.map((item) => {
+                const itemClass =
+                  "flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl px-4 py-2.5 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground";
+                return (
+                  <li key={item.label}>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setMenuOpen(false)}
+                        className={itemClass}
+                      >
+                        {item.label}
+                        <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMenuOpen(false);
+                          if (item.to) navigateKeepingScroll(item.to);
+                        }}
+                        aria-current={pathname === item.to ? "page" : undefined}
+                        className={`${itemClass} ${pathname === item.to ? "bg-elevated text-foreground shadow-panel" : ""}`}
+                      >
+                        {item.label}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
         </div>
       </header>
@@ -209,14 +298,14 @@ function CookieNotice() {
         <button
           type="button"
           onClick={() => choose("rejected")}
-          className="h-8 rounded-sm border border-border px-3 text-xs hover:bg-secondary"
+          className="h-10 flex-1 rounded-sm border border-border px-3 text-xs hover:bg-secondary sm:h-8 sm:flex-none"
         >
           Reject
         </button>
         <button
           type="button"
           onClick={() => choose("accepted")}
-          className="h-8 rounded-sm bg-foreground px-3 text-xs font-bold text-background hover:opacity-90"
+          className="h-10 flex-1 rounded-sm bg-foreground px-3 text-xs font-bold text-background hover:opacity-90 sm:h-8 sm:flex-none"
         >
           Accept all
         </button>
@@ -235,7 +324,7 @@ export function PageIntro({
   description: string;
 }) {
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-10 pt-32 sm:px-6 sm:pb-16 sm:pt-40 lg:pb-20 lg:pt-44">
+    <section className="mx-auto max-w-7xl px-4 pb-10 pt-32 sm:px-6 sm:pb-16 sm:pt-40 lg:pb-20 lg:pt-44 short:pb-8 short:pt-28">
       <p className="font-mono text-xs uppercase text-muted-foreground">{eyebrow}</p>
       <h1 className="mt-4 max-w-4xl break-words font-display text-3xl font-black leading-tight sm:text-5xl lg:text-7xl">
         {title}
@@ -248,5 +337,9 @@ export function PageIntro({
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return <p className="font-mono text-[11px] uppercase text-muted-foreground">{children}</p>;
+  return (
+    <p className="font-mono text-[0.625rem] uppercase tracking-[0.11em] text-muted-foreground leading-none">
+      {children}
+    </p>
+  );
 }

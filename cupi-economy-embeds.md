@@ -145,8 +145,10 @@ _(fill in)_
 
 - Title: `Economy Leaderboard`
 - Description: `1. stella - 1,250,000 coins
+
 2. alex - 890,000 coins
 3. jordan - 640,000 coins`
+
 - Color: None
 - Fields: none
 - Footer: `Page 1/3 (24 entries)`

@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AdaptiveSlider } from "@/components/ui/adaptive-slider";
+import { WaveformScrub } from "@/components/ui/waveform-scrub-base";
 import {
   Activity,
   ArrowDown,
@@ -7,8 +9,6 @@ import {
   Headphones,
   LockKeyhole,
   MessageCircle,
-  Play,
-  Pause,
   SkipBack,
   SkipForward,
   Plus,
@@ -39,7 +39,33 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+// Royalty-free demo tracks (CodeSkulptor public assets). Swap in your own hosted audio as needed.
+const demoTracks = [
+  {
+    title: "The Neverwritten Role Playing Game",
+    artist: "Kangaroo MusiQue",
+    src: "https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3",
+  },
+  {
+    title: "&nbsp;",
+    artist: "Sevish",
+    src: "https://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Sevish_-__nbsp_.mp3",
+  },
+  {
+    title: "Galaxy Invaders",
+    artist: "CodeSkulptor",
+    src: "https://commondatastorage.googleapis.com/codeskulptor-demos/GalaxyInvaders/theme_01.mp3",
+  },
+  {
+    title: "Soundtrack",
+    artist: "Sounddogs",
+    src: "https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/soundtrack.mp3",
+  },
+];
+
 function Index() {
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const marqueeItems = [
     "Anti-nuke",
     "Anti-raid",
@@ -55,30 +81,26 @@ function Index() {
     ...integrations,
   ];
 
-  const popularMusic = [
-    { title: "Blinding Lights", artist: "The Weeknd" },
-    { title: "Shape of You", artist: "Ed Sheeran" },
-    { title: "Dance Monkey", artist: "Tones and I" },
-    { title: "Starboy", artist: "The Weeknd" },
-    { title: "As It Was", artist: "Harry Styles" },
-  ];
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const currentSong = demoTracks[currentSongIndex] ?? demoTracks[0]!;
 
-  const nextSong = () => setCurrentSongIndex((i) => (i + 1) % popularMusic.length);
+  const nextSong = () => setCurrentSongIndex((i) => (i + 1) % demoTracks.length);
   const prevSong = () =>
-    setCurrentSongIndex((i) => (i - 1 + popularMusic.length) % popularMusic.length);
-  const togglePlay = () => setIsPlaying(!isPlaying);
+    setCurrentSongIndex((i) => (i - 1 + demoTracks.length) % demoTracks.length);
+  // Auto-advance to the next track and keep playing.
+  const handleSongEnded = () => {
+    nextSong();
+    setIsPlaying(true);
+  };
 
   return (
     <>
       <section className="relative flex min-h-svh items-center overflow-hidden px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
         <div className="relative mx-auto w-full max-w-7xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 text-center lg:text-left">
           <div className="lg:max-w-2xl mx-auto lg:mx-0">
-            <h1 className="font-display text-7xl font-black leading-none sm:text-8xl lg:text-9xl">
+            <h1 className="font-mono text-[clamp(4rem,15vw,8rem)] font-black tracking-[0.14em] leading-none uppercase text-foreground">
               Adore<span className="sr-only">, the all-in-one Discord app</span>
             </h1>
-            <p className="mx-auto lg:mx-0 mt-5 max-w-xl font-mono text-xs leading-6 text-muted-foreground sm:mt-6 sm:text-sm sm:leading-7">
+            <p className="mx-auto lg:mx-0 mt-5 max-w-xl text-[15px] sm:text-[17px] leading-relaxed text-balance text-muted-foreground sm:mt-6">
               Powerful moderation, security, integrations, music, and community tools, brought
               together in one focused app.
             </p>
@@ -89,13 +111,13 @@ function Index() {
                 href={inviteUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md bg-foreground px-3 text-[13px] font-bold text-background sm:px-5 sm:text-sm"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md bg-foreground px-3 text-[14px] font-bold text-background sm:px-5 sm:text-[15px]"
               >
                 <Plus className="size-4 shrink-0" /> Add to Discord
               </a>
               <Link
                 to="/status"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[13px] shadow-panel hover:bg-elevated sm:px-5 sm:text-sm"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[14px] shadow-panel hover:bg-elevated sm:px-5 sm:text-[15px]"
               >
                 <Gauge className="size-4 shrink-0" /> System status
               </Link>
@@ -103,13 +125,13 @@ function Index() {
                 href={supportUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[13px] shadow-panel hover:bg-elevated sm:px-5 sm:text-sm"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[14px] shadow-panel hover:bg-elevated sm:px-5 sm:text-[15px]"
               >
                 <MessageCircle className="size-4 shrink-0" /> Support server
               </a>
               <Link
                 to="/commands"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[13px] shadow-panel hover:bg-elevated sm:px-5 sm:text-sm"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-surface px-3 text-[14px] shadow-panel hover:bg-elevated sm:px-5 sm:text-[15px]"
               >
                 View commands <ArrowRight className="size-4 shrink-0" />
               </Link>
@@ -135,10 +157,9 @@ function Index() {
             </div>
           </div>
         </div>
-        <ArrowDown
-          className="absolute bottom-5 left-1/2 size-4 -translate-x-1/2 text-muted-foreground"
-          aria-hidden="true"
-        />
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
+          <ArrowDown className="size-4 text-muted-foreground animate-bounce" aria-hidden="true" />
+        </div>
       </section>
 
       <section className="scroll-reveal py-16 sm:py-24 lg:py-32">
@@ -150,7 +171,7 @@ function Index() {
                 Built for every moment in your server.
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-7 text-muted-foreground lg:justify-self-end">
+            <p className="max-w-xl text-[15px] leading-relaxed text-balance text-muted-foreground lg:justify-self-end">
               From the first suspicious join to the song everyone queues at midnight, Adore keeps
               the essential tools close and the noise out.
             </p>
@@ -158,7 +179,7 @@ function Index() {
           <div className="mt-10 grid auto-rows-[minmax(14rem,auto)] gap-3 md:grid-cols-2 lg:grid-cols-3">
             <article className="relative overflow-hidden rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 md:row-span-2 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Protection
                 </span>
                 <ShieldCheck className="size-5" />
@@ -166,7 +187,7 @@ function Index() {
               <h3 className="mt-10 max-w-xs font-display text-2xl font-black sm:mt-14 sm:text-3xl">
                 Your server stays yours.
               </h3>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">
+              <p className="mt-4 text-[15px] leading-relaxed text-balance text-muted-foreground">
                 Anti-nuke and anti-raid controls react before damage spreads.
               </p>
               <div className="mt-10 space-y-1">
@@ -188,7 +209,7 @@ function Index() {
             </article>
             <article className="rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 lg:col-span-2 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Live activity
                 </span>
                 <Activity className="size-5" />
@@ -213,52 +234,47 @@ function Index() {
             </article>
             <article className="flex flex-col justify-between rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Now playing
                 </span>
                 <Headphones className="size-5" />
               </div>
-              <div className="mt-8 flex flex-col gap-4">
+              <WaveformScrub
+                className="mt-8 px-0 py-0"
+                src={currentSong.src}
+                fileName={currentSong.title}
+                playing={isPlaying}
+                onPlayingChange={setIsPlaying}
+                onEnded={handleSongEnded}
+              />
+              <div className="mt-5 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4">
+                <button
+                  type="button"
+                  onClick={prevSong}
+                  aria-label="Previous track"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <SkipBack className="size-4 fill-current" />
+                </button>
                 <div className="min-w-0 text-center">
-                  <p className="truncate text-sm font-bold">
-                    {popularMusic[currentSongIndex].title}
-                  </p>
-                  <p className="mt-1 truncate text-xs text-muted-foreground">
-                    {popularMusic[currentSongIndex].artist}
+                  <p className="truncate text-xs text-muted-foreground">{currentSong.artist}</p>
+                  <p className="mt-1 font-mono text-[9px] uppercase text-muted-foreground">
+                    Track {currentSongIndex + 1} of {demoTracks.length}
                   </p>
                 </div>
-                <div className="flex items-center justify-center gap-5">
-                  <button
-                    onClick={prevSong}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <SkipBack className="size-4 fill-current" />
-                  </button>
-                  <button
-                    onClick={togglePlay}
-                    className="grid size-12 shrink-0 place-items-center rounded-full bg-foreground text-background transition-transform active:scale-95"
-                  >
-                    {isPlaying ? (
-                      <Pause className="size-4 fill-current" />
-                    ) : (
-                      <Play className="size-4 fill-current" />
-                    )}
-                  </button>
-                  <button
-                    onClick={nextSong}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <SkipForward className="size-4 fill-current" />
-                  </button>
-                </div>
-              </div>
-              <div className="mt-7 h-1 overflow-hidden rounded-full bg-elevated">
-                <div className="h-full w-2/3 rounded-full bg-foreground" />
+                <button
+                  type="button"
+                  onClick={nextSong}
+                  aria-label="Next track"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <SkipForward className="size-4 fill-current" />
+                </button>
               </div>
             </article>
             <article className="rounded-md border border-border bg-surface p-6 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 lg:p-8">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase text-muted-foreground">
+                <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
                   Community
                 </span>
                 <Sparkles className="size-5" />
@@ -277,7 +293,7 @@ function Index() {
                   </div>
                 ))}
               </div>
-              <p className="mt-5 text-sm leading-6 text-muted-foreground">
+              <p className="mt-5 text-[15px] leading-relaxed text-balance text-muted-foreground">
                 Levels, games, giveaways, and rewards keep everyone involved.
               </p>
             </article>
@@ -318,7 +334,7 @@ function Index() {
                 <h2 className="mt-5 font-display text-2xl font-black leading-tight sm:text-4xl">
                   Powerful tools that still feel simple.
                 </h2>
-                <p className="mt-5 text-sm leading-7 text-muted-foreground">
+                <p className="mt-5 text-[15px] leading-relaxed text-balance text-muted-foreground">
                   Turn protection on, tune the limits, and let Adore handle the routine work while
                   your team stays in control.
                 </p>
@@ -374,7 +390,9 @@ function Index() {
                 <h3 className="mt-10 font-display text-lg font-bold sm:mt-14 sm:text-xl lg:mt-16">
                   {feature.title}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{feature.text}</p>
+                <p className="mt-3 text-[15px] leading-relaxed text-balance text-muted-foreground">
+                  {feature.text}
+                </p>
               </article>
             ))}
           </div>
@@ -383,7 +401,9 @@ function Index() {
             className="mt-4 grid min-h-28 grid-cols-[minmax(0,1fr)_auto] items-center gap-5 rounded-md border border-border bg-surface p-5 shadow-panel transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-foreground/20 hover:bg-elevated sm:min-h-32 sm:p-6"
           >
             <div className="min-w-0">
-              <span className="font-mono text-[10px] uppercase text-muted-foreground">Library</span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.11em] text-muted-foreground leading-none">
+                Library
+              </span>
               <h3 className="mt-2 font-display text-xl font-bold sm:text-2xl">Over 710 commands</h3>
             </div>
             <ArrowRight className="size-5 shrink-0" />
@@ -397,7 +417,7 @@ function Index() {
           <h2 className="mt-5 font-display text-3xl font-black sm:mt-6 sm:text-5xl lg:text-6xl">
             Get Adore in your server today.
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-6 text-muted-foreground">
+          <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-balance text-muted-foreground">
             Join communities using one focused app for daily operations and everything members
             enjoy.
           </p>

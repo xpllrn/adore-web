@@ -122,7 +122,7 @@ function DocsPage() {
               <h2 className="mt-2 font-display text-2xl font-bold sm:text-3xl">
                 Explore the Complete Wiki &amp; Docs
               </h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              <p className="mt-2 text-[15px] leading-relaxed text-balance text-muted-foreground">
                 Comprehensive documentation covering Adore security, antinuke, tickets, role
                 management, music, embed scripting, and configuration is hosted on our official
                 wiki.
@@ -147,7 +147,9 @@ function DocsPage() {
             >
               <doc.icon className="size-5" />
               <h2 className="mt-8 font-display text-xl font-bold">{doc.title}</h2>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">{doc.text}</p>
+              <p className="mt-3 text-[15px] leading-relaxed text-balance text-muted-foreground">
+                {doc.text}
+              </p>
               <ol className="mt-6 grid gap-3">
                 {doc.steps.map((step, index) => (
                   <li

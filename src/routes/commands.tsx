@@ -248,7 +248,7 @@ function CommandsPage() {
 
         {/* Category & results header */}
         {!!allFilteredCommands.length && (
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-[14px] text-muted-foreground">
             <p>
               Showing <strong className="text-foreground">{visibleCommands.length}</strong> of{" "}
               <strong className="text-foreground">{allFilteredCommands.length}</strong> commands in{" "}
@@ -288,7 +288,9 @@ function CommandsPage() {
                   )}
                 </button>
               </div>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{text}</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-balance text-muted-foreground">
+                {text}
+              </p>
               <div className="mt-5 grid flex-1 content-start gap-4 border-t border-border pt-4">
                 <div className="grid gap-1.5">
                   <span className="text-sm text-muted-foreground">arguments</span>
@@ -327,7 +329,7 @@ function CommandsPage() {
         {/* Load more controls when there are remaining commands */}
         {allFilteredCommands.length > visibleCommands.length && (
           <div className="mt-10 flex flex-col items-center gap-3">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[14px] text-muted-foreground">
               Showing {visibleCommands.length} of {allFilteredCommands.length} commands
             </p>
             <div className="flex items-center gap-2">
