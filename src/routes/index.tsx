@@ -93,8 +93,9 @@ function Index() {
       <section className="relative flex min-h-svh items-center overflow-hidden px-4 py-20 sm:px-6 sm:py-28 lg:py-32 short:pb-16 short:pt-24">
         <div className="relative mx-auto w-full max-w-7xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 short:gap-8 text-center lg:text-left">
           <div className="lg:max-w-2xl mx-auto lg:mx-0">
-            {/* Height-aware so the wordmark doesn't swallow landscape phone screens. */}
-            <h1 className="font-mono text-[clamp(4rem,min(15vw,20svh),8rem)] font-black tracking-[0.14em] leading-none uppercase text-foreground">
+            {/* Scales with the viewport so it fills the left column instead of leaving a void
+                next to the actions. Height-aware so it can't swallow landscape phone screens. */}
+            <h1 className="font-mono text-[clamp(4rem,min(15vw,20svh),12rem)] font-black tracking-[0.14em] leading-none uppercase text-foreground">
               Adore<span className="sr-only">, the all-in-one Discord app</span>
             </h1>
             <p className="mx-auto lg:mx-0 mt-5 max-w-xl text-[0.9375rem] sm:text-[1.0625rem] leading-relaxed text-balance text-muted-foreground sm:mt-6">
